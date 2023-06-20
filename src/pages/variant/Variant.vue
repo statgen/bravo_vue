@@ -4,7 +4,7 @@
   </NavBar>
 
   <div id="variantviz">
-    <div v-if="this.ready">
+    <div v-if="this.ready && this.has_data">
       <div class="container">
         <div class="row">
           <div class="col-12">
@@ -54,6 +54,15 @@
 
       </div>
     </div>
+    <div v-else-if="this.ready && !this.has_data">
+      <div class="container">
+        <div class="row">
+          <div class="col-12 mt-3">
+            <p>No variant data for {{ this.variantId }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -88,6 +97,7 @@ export default {
       api: process.env.VUE_APP_BRAVO_API_URL,
       variantId: null,
       ready: false,
+      has_data: false,
       variant: {},
     }
   },
@@ -97,9 +107,13 @@ export default {
         .get(`${this.api}/variant/api/snv/${this.variantId}`)
         .then( response => {
           let payload = response.data;
-          let datasets = [];
 
-          this.variant = payload.data[0];
+          if( payload.data[0] ){
+            this.variant = payload.data[0];
+            this.has_data = true;
+          }else{
+            this.variant = {};
+          }
           this.ready = true;
 
           // provide default pub_freq
