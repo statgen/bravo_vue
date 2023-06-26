@@ -3,8 +3,10 @@ import App from './Terms.vue'
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { authAwareMount } from '@/AuthAwareMount'
+import { api_url } from '@/ApiUrlResolution'
 
-const app = createApp(App);
+const app = createApp(App)
+app.provide('api_url', api_url())
 
 // Inject gtag header if config includes a non-blank google analyitics id
 if(process.env.GA_ID){
