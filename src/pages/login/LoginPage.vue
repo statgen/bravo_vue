@@ -34,6 +34,7 @@ export default {
     NavBar,
   },
   inject: {
+    api: {default: ''},
     user: {default: null},
     loginDisabled: {default: true}
   },
@@ -42,8 +43,7 @@ export default {
       qUser: null,
       qActive: false,
       qAuthenticated: false,
-      qInfo: '',
-      api: process.env.VUE_APP_BRAVO_API_URL
+      qInfo: ''
     }
   },
   methods:{

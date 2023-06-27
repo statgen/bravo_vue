@@ -6,7 +6,7 @@
  *
  * Adapted from:
  *   https://stackoverflow.com/a/42389266
- *   https://stackoverflow.com/a/64698630/1180551
+ *   https://stackoverflow.com/a/64698630
  */
 const clickOutside = {
   mounted: function (el, binding) {

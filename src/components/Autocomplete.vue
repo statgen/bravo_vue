@@ -8,6 +8,7 @@
 <script>
 import $ from "jquery";
 import "devbridge-autocomplete";
+import { inject } from 'vue';
 
 export default {
   name: 'AutoComplete',
@@ -22,7 +23,7 @@ export default {
   mounted: function() {
     var self = this;
     $(this.$el).autocomplete({
-      serviceUrl: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete',
+      serviceUrl: inject('api') + '/autocomplete',
       dataType: "json",
       width: this.width,
       maxHeight: 250,

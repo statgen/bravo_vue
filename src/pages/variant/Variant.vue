@@ -76,7 +76,8 @@ import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
 import VariantMetrics from '@/components/VariantMetrics'
 import Reads from '@/components/Reads'
-import axios from "axios"
+import axios from 'axios'
+import {inject} from 'vue'
 axios.defaults.withCredentials=true
 
 export default {
@@ -94,7 +95,7 @@ export default {
   },
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
+      api: inject('api'),
       variantId: null,
       ready: false,
       has_data: false,

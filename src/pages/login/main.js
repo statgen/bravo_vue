@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './LoginPage.vue'
-
 import VueGtag from 'vue-gtag'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'tabulator-tables/dist/css/bootstrap/tabulator_bootstrap.css'
@@ -9,8 +8,10 @@ import '@/assets/snv_consequences.css'
 import '@/assets/snv_tabulator_table.css'
 import { clickOutside } from '@/CustomDirectives'
 import { authAwareMount } from '@/AuthAwareMount'
+import { api_url } from '@/ApiUrlResolution'
 
-const app = createApp(App);
+const app = createApp(App)
+app.provide('api', api_url())
 
 // Inject gtag header if config includes a non-blank google analyitics id
 if(process.env.GA_ID){

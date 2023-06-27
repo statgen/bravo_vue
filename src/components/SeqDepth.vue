@@ -55,6 +55,7 @@ export default {
     }
   },
   inject: {
+    api: {default: ''},
     chrom: {default: '11'},
     start: {default: 200000},
     stop:  {default: 201000}
@@ -64,7 +65,6 @@ export default {
   },
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
       loading: false,
       loaded: false,
       failed: false,

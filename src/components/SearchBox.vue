@@ -21,6 +21,7 @@
 <script>
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { inject } from 'vue'
 import AutoComplete from '@/components/Autocomplete.vue';
 import axios from 'axios';
 
@@ -44,7 +45,7 @@ export default {
       isActive: false,
       isDropdownOpen: false,
       searchIcon: faSearch,
-      searchapi: process.env.VUE_APP_BRAVO_API_URL + '/autocomplete'
+      searchapi: inject('api') + '/autocomplete'
     };
   },
   methods: {

@@ -46,8 +46,9 @@
 </template>
 
 <script>
-import igv from "igv";
-import axios from "axios";
+import igv from "igv"
+import axios from "axios"
+import { inject } from "vue"
 axios.defaults.withCredentials=true
 
 export default {
@@ -55,7 +56,7 @@ export default {
   props: ['variant'],
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
+      api: inject('api'),
       loading: true,
       failed: false,
       counts: {

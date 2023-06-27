@@ -42,19 +42,14 @@ export default {
     FontAwesomeIcon,
   },
   inject: {
-    // Needs override by extending component.
-    // Either the chromosome position or geneId should be injected.
+    api: {default: ''}
   },
   emits: ['close'],
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
       dataState: "loading",
       variants: 0,
       closeIcon: faTimes,
-
-      // Needs override by extending component.
-      //url: `${this.api}/path/to/endpoint`
     }
   },
   props: {

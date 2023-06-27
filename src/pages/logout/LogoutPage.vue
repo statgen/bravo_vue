@@ -21,7 +21,8 @@
 
 <script>
 import NavBar from '@/components/NavBar.vue'
-import axios from 'axios';
+import axios from 'axios'
+import {inject} from 'vue'
 axios.defaults.withCredentials=true
 
 export default {
@@ -31,7 +32,7 @@ export default {
   },
   data: function(){
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
+      api: inject('api'),
       authenticated: true,
       message: null,
     }

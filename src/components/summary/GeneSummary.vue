@@ -48,6 +48,7 @@ export default {
     NumericSummaryCard
   },
   inject: {
+    api: {default: ''},
     geneId: {default: ''},
     ensemblId: {default: ''},
     chrom: {default: 0},
@@ -67,8 +68,6 @@ export default {
   },
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
-
       closeIcon: faTimes,
       scrollRightIcon: faAngleRight,
       scrollLeftIcon: faAngleLeft,
