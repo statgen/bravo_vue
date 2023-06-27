@@ -25,6 +25,7 @@ import Tabulator from 'tabulator-tables'
 export default {
   name: "BaseSNVTable",
   inject: {
+    api: {default: ''},
     chrom: {default: 0},
     start: {default: 0},
     stop: {default: 1},
@@ -60,7 +61,6 @@ export default {
   },
   data: function() {
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
       loading: false,
       loaded:  false,
       empty:   true,

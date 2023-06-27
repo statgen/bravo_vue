@@ -36,6 +36,7 @@
 <script>
 import NavBar from '../../components/NavBar.vue'
 import axios from 'axios'
+import {inject} from 'vue'
 
 export default {
   name: 'App',
@@ -43,7 +44,7 @@ export default {
   data() {
     return {
       uiVersion: process.env.VUE_APP_VERSION,
-      apiVersionURL: process.env.VUE_APP_BRAVO_API_URL + '/version',
+      apiVersionURL: inject('api') + '/version',
       apiVersion: ""
     }
   },

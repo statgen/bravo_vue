@@ -13,17 +13,18 @@
  */
 
 import axios from 'axios'
+import { api_url } from '@/ApiUrlResolution'
 
 // Redirect to login passing current location as the eventual destination
 function redirectToLogin(){
   let dest = encodeURIComponent(window.location.href)
-  window.location.href = process.env.VUE_APP_BRAVO_API_URL + '/login?dest=' + dest
+  window.location.href = api_url() + '/login?dest=' + dest
 }
 
 // Pre-emptive redirect for pages expected to have backend auth requirement.
 // Auth redirect if auth being used by API
 function authExpectedMount(app, mountPoint){
-  axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
+  axios.get(api_url() + '/auth_status', {withCredentials: true})
     .then(function(resp){
       if(resp.data.login_disabled){
         app.mount(mountPoint)
@@ -39,7 +40,7 @@ function authExpectedMount(app, mountPoint){
 
 // Redirect for pages using api endpoints expected to have a terms agreement requirement.
 function agreementExpectedMount(app, mountPoint){
-  axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
+  axios.get(api_url() + '/auth_status', {withCredentials: true})
     .then(function(resp){
       if(resp.data.login_disabled){
         app.mount(mountPoint)
@@ -69,7 +70,7 @@ function agreementExpectedMount(app, mountPoint){
 // Provide information from auth endpoint to application,
 //   but do not pre-emptively route to login if unathenticated
 function authAwareMount(app, mountPoint){
-  axios.get(process.env.VUE_APP_BRAVO_API_URL + '/auth_status', {withCredentials: true})
+  axios.get(api_url() + '/auth_status', {withCredentials: true})
     .then(function(resp){
       app.provide('user', resp.data.user)
       app.provide('loginDisabled', resp.data.login_disabled)

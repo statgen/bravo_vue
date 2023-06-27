@@ -29,14 +29,14 @@ import logo from "../assets/b_icon.svg"
 export default {
   name: 'NavBar',
   inject: {
+    api: {default: ''},
     user: {default: null},
     loginDisabled: {default: true}
   },
   data() {
     return {
       publicPath: process.env.BASE_URL,
-      logo: logo,
-      api: process.env.VUE_APP_BRAVO_API_URL
+      logo: logo
     };
   },
   computed: {

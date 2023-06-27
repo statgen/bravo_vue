@@ -79,7 +79,8 @@ export default {
     SNVTableAnnotationModal
   },
   inject: {
-    geneId: {default: null}
+    geneId: {default: null},
+    api: {default: ''}
   },
   provide: function() {
     return {
@@ -92,7 +93,6 @@ export default {
   },
   data: function(){
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
       panelsIcon: faWindowRestore,
       columnsIcon: faColumns,
       downloadIcon: faDownload,

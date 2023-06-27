@@ -39,12 +39,12 @@ export default {
   name: 'App',
   components: {NavBar},
   inject: {
+    api: {default: ''},
     user: {default: null},
     agreedToTerms: {default: null}
   },
   data: function(){
     return {
-      api: process.env.VUE_APP_BRAVO_API_URL,
       errorSavingAgreement: false
     }
   },
