@@ -2,13 +2,16 @@
  *   Default is expected to be api.<host>/ui
  */
 function api_url(){
-  let api_base = process.env.VUE_APP_BRAVO_API_DOMAIN 
+  let api_base 
 
-  if(api_base === ""){
-    api_base = "https://api." + window.location.host 
+  if(process.env.VUE_APP_BRAVO_API_DOMAIN === ""){
+    api_base = window.location.protocol + "//api." + window.location.host 
+  } else {
+    api_base = window.location.protocol + "//" + process.env.VUE_APP_BRAVO_API_DOMAIN
   }
+  console.log("api_base: " + api_base)
 
-  return("https://" + api_base + process.env.VUE_APP_BRAVO_API_PATH)
+  return(api_base + process.env.VUE_APP_BRAVO_API_PATH)
 }
 
 export {api_url}
