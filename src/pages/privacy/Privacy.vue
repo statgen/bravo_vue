@@ -53,8 +53,6 @@ Consider privacy principles in the design of our projects or activities that inv
 
 <script>
 import NavBar from '../../components/NavBar.vue'
-import axios from 'axios'
-import {inject} from 'vue'
 
 export default {
   name: 'App',

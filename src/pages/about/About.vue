@@ -26,6 +26,9 @@
         If you have a question about BRAVO, contact <a href="mailto:bravo-group@umich.edu">bravo-group@umich.edu</a>
         </p>
         <p>
+          Our privacy policy can be found <a href="/privacy.html">here</a>.
+        </p>
+        <p>
           <small>Bravo UI version: {{uiVersion}}</small>, <small>Bravo API version: {{apiVersion}}</small>
         </p>
       </div>

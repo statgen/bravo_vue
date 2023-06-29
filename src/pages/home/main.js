@@ -8,6 +8,7 @@ import { api_url } from '@/ApiUrlResolution'
 
 const app = createApp(App)
 app.provide('api', api_url())
+console.log('Debugging:' + api_url())
 
 // Inject gtag header if config includes a non-blank google analyitics id
 if(process.env.GA_ID){
