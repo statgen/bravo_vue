@@ -8,7 +8,7 @@ function api_url(){
     api_base = "https://api." + window.location.host 
   }
 
-  return(api_base + process.env.VUE_APP_BRAVO_API_PATH)
+  return("https://" + api_base + process.env.VUE_APP_BRAVO_API_PATH)
 }
 
 export {api_url}
