@@ -18,6 +18,7 @@
         </div>
         <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
         <li class="nav-item"><a class="nav-link btn-sm" href="/terms.html">Terms</a></li>
+        <li class="nav-item"><a class="nav-link btn-sm" href="/privacy.html">Privacy</a></li>
       </ul>
     </div>
   </nav>
