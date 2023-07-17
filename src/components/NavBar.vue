@@ -11,7 +11,9 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
         <div v-if="this.user">
-          <li class="nav-item btn-sm">{{user}}</li>
+          <li class="nav-item">
+            <span class="navbar-text btn-sm">{{user}}</span>
+          </li>
         </div>
         <div v-if="!this.loginDisabled">
           <li class="nav-item"><a class="nav-link btn-sm" :href="this.logInOutUrl">{{logInOutText}}</a></li>
