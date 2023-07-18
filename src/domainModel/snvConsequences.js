@@ -51,6 +51,10 @@ export default {
     title: "splice donor",
     desc: "A splice variant that changes the 2 base region at the 5' end of an intron"
   },
+  "splice_donor_5th_base_variant": {
+    title: "splice donor_5th",
+    desc: "A sequence variant that causes a change at the 5th base pair after the start of the intron in the orientation of the transcript."
+  },
   "transcript_amplification": {
     title: "transcript amplification",
     desc: "A feature amplification of a region containing a transcript"

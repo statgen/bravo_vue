@@ -1,6 +1,7 @@
 .badge--transcript_ablation { color: #fb0007;}
 .badge--splice_acceptor_variant { color: #fc4016;}
 .badge--splice_donor_variant { color: #fc4016;}
+.badge--splice_donor_5th_base_variant { color: #fc4016;}
 .badge--stop_gained { color: #fb0007;}
 .badge--frameshift_variant { color: #8000c9;}
 .badge--stop_lost { color: #fb0007;}
