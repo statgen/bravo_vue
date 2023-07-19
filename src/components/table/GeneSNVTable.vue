@@ -33,7 +33,7 @@ export default {
         headerTooltip: "HGVSc/HGVSp nomenclature for the most severe variant effect (total number of HGVSc/HGVSp).",
         hozAlign: "left",
         headerSort: false,
-        width: 120,
+        width: 150,
         minWidth: 100,
         visible: this.showCols.consequence,
         formatter: (cell, params, onrendered) => {
@@ -63,14 +63,14 @@ export default {
         field: "annotation.gene.consequence",
         headerTooltip: "Variant annotation (defined by Sequence Onthology) with most severe effect (total number of annotations).",
         hozAlign: "left",
-        width: 165,
+        width: 125,
         minWidth: 120,
         visible: this.showCols.annotation,
         formatter: (cell, params, onrendered) => {
           let html = ""
           let annotations = cell.getValue()
           if (annotations.length > 0) {
-            let title = snvConsequences[annotations[0]].title || annotations[0] 
+            let title = snvConsequences.lookup(annotations[0]).title
             let cssClass = `badge--${annotations[0]}`
             html += `<div class="snvtable__cell--clickable" role="button">`
             html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
@@ -97,6 +97,7 @@ export default {
         headerTooltip: "Variant was predicted to be Loss-of-Function by LOFTEE.",
         field: "annotation.gene.lof",
         hozAlign: "left",
+        width: 100,
         minWidth: 95,
         visible: this.showCols.LOFTEE.val,
         formatter: (cell, params, onrendered) => {
