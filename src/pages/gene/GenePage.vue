@@ -10,12 +10,15 @@
           <div class="bravo-tab-item bravo-tab-item-selected">
             <a href="#">SNVs and Indels</a>
           </div>
+          <div class="bravo-tab-item">
+            <a href="#">eQTLs</a>
+          </div>
         </div>
       </div>
     </div>
     <div class="row justify-content-center">
       <div class="col-12 col-sm-11 col-md-11">
-        <GeneDashboard/>
+        <GeneSnvDashboard/>
       </div>
     </div>
   </div>
@@ -24,14 +27,14 @@
 <script>
 import NavBar from '@/components/NavBar.vue'
 import SearchBox from '@/components/SearchBox.vue'
-import GeneDashboard from '@/components/GeneDashboard.vue'
+import GeneSnvDashboard from '@/components/GeneSnvDashboard.vue'
 
 export default {
   name: 'App',
   components: {
     NavBar,
     SearchBox,
-    GeneDashboard
+    GeneSnvDashboard
   },
   provide: function() {
     let urlParams = new URLSearchParams(window.location.search)

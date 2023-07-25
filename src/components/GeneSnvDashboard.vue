@@ -64,7 +64,7 @@ import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 
 export default {
-  name: 'GeneDashboard',
+  name: 'GeneSnvDashboard',
   components: {
     FontAwesomeIcon,
     GeneInfo,
