@@ -4,21 +4,9 @@
   </NavBar>
 
   <div class="container-fluid">
-    <div class="row justify-content-center" style="border-bottom: 1px solid #cccccc;margin-bottom: 5px;">
-      <div class="col-12 col-sm-11 col-md-11">
-        <div class="bravo-tab">
-          <div class="bravo-tab-item bravo-tab-item-selected">
-            <a href="#">SNVs and Indels</a>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="row justify-content-center">
       <div class="col-12 col-sm-11 col-md-11">
         <RegionDashboard/>
-        <!--
-          <bravoregion :pagination-size="100" :homepage="'{{ url_for('.home', _external = True) }}'" :api="'{{ url_for('.home', _external = True) }}'" :chrom="'{{ chrom }}'" :start="{{ start }}" :stop="{{ stop }}"></bravoregion>
-        -->
       </div>
     </div>
   </div>

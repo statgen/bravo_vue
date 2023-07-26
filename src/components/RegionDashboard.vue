@@ -1,6 +1,15 @@
 <template>
   <div id="bravo-plot"> 
     <RegionInfo/>
+    <div class="row justify-content-center" style="border-bottom: 1px solid #cccccc;margin-bottom: 5px;">
+      <div class="col-12 col-sm-11 col-md-11">
+        <div class="bravo-tab">
+          <div class="bravo-tab-item bravo-tab-item-selected">
+            <a href="#">SNVs and Indels</a>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="bravoviz">
       <div class="parentMenu">
         <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"

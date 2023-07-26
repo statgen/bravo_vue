@@ -1,6 +1,16 @@
 <template>
   <div id="bravo-plot"> 
     <GeneInfo v-if="positionResolved" :geneData="geneData"/>
+
+    <ul class="nav nav-tabs" style="margin-bottom: 5px">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">SNVs and Indels</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">eQTLs</a>
+      </li>
+    </ul>
+
     <div id="bravoviz">
       <div class="parentMenu">
         <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
@@ -64,7 +74,7 @@ import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 
 export default {
-  name: 'GeneSnvDashboard',
+  name: 'GeneDashboard',
   components: {
     FontAwesomeIcon,
     GeneInfo,

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-white">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white" style="border-bottom: 1px solid #cccccc;margin-bottom: 5px;">
     <a class="navbar-brand" v-bind:href="publicPath">
       <img class="bo-small-logo" width="34" v-bind:src="logo"/>
     </a>
