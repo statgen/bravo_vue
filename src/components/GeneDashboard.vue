@@ -1,50 +1,55 @@
 <template>
-  <div id="bravo-plot"> 
+  <div id="dashboard">
     <GeneInfo v-if="positionResolved" :geneData="geneData"/>
 
     <ul class="nav nav-tabs" style="margin-bottom: 5px">
       <li class="nav-item">
-        <a class="nav-link active" href="#">SNVs and Indels</a>
+        <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">eQTLs</a>
+        <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs</a>
       </li>
     </ul>
+    <div id="eqtl-collection" v-if="showTab.eqtl">
+      <h4>SuSiE eQTLs</h4>
+      <EqtlTable/>
+    </div>
 
-    <div id="bravoviz">
+    <div id="snv-collection" v-if="showTab.snv">
       <div class="parentMenu">
         <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
           @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
         <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
           @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
 
-        <div class="d-none d-sm-inline" style="display: inline-block;"> 
+        <div class="d-none d-sm-inline" style="display: inline-block;">
           <button type="button" class="parentMenu__button" v-on:click="doDownload++">
             CSV
             <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
           </button>
         </div>
       </div>
+
       <div v-if="positionResolved" style="position: relative; min-height: 20px">
         <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
           @close="showPanels.summaries.val = false"/>
-        <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
-          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
+        <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
+          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
 
-        <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
-          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
+        <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
+          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :geneData="geneData"/>
-        <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
-          :segmentBounds="segmentBounds" 
+        <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
+          :segmentBounds="segmentBounds"
           :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
           :filters="filterArray" :visibleVariants="visibleVariants"/>
-        <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
+        <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
           :givenWidth="childWidth" :givenMargins="childMargins" />
         <FilterBar @filterChange='handleFilterChange'/>
         <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
-          @scroll='handleTableScroll' @hover='handleTableHover' 
+          @scroll='handleTableScroll' @hover='handleTableHover'
           @openModal="handleOpenModal"/>
       </div>
     </div>
@@ -56,7 +61,7 @@
 
 import { computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faWindowRestore, faDownload, faColumns } 
+import { faWindowRestore, faDownload, faColumns }
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
 import axios from 'axios'
@@ -72,6 +77,7 @@ import GeneSnvCount   from '@/components/histogram/GeneSnvCount.vue'
 import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
+import EqtlTable      from '@/components/table/EqtlTable.vue'
 
 export default {
   name: 'GeneDashboard',
@@ -86,7 +92,8 @@ export default {
     GeneSnvCount,
     BpCoordBar,
     GeneSNVTable,
-    SNVTableAnnotationModal
+    SNVTableAnnotationModal,
+    EqtlTable
   },
   inject: {
     geneId: {default: null},
@@ -107,6 +114,10 @@ export default {
       columnsIcon: faColumns,
       downloadIcon: faDownload,
       doDownload: 0,
+      showTab: {
+        eqtl: false,
+        snv: true
+      },
       showPanels: {
         summaries: {title: "Summary", val: true},
         seqDepth:  {title: "Avg. Depth", val: true},
@@ -189,15 +200,23 @@ export default {
     }
   },
   methods:{
-    handleOpenModal: function(rowData){ 
+    handleOpenModal: function(rowData){
       this.modalData = rowData
       this.showModal = true
     },
-    handleCloseModal: function(){ 
+    handleCloseModal: function(){
       this.showModal = false }
     ,
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
+    },
+    toggleTab: function(tabName) {
+      this.showTab.snv = false
+      this.showTab.eqtl = false
+      this.showTab[tabName] = true
+    },
+    tabClass: function(isActive) {
+      return isActive ? 'nav-link active' : 'nav-link'
     },
     togglePanelAttr: function(attrName) {
       this[attrName] = !this[attrName]
@@ -226,7 +245,7 @@ export default {
       this.childWidth = this.$el.clientWidth
     },
     handleTableScroll: function(start_idx, end_idx, rows_data){
-      this.visibleVariants = { 
+      this.visibleVariants = {
         start_index: start_idx,
         stop_index: end_idx,
         data: rows_data}
