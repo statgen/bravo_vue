@@ -312,6 +312,11 @@ export default {
     this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
     this.childWidth = this.$el.clientWidth
     window.addEventListener('resize', this.handleResize)
+
+    // Respect links to specific tab
+    if(window.location.hash === "#eqtl"){
+      this.toggleTab("eqtl")
+    }
   },
   beforeUnmount: function() {
     window.removeEventListener('resize', this.handleResize)
