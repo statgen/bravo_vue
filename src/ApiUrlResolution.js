@@ -9,8 +9,6 @@ function api_url(){
   } else {
     api_base = window.location.protocol + "//" + process.env.VUE_APP_BRAVO_API_DOMAIN
   }
-  console.log("api_base: " + api_base)
-
   return(api_base + process.env.VUE_APP_BRAVO_API_PATH)
 }
 
