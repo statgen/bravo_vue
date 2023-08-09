@@ -159,8 +159,8 @@ export default {
         })
     },
     followResultTicket: function(ticket){
-      if(ticket.endpoint == "noresult"){
-        this.$emit("noSearchResults", ticket.queryVal)
+      if(ticket.endpoint === "notfound"){
+        this.$emit("noSearchResults", ticket.query)
       } else {
         let resultUrl = this.resultTicketToHref(ticket);
         window.location.assign(resultUrl);

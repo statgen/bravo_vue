@@ -64,8 +64,8 @@ export default {
     }
   },
   methods: {
-    handleNoResults(queryVal){
-      this.message = "No search results for " + queryVal
+    handleNoResults(evtVal){
+      this.message = "No search results for " + evtVal
     }
   }
 }
