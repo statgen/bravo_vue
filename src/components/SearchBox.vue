@@ -139,8 +139,8 @@ export default {
       return href
     },
     doSuggest(suggestion){
-      let resultTicket = this.suggestToResultTicket(suggestion);
-      followResultTicket(resultTicket)
+      let resultTicket = this.suggestToResultTicket(suggestion)
+      this.followResultTicket(resultTicket)
     },
     doSearch: function() {
       // Use first autocomplete result, or
