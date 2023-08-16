@@ -19,14 +19,12 @@
     <button v-if="collapsed && hasRightScroll" class="hscroll-button scroll-right" v-on:click="scroll(200)">
       <font-awesome-icon style="background-color: transparent;" :icon="scrollRightIcon"></font-awesome-icon>
     </button>
-    <div class="container-fluid">
       <div ref="summaryDeck" v-bind:class="{ 'cards': collapsed, 'card-columns': !collapsed }">
         <NumericSummaryCard title="Variant type" :state="loadingState" :summaryData="summaryDataVariantType"/>
         <NumericSummaryCard title="SNVs" :state="loadingState" :summaryData="summaryDataSNVs"/>
         <NumericSummaryCard title="Indels" :state="loadingState" :summaryData="summaryDataIndels"/>
         <NumericSummaryCard title="Putative Loss-of-Function" :state="loadingState" :summaryData="summaryDataPLoF"/>
       </div>
-    </div>
   </div>
 </template>
 

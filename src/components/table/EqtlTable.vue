@@ -60,7 +60,8 @@ export default {
           title: "Variant Id",
           titleDownload: "Variant Id",
 					headerTooltip: "chrom-position-ref-alt",
-          width: 130,
+          minWidth: 130,
+          widthGrow: 1,
           field: "variant_id",
           formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
         },
@@ -68,14 +69,16 @@ export default {
           title: "Tissue",
           titleDownload: "Tissue",
 					headerTooltip: "Source tissue of rnaseq data",
-          width: 130,
+          minWidth: 130,
+          widthGrow: 1,
           field: "tissue",
         },
         {
           title: "PIP",
           titleDownload: "PIP",
 					headerTooltip: "Probability the variant is causal for this eQTL signal",
-          width: 100,
+          minWidth: 80,
+          widthGrow: 1,
           field: "pip",
         }
       ])
@@ -83,6 +86,8 @@ export default {
   },
   mounted: function() {
     this.tabulator = new Tabulator(this.$refs.eqtltable, {
+      height: "150px",
+      layout: "fitDataStretch",
       placeholder: "No eQTL Data",
       ajaxURL: this.ajaxUrl,
       ajaxParams: {gene: this.geneId },
@@ -106,8 +111,6 @@ export default {
         this.loaded = true;
         return response;
       },
-      height: "150px",
-      layout: "fitColumns",
       columns: this.tblColumnDefs(),
       initialSort: [ { column: "tissue", dir: "asc" } ],
 

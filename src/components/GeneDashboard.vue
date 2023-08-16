@@ -1,61 +1,109 @@
 <template>
-  <div id="dashboard">
-    <GeneInfo v-if="positionResolved" :geneData="geneData"/>
-
-    <ul class="nav nav-tabs" style="margin-bottom: 5px">
-      <li class="nav-item">
-        <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
-      </li>
-      <li class="nav-item">
-        <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs</a>
-      </li>
-    </ul>
-    <div id="eqtl-collection" v-if="showTab.eqtl">
-      <h4>SuSiE eQTLs</h4>
-      <p>Placeholder for eQTL data</p>
-      <!-- <EqtlTable/> -->
+<div id="dashboard">
+  <div class="container-fluid">
+    <div class="row justify-content-center px-5">
+      <div class="col-md">
+        <GeneInfo v-if="positionResolved" :geneData="geneData"/>
+      </div>
     </div>
 
-    <div id="snv-collection" v-if="showTab.snv">
-      <div class="parentMenu">
-        <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
-          @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
-        <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
-          @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
+    <div id="tab-headers" class="row justify-content-center">
+      <div class="col-md px-5">
+        <ul class="nav nav-tabs" style="margin-bottom: 5px">
+          <li class="nav-item">
+            <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
+          </li>
+          <li class="nav-item">
+            <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs</a>
+          </li>
+        </ul>
+      </div>
+    </div>
 
-        <div class="d-none d-sm-inline" style="display: inline-block;">
-          <button type="button" class="parentMenu__button" v-on:click="doDownload++">
-            CSV
-            <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
-          </button>
+    <!-- eQTL tab -->
+    <div id="eqtl-tab" v-if="showTab.eqtl">
+      <div class="row justify-content-left px-5" >
+        <div class="col-md-5">
+          <div id="eqtl-collection" >
+            <h4>SuSiE eQTLs</h4>
+            <EqtlTable/>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div id="eqtl-collection">
+            <h4>SuSiE eQTLs</h4>
+            <EqtlTable/>
+          </div>
+        </div>
+        <div class="col-md-11">
+          <EqtlTableDescription/>
+        </div>
+      </div>
+    </div>
+
+    <!-- SNVs tab -->
+    <div id="snv-tab" v-if="showTab.snv">
+      <div class="row justify-content-left px-5">
+        <div class="col-md-5">
+          <div >
+            <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
+              @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
+            <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
+              @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
+
+            <div class="d-none d-sm-inline" style="display: inline-block;">
+              <button type="button" class="parentMenu__button" v-on:click="doDownload++">
+                CSV
+                <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div v-if="positionResolved" style="position: relative; min-height: 20px">
-        <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
-          @close="showPanels.summaries.val = false"/>
-        <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
-          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+      <div class="row justify-content-left px-5">
+        <div class="col-md" v-if="positionResolved">
+          <GeneSummary v-if="showPanels.summaries.val" :filterArray='filterArray'
+            @close="showPanels.summaries.val = false"/>
+        </div>
+      </div>
 
-        <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
-          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
-          :geneData="geneData"/>
-        <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
-          :segmentBounds="segmentBounds"
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
-          :filters="filterArray" :visibleVariants="visibleVariants"/>
-        <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
-          :givenWidth="childWidth" :givenMargins="childMargins" />
-        <FilterBar @filterChange='handleFilterChange'/>
-        <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
-          @scroll='handleTableScroll' @hover='handleTableHover'
-          @openModal="handleOpenModal"/>
+      <div class="row justify-content-left" v-if="showTab.snv">
+        <div class="col-md px-5" v-if="positionResolved">
+          <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
+            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+
+        </div>
+        <div class="col-md px-5" v-if="positionResolved">
+          <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
+            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
+            :geneData="geneData"/>
+        </div>
+        <div class="col-md px-5" v-if="positionResolved">
+          <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
+            :segmentBounds="segmentBounds"
+            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
+            :filters="filterArray" :visibleVariants="visibleVariants"/>
+        </div>
+        <div class="col-md px-5" v-if="positionResolved">
+          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
+            :givenWidth="childWidth" :givenMargins="childMargins" />
+        </div>
+        <div class="col-md px-5" v-if="positionResolved">
+          <FilterBar @filterChange='handleFilterChange'/>
+        </div>
+        <div class="col-md px-5" v-if="positionResolved">
+          <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
+            @scroll='handleTableScroll' @hover='handleTableHover'
+            @openModal="handleOpenModal"/>
+        </div>
       </div>
     </div>
-    <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
   </div>
+  <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
+</div>
 </template>
 
 <script>
@@ -79,6 +127,7 @@ import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 import EqtlTable      from '@/components/table/EqtlTable.vue'
+import EqtlTableDescription  from '@/components/table/EqtlTableDescription.vue'
 
 export default {
   name: 'GeneDashboard',
@@ -94,7 +143,8 @@ export default {
     BpCoordBar,
     GeneSNVTable,
     SNVTableAnnotationModal,
-    EqtlTable
+    EqtlTable,
+    EqtlTableDescription
   },
   inject: {
     geneId: {default: null},
