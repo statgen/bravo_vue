@@ -87,10 +87,14 @@
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
             :filters="filterArray" :visibleVariants="visibleVariants"/>
         </div>
+			</div>
+      <div class="row justify-content-left" v-if="showTab.snv">
         <div class="col-md px-5" v-if="positionResolved">
           <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
             :givenWidth="childWidth" :givenMargins="childMargins" />
         </div>
+			</div>
+      <div class="row justify-content-left" v-if="showTab.snv">
         <div class="col-md px-5" v-if="positionResolved">
           <FilterBar @filterChange='handleFilterChange'/>
         </div>
