@@ -32,11 +32,6 @@ export default {
       type: Array,
       default: function(){return [100000, 101000]}
     },
-    //formerly dimensions.width
-    givenWidth: {
-      type: Number,
-      default: 300
-    },
     //formerly dimensions.margin
     givenMargins: {
       type: Object,
@@ -70,6 +65,7 @@ export default {
       failed: false,
       loaded_data_size: 0,
       closeIcon: faTimes,
+      max_mean_seq_depth: 0
     }
   },
   methods: {
@@ -79,6 +75,9 @@ export default {
           {chrom: chrom, start: start, stop: stop, continue_from: continue_from})
         .then( resp => {
           this.cov_data.push(...resp.data.coverage)
+          const meanArr = resp.data.coverage.map(val => val.mean)
+          const maxMean = meanArr.reduce((acc, val) => val > acc ? val : acc, this.max_mean_seq_depth)
+          this.max_mean_seq_depth = maxMean
           this.draw()
           this.loaded_data_size = this.cov_data.length
           if( resp.data.continue_from < stop){
@@ -113,13 +112,14 @@ export default {
       this.svg = d3.select(this.$el)
         .append("svg")
           .style("display", "block")
-          .attr("width", this.givenWidth)
-          .attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
+          .attr("viewBox", "0 0 1000 100")
+          .attr("width", "100%")
+          .attr("height","100%");
       this.drawing_clip = this.svg
         .append("clipPath")
           .attr("id", "depth-clip")
         .append("rect")
-          .attr("x", 0)
+          .attr("x", "0%")
           .attr("y", 0);
       this.drawing = this.svg.append("g");
       this.depth_g = this.drawing.append("g");
@@ -135,7 +135,7 @@ export default {
           .attr("x1", 0)
           .attr("y1", 0)
           .attr("x2", 0)
-          .attr("y2", this.height)
+          .attr("y2", "100%")
           .attr("stroke-width", 2)
           .attr("stroke-linecap", "round")
           .attr("stroke", "#e77f00")
@@ -151,20 +151,30 @@ export default {
           .style("stroke", "black");
     },
     draw: function () {
-      this.svg.attr("width", this.givenWidth).attr("height", this.height + this.givenMargins.top + this.givenMargins.bottom);
-      this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
+      console.log("segBounds" + this.segmentBounds);
+      console.log("segRegions" + this.segmentRegions);
+
+      this.svg.attr("width", "100%").attr("height", "100%");
+      this.drawing.attr("transform", "translate(40, 0)");
       this.drawing_clip
-        .attr("width", this.givenWidth - this.givenMargins.left - this.givenMargins.right)
-        .attr("height", this.height);
-      this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
-      this.y_scale.range([this.height, 0]).domain([0, d3.max(this.cov_data, function(d) { return d.mean; })]);
+        .attr("width", "100%")
+        .attr("height","100%");
+
+      //Viewport scale is 0, 100 for X and 0,100 for Y
+      this.x_scale.domain(this.segmentRegions)
+                  .range([0,1000]);
+      this.y_scale.domain([0, d3.max(this.cov_data, function(d) { return d.mean; })])
+                  .range([100, 0]);
+
+
       this.y_axis.scale(this.y_scale).ticks(4).tickFormat(this.format_y_ticks);
       this.y_axis_g.call(this.y_axis);
+
       var area = d3.area()
-        .x(  d  => { return d.last ? this.x_scale(d.end): this.x_scale(d.start); } )
+        .x(  d  => this.x_scale(d.start) )
         .y0( () => 0)
         .y1( () => 0)
-        .y0( () => this.height )
+        .y0( () => 100 )
         .y1( d  => this.y_scale(d.mean) )
         .curve(d3.curveStepAfter);
       this.drawing.selectAll("g>path:last-child")
@@ -200,11 +210,6 @@ export default {
       10000, null, new Promise( resolve => resolve()));
   },
   watch: {
-    givenWidth: function() {
-      if ((!this.loading) && (!this.failed) && (this.loaded_data_size > 0)) {
-        this.draw()
-      }
-    },
     hoveredVarPosition(newVal, oldVal) {
       if(newVal == null){
         this.highlight_line
