@@ -12,7 +12,8 @@
     </ul>
     <div id="eqtl-collection" v-if="showTab.eqtl">
       <h4>SuSiE eQTLs</h4>
-      <EqtlTable/>
+      <p>Placeholder for eQTL data</p>
+      <!-- <EqtlTable/> -->
     </div>
 
     <div id="snv-collection" v-if="showTab.snv">
