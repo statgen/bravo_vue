@@ -32,18 +32,6 @@ export default {
       type: Array,
       default: function(){return [100000, 101000]}
     },
-    //formerly dimensions.margin
-    givenMargins: {
-      type: Object,
-      default: function(){
-        return({
-          left:   40,
-          right:  15,
-          top:    12,
-          bottom: 5
-        })
-      }
-    },
     hoveredVarPosition: {
       type: Number,
       default: null
@@ -66,6 +54,13 @@ export default {
       loaded_data_size: 0,
       closeIcon: faTimes,
       max_mean_seq_depth: 0
+    }
+  },
+  computed: {
+    depth_tick_values(){
+      const upper_limit = Math.ceil(this.max_mean_seq_depth/10)*10
+      const step = upper_limit / 4
+      return [1,2,3].map(val=>Math.ceil(val*step))
     }
   },
   methods: {
@@ -109,25 +104,26 @@ export default {
       this.y_axis = d3.axisLeft();
       this.y_scale = d3.scaleLinear();
 
+      // Use viewbox to avoid caring about external coordinate systems.
+      // X is 0 to 1000 Y is 0 to 100
       this.svg = d3.select(this.$el)
         .append("svg")
           .style("display", "block")
           .attr("viewBox", "0 0 1000 100")
-          .attr("width", "100%")
-          .attr("height","100%");
+          .attr("preserveAspectRatio","xMinYMin")
       this.drawing_clip = this.svg
         .append("clipPath")
           .attr("id", "depth-clip")
         .append("rect")
           .attr("x", "0%")
-          .attr("y", 0);
-      this.drawing = this.svg.append("g");
-      this.depth_g = this.drawing.append("g");
+          .attr("y", "0%");
+      this.drawing = this.svg.append("g").attr("id", "depths-container");
+      this.depth_g = this.drawing.append("g").attr("id", "depths");
       this.y_axis_g = this.drawing.append("g")
         .style("font-size", "9px");
       this.drawing.append("text")
-          .attr("transform", `translate(${-this.givenMargins.left + 11},${this.height/2}) rotate(-90)`)
-          .style("font-size", "11px")
+          .attr("transform", `translate(-30,50) rotate(-90)`)
+          .style("font-size", "10px")
           .style("text-anchor", "middle")
           .text("Avg. Depth");
       this.highlight_line = this.drawing.append("line")
@@ -142,32 +138,35 @@ export default {
           .attr("visibility", "hidden");
     },
     initializeCoverageSVG: function() {
-      this.depth_g.selectAll("path")
+      this.depths_path = this.depth_g.selectAll("path")
         .data([this.cov_data])
         .enter()
         .append("path")
           .style("fill", "#ffa37c")
           .style("stroke-width", 0.1)
-          .style("stroke", "black");
+          .style("stroke", "black")
+          .attr("id","depths-path");
     },
     draw: function () {
-      console.log("segBounds" + this.segmentBounds);
-      console.log("segRegions" + this.segmentRegions);
-
-      this.svg.attr("width", "100%").attr("height", "100%");
+      this.svg.attr("width", "100%").attr("height", "100px");
+      // Translate to allow space for y-axis lable
       this.drawing.attr("transform", "translate(40, 0)");
       this.drawing_clip
         .attr("width", "100%")
         .attr("height","100%");
 
-      //Viewport scale is 0, 100 for X and 0,100 for Y
+      // Map data to viewbox scale
+      // 960 = 1000-40 to account for space allocated for axis label
       this.x_scale.domain(this.segmentRegions)
-                  .range([0,1000]);
-      this.y_scale.domain([0, d3.max(this.cov_data, function(d) { return d.mean; })])
+                  .range([0,960]);
+      this.y_scale.domain([0, this.max_mean_seq_depth])
                   .range([100, 0]);
 
-
-      this.y_axis.scale(this.y_scale).ticks(4).tickFormat(this.format_y_ticks);
+      console.log(this.depth_tick_values)
+      this.y_axis
+        .scale(this.y_scale)
+        .tickValues(this.depth_tick_values)
+        .tickFormat(this.format_y_ticks);
       this.y_axis_g.call(this.y_axis);
 
       var area = d3.area()
@@ -177,7 +176,8 @@ export default {
         .y0( () => 100 )
         .y1( d  => this.y_scale(d.mean) )
         .curve(d3.curveStepAfter);
-      this.drawing.selectAll("g>path:last-child")
+
+      this.depths_path
         .attr("clip-path", "url(#depth-clip)")
         .attr("d", area);
     },

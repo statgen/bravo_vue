@@ -56,7 +56,6 @@ export default {
       for(const td of tickDilineations){
         ticks.push(Math.floor(this.x_scale(td)))
       }
-      console.log(ticks)
       return ticks
     },
     tickPositions(min, max, qty=10){

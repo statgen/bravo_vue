@@ -68,13 +68,15 @@
         </div>
       </div>
 
-      <div class="row justify-content-left" v-if="showTab.snv">
+      <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
             :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
-            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-
+            :segmentRegions="segmentRegions"/>
         </div>
+      </div>
+      <div class="row justify-content-left">
+
         <div class="col-md px-5" v-if="positionResolved">
           <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
             :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
@@ -88,7 +90,7 @@
             :filters="filterArray" :visibleVariants="visibleVariants"/>
         </div>
 			</div>
-      <div class="row justify-content-left" v-if="showTab.snv">
+      <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
             :givenWidth="childWidth" :givenMargins="childMargins" />
