@@ -31,8 +31,8 @@
         </div>
         <div class="col-md-5">
           <div id="eqtl-collection">
-            <h4>SuSiE eQTLs</h4>
-            <EqtlTable/>
+            <h4>Conditional eQTLs</h4>
+            <EqtlCondTable/>
           </div>
         </div>
         <div class="col-md-11">
@@ -133,6 +133,7 @@ import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 import EqtlTable      from '@/components/table/EqtlTable.vue'
+import EqtlCondTable  from '@/components/table/EqtlCondTable.vue'
 import EqtlTableDescription  from '@/components/table/EqtlTableDescription.vue'
 
 export default {
@@ -150,6 +151,7 @@ export default {
     GeneSNVTable,
     SNVTableAnnotationModal,
     EqtlTable,
+    EqtlCondTable,
     EqtlTableDescription
   },
   inject: {
