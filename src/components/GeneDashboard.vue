@@ -92,8 +92,7 @@
 			</div>
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
-            :givenWidth="childWidth" :givenMargins="childMargins" />
+          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" />
         </div>
 			</div>
       <div class="row justify-content-left" v-if="showTab.snv">

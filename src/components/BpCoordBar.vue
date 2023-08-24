@@ -1,18 +1,23 @@
 <template>
-<div class="child-component">
-  <div :style="enclosingStyle">
-    <svg ref="coordsSvg" style="height: 20px; display: block;" width="100%">
-      <g ref="xAxisContainer"></g>
+  <div id="holder" ref="holder" class="child-component"
+    style="max-height: 20px; display: block; overflow-y: hidden; overflow-x: hidden;">
+    <svg id="bp-coord-bar" style="display: block;" height="100px" width="100%" viewBox="0 0 1000 100" preserveAspectRatio="none">
+      <g id="x-axis-container"></g>
     </svg>
-  </div>
 </div>
 </template>
 
 <script>
-import * as d3 from "d3";
+import { ref } from 'vue'
+import { debounce } from 'lodash'
+import * as d3 from "d3"
 
 export default {
   name: "BpCoordBar",
+  setup() {
+    const holder = ref(null)
+    return { holder }
+  },
   props: {
     //formerly region.segments.plot
     segmentBounds: {
@@ -27,23 +32,6 @@ export default {
     tickQuantity: {
       type: Number,
       default: function(){return 10}
-    },
-    //formerly dimensions.margin
-    givenMargins: {
-      type: Object,
-      default: function(){
-        return({
-          left:   40,
-          right:  15,
-          top:    12,
-          bottom: 5
-        })
-      }
-    }
-  },
-  computed: {
-    enclosingStyle: function(){
-      return(`max-height: ${this.height}px; display: block; overflow-y: hidden; overflow-x: hidden;`)
     },
   },
   methods: {
@@ -63,29 +51,33 @@ export default {
       return [...Array(qty).keys()].map(val => min+(val*step_size))
     },
     init: function () {
-      this.svg = d3.select(this.$refs.coordsSvg)
-      this.x_axis_g = d3.select(this.$refs.xAxisContainer)
+      this.x_axis_g = d3.select("#x-axis-container")
 
       this.x_axis = d3.axisBottom();
       this.x_scale = d3.scaleLinear();
     },
     draw: function () {
-      const ticks = this.tickPositions(...this.segmentRegions)
-      this.x_axis_g.attr("transform", `translate(${this.givenMargins.left}, 0)`);
-      this.x_scale.domain(this.segmentRegions).range([0,1]);
-      this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
+      const container_width = this.holder.scrollWidth || 1000
+      const axis_label_width = 40
+      const right_margin = 10
+      const x_range_limit = container_width - axis_label_width -right_margin;
+
+      let svg = d3.select("#bp-coord-bar")
+        .attr("viewBox",`0 0 ${container_width} 100`)
+      this.x_axis_g.attr("transform", "translate(40, 0)");
+      this.x_scale.domain(this.segmentRegions)
+                  .range([0,x_range_limit]);
 
       this.x_axis
         .scale(this.x_scale)
-        .tickValues(ticks)
+        .ticks(5)
         .tickFormat(this.format_position_ticks);
       this.x_axis_g.call(this.x_axis);
-    }
+    },
+    debouncedDraw: debounce(function(){this.draw()}, 50)
   },
   beforeCreate() {
     // initialize non reactive data
-    this.height = 20;
-    this.svg = null;
     this.x_axis = null;
     this.x_axis_g = null;
     this.x_scale = null;
@@ -95,10 +87,10 @@ export default {
     if ((this.segmentRegions.every(d => d != null)) && (this.segmentBounds.every(d => d != null))) {
       this.draw();
     }
-    window.addEventListener("resize", this.draw);
+    window.addEventListener("resize", this.debouncedDraw);
   },
   unmounted: function(){
-    window.addEventListener("resize", this.draw);
+    window.removeEventListener("resize", this.debouncedDraw);
   }
 }
 </script>

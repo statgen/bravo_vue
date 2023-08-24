@@ -1,8 +1,21 @@
 <template>
-<div class="child-component">
+<div id="holder" ref="holder" class="child-component">
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color:transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
+  <svg id="depthSvg" style="display: block;" height="100px" width="100%" preserveAspectRatio="none">
+    <clipPath id="depth-clip">
+      <rect x="0%" y="0%" width="100%" height="100%"></rect>
+    </clipPath>
+    <g id="depths-container">
+      <g id="depths"></g>
+      <g id="y-axis" style="font-size: 9px"></g>
+      <text id="axis-title" transform="translate(-30,50) rotate(-90)"
+        style="font-size: 10px; text-anchor: middle;">Avg. Depth</text>
+      <line id="highlight" class="highlight_line" x1="0" y1="0" x2="0" y2="100%"
+        stroke-width="2" stroke-linecap="round" stroke="#e77f00" visibility="hidden"/>
+    </g>
+  </svg>
   <div v-if="loading" class="d-flex align-items-center statusMessage">
     <div class="spinner-border spinner-border-sm text-primary ml-auto" role="status" aria-hidden="true"></div>
     <strong>&nbsp;Loading...</strong>
@@ -13,14 +26,20 @@
 </template>
 
 <script>
+import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'lodash'
 import * as d3 from "d3";
 import axios from "axios";
 axios.defaults.withCredentials=true
 
 export default {
   name: "SeqDepth",
+  setup() {
+    const holder = ref(null)
+    return { holder }
+  },
   props: {
     //formerly region.segments.plot
     segmentBounds: {
@@ -58,15 +77,16 @@ export default {
   },
   computed: {
     depth_tick_values(){
-      const upper_limit = Math.ceil(this.max_mean_seq_depth/10)*10
+      const upper_limit = this.roundUpToTens(this.max_mean_seq_depth)
       const step = upper_limit / 4
       return [1,2,3].map(val=>Math.ceil(val*step))
     }
   },
   methods: {
+    roundUpToTens: function(val){ return(Math.ceil(val/10)*10) },
     load_depths: function(chrom, start, stop, continue_from=0){
       return axios
-        .post(`${this.api}/chunked-coverage`, 
+        .post(`${this.api}/chunked-coverage`,
           {chrom: chrom, start: start, stop: stop, continue_from: continue_from})
         .then( resp => {
           this.cov_data.push(...resp.data.coverage)
@@ -92,83 +112,42 @@ export default {
       this.failed = false;
       this.loaded = false;
       this.loading = true;
-      this.initializeCoverageSVG()
       this.loaded_data_size = 0
       this.load_depths(this.chrom, this.start, this.stop, 0)
     },
     format_y_ticks: function(value) {
       return d3.format('d')(value) + "x";
     },
-    initializeSVG: function () {
-      this.x_scale = d3.scaleLinear();
-      this.y_axis = d3.axisLeft();
-      this.y_scale = d3.scaleLinear();
+    scaleSvg: function () {
+      // Use template ref, holder, to access the width of the holding div.
+      const container_width = this.holder.scrollWidth || 1000
 
-      // Use viewbox to avoid caring about external coordinate systems.
-      // X is 0 to 1000 Y is 0 to 100
-      this.svg = d3.select(this.$el)
-        .append("svg")
-          .style("display", "block")
-          .attr("viewBox", "0 0 1000 100")
-          .attr("preserveAspectRatio","xMinYMin")
-      this.drawing_clip = this.svg
-        .append("clipPath")
-          .attr("id", "depth-clip")
-        .append("rect")
-          .attr("x", "0%")
-          .attr("y", "0%");
-      this.drawing = this.svg.append("g").attr("id", "depths-container");
-      this.depth_g = this.drawing.append("g").attr("id", "depths");
-      this.y_axis_g = this.drawing.append("g")
-        .style("font-size", "9px");
-      this.drawing.append("text")
-          .attr("transform", `translate(-30,50) rotate(-90)`)
-          .style("font-size", "10px")
-          .style("text-anchor", "middle")
-          .text("Avg. Depth");
-      this.highlight_line = this.drawing.append("line")
-          .attr("class", "highlight_line")
-          .attr("x1", 0)
-          .attr("y1", 0)
-          .attr("x2", 0)
-          .attr("y2", "100%")
-          .attr("stroke-width", 2)
-          .attr("stroke-linecap", "round")
-          .attr("stroke", "#e77f00")
-          .attr("visibility", "hidden");
-    },
-    initializeCoverageSVG: function() {
-      this.depths_path = this.depth_g.selectAll("path")
-        .data([this.cov_data])
-        .enter()
-        .append("path")
-          .style("fill", "#ffa37c")
-          .style("stroke-width", 0.1)
-          .style("stroke", "black")
-          .attr("id","depths-path");
-    },
-    draw: function () {
-      this.svg.attr("width", "100%").attr("height", "100px");
-      // Translate to allow space for y-axis lable
-      this.drawing.attr("transform", "translate(40, 0)");
-      this.drawing_clip
-        .attr("width", "100%")
-        .attr("height","100%");
+      const depth_upper_limit = this.roundUpToTens(this.max_mean_seq_depth)
+      const axis_label_width = 40
+      const right_margin = 10
+      const x_range_limit = container_width - axis_label_width -right_margin;
 
       // Map data to viewbox scale
-      // 960 = 1000-40 to account for space allocated for axis label
       this.x_scale.domain(this.segmentRegions)
-                  .range([0,960]);
-      this.y_scale.domain([0, this.max_mean_seq_depth])
+                  .range([0,x_range_limit]);
+      this.y_scale.domain([0, depth_upper_limit])
                   .range([100, 0]);
 
-      console.log(this.depth_tick_values)
-      this.y_axis
-        .scale(this.y_scale)
-        .tickValues(this.depth_tick_values)
-        .tickFormat(this.format_y_ticks);
-      this.y_axis_g.call(this.y_axis);
+      // Match viewbox to containing element width setting the aspect ratio at draw time.
+      this.svg = d3.select("#depthSvg")
+          .attr("viewBox", `0 0 ${container_width} 100`)
 
+      // Move drawing over for y-axis labels
+      this.svg.select("#depths-container")
+        .attr("transform", `translate(${axis_label_width}, 0)`);
+
+      this.depth_g = this.svg.select("#depths")
+    },
+    draw: function () {
+      this.scaleSvg();
+      /***************
+          Plotting
+       ***************/
       var area = d3.area()
         .x(  d  => this.x_scale(d.start) )
         .y0( () => 0)
@@ -177,29 +156,43 @@ export default {
         .y1( d  => this.y_scale(d.mean) )
         .curve(d3.curveStepAfter);
 
-      this.depths_path
-        .attr("clip-path", "url(#depth-clip)")
-        .attr("d", area);
+      // Remove any existing path
+      this.svg.select("#depths-path").remove()
+
+      let depths_path = this.svg.select("#depths").selectAll()
+         .data([this.cov_data])
+         .enter()
+        .append("path")
+          .style("fill", "#ffa37c")
+          .style("stroke-width", 0.1)
+          .style("stroke", "black")
+          .attr("id","depths-path")
+          .attr("clip-path", "url(#depth-clip)")
+          .attr("d", area);
+
+      let yax = d3.axisLeft(this.y_scale)
+        .tickValues(this.depth_tick_values)
+        .tickFormat(this.format_y_ticks);
+      this.svg.select("#y-axis").call(yax)
     },
+    debouncedDraw: debounce(function(){this.draw()}, 50)
   },
   beforeCreate() {
-    // initialize non-reactive data
-    this.height = 70;
     this.svg = null;
-    this.drawing = null;
-    this.highlight_line = null;
-    this.x_scale = null;
-    this.y_axis = null;
-    this.y_scale = null;
-    this.y_axis_g = null;
+    this.x_scale = d3.scaleLinear();
+    this.y_scale = d3.scaleLinear();
     this.cov_data = [];
   },
   mounted: function() {
-    this.initializeSVG();
+    this.highlight_line = d3.select("#highlight")
     if ((this.chrom != null) && (this.start != null) && (this.stop != null) &&
       (this.segmentRegions.every(d => d != null)) && (this.segmentBounds.every(d => d != null))) {
       this.load();
     }
+    window.addEventListener("resize", this.debouncedDraw);
+  },
+  unmounted: function(){
+    window.removeEventListener("resize", this.debouncedDraw);
   },
   load: function() {
     this.failed = false;
