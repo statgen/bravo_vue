@@ -217,12 +217,11 @@
 }
 
 .bravo-info-message {
-  position: absolute;
+  display: block;
+  position: relative;
   top: 0%;
   left: 50%;
   font-size: 11px;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
   background-color: white;
   opacity: 0.8;
 }
