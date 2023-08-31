@@ -41,12 +41,6 @@ export default {
     return { holder }
   },
   props: {
-    //formerly region.segments.plot
-    segmentBounds: {
-      type: Array,
-      default: function(){return [0, 1000 ]}
-    },
-    //formerly region.segments.region
     segmentRegions: {
       type: Array,
       default: function(){return [100000, 101000]}
@@ -185,8 +179,7 @@ export default {
   },
   mounted: function() {
     this.highlight_line = d3.select("#highlight")
-    if ((this.chrom != null) && (this.start != null) && (this.stop != null) &&
-      (this.segmentRegions.every(d => d != null)) && (this.segmentBounds.every(d => d != null))) {
+    if ((this.chrom != null) && (this.start != null) && (this.stop != null)) {
       this.load();
     }
     window.addEventListener("resize", this.debouncedDraw);
