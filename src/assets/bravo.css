@@ -117,6 +117,12 @@
   pointer-events: none;
 }
 
+.tx__hi-line {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke: #e77f00;
+}
+
 .tx-popup {
   position: fixed;
   display: none;
@@ -137,11 +143,16 @@
   list-style-type: none;
   margin-top: 0;
   margin-right: 0;
-  margin-bottom: -12px;
+  margin-bottom: 0px;
   margin-left: 0;
   padding: 2px;
   white-space: nowrap;
 }
+
+.tx-popup__loc {
+  margin-bottom: 0px;
+}
+
 
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */

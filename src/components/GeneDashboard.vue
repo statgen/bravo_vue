@@ -75,14 +75,16 @@
             :segmentRegions="segmentRegions"/>
         </div>
       </div>
-      <div class="row justify-content-left">
 
+      <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <TranscriptBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
-            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
-            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
+          <TxBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
+            :hoveredGenomePosition="hoveredVarPosition" :segmentRegions="segmentRegions"
             :geneData="geneData"/>
         </div>
+      </div>
+
+      <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
             :segmentBounds="segmentBounds"
@@ -126,7 +128,7 @@ import GeneSummary    from '@/components/summary/GeneSummary.vue'
 import FilterBar      from '@/components/FilterBar.vue'
 import ToggleList     from '@/components/ToggleList.vue'
 import SeqDepth       from '@/components/SeqDepth.vue'
-import TranscriptBars from '@/components/TranscriptBars.vue'
+import TxBars         from '@/components/TxBars.vue'
 import GeneSnvCount   from '@/components/histogram/GeneSnvCount.vue'
 import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
@@ -144,7 +146,7 @@ export default {
     FilterBar,
     ToggleList,
     SeqDepth,
-    TranscriptBars,
+    TxBars,
     GeneSnvCount,
     BpCoordBar,
     GeneSNVTable,
