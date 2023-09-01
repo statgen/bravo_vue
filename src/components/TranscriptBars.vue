@@ -6,20 +6,20 @@
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
-  <div class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
+  <div id="info-popup" class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
   <div ref="scroller" style="max-height: 200px; display: block; overflow: hidden scroll;">
-    <svg ref="barsSvg">
-      <g ref="barsDrawing"></g>
+    <svg id="barsSvg">
+      <g id="barsDrawing"></g>
     </svg>
   </div>
 </div>
 </template>
 
 <script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import * as d3 from "d3";
-import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import * as d3 from "d3"
+import axios from "axios"
 axios.defaults.withCredentials=true
 
 export default {
@@ -100,8 +100,8 @@ export default {
   },
   mounted: function() {
     // Convenience for accessing svg elements
-    this.svg = d3.select(this.$refs.barsSvg)
-    this.drawing = d3.select(this.$refs.barsDrawing)
+    this.svg = d3.select("#barsSvg")
+    this.drawing = d3.select("#barsDrawing")
     // Initialize scale
     this.x_scale = d3.scaleLinear();
 
@@ -127,7 +127,7 @@ export default {
       let x_mid = transcript.x_start + (transcript.x_stop - transcript.x_start) / 2.0 + this.givenMargins.left
       let y_mid = rect.getAttribute("y") - this.$refs.scroller.scrollTop - this.givenMargins.top - 8
 
-      d3.select(this.$el.querySelector(".bravo-tooltip"))
+      d3.select(".bravo-tooltip")
         .style("display", "block")
         .style("left", x_mid + "px")
         .style("top", y_mid + "px");
@@ -137,7 +137,7 @@ export default {
         <li>${this.chrom}:${transcript.start.toLocaleString()}-${transcript.stop.toLocaleString()}</li><ul>`
     },
     handleBarMouseout: function(evt) {
-      d3.select(this.$el.querySelector(".bravo-tooltip"))
+      d3.select(".bravo-tooltip")
         .style("display", "none");
       this.tooltipHtml = "";
       d3.select(evt.target)
@@ -213,7 +213,9 @@ export default {
       this.rects_box.on("click", d => this.$emit("click", d));
     },
     draw: function () {
-      this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
+      this.x_scale.domain(this.segmentRegions).range(this.segmentBounds);
+
+      // Scale data adding x_start and x_stop
       this.geneData.transcripts.forEach((transcript, i) => {
         transcript.x_start = this.x_scale(transcript.start);
         transcript.x_stop = this.x_scale(transcript.stop);
@@ -239,10 +241,12 @@ export default {
           }
         });
       });
+
       this.svg
         .attr("width", this.givenWidth)
-        .attr("height", this.givenMargins.top + this.geneData.transcripts.length * this.step + (this.cds_height - this.transcript_height) / 2 + 2);
-      this.drawing.attr("transform", `translate(${this.givenMargins.left}, ${this.givenMargins.top})`);
+        .attr("height", 12 + this.geneData.transcripts.length * this.step + (this.cds_height - this.transcript_height) / 2 + 2);
+
+      this.drawing.attr("transform", "translate(40, 12)");
       this.rects_transcripts
         .attr("x", d => d.x_start)
         .attr("width", d => d.x_stop - d.x_start)
