@@ -88,6 +88,61 @@
   box-shadow: 0 0 2px -1px rgba(0,0,0,0.15);
 }
 
+.tx__bars {
+  stroke: #999999;
+  pointer-events: none;
+}
+
+.tx__bars--coding {
+  stroke: #0047AB;
+  pointer-events: none;
+}
+
+.tx__background {
+  stroke: none;
+  fill: white;
+  cursor: pointer;
+}
+
+.tx__background--highlight {
+  stroke: #222222;
+  fill: #EEEEEE;
+  stroke-width: 1px;
+  cursor: pointer;
+}
+
+.tx__label {
+  stroke: none;
+  background: blue;
+  pointer-events: none;
+}
+
+.tx-popup {
+  position: fixed;
+  display: none;
+  pointer-events: none;
+  font-family: Helvetica, Arial, sans-serif;
+  color: black;
+  font-size: 14px;
+  background-color: #eeeeee;
+  border: 1px solid black;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
+  z-index: 9999;
+  transform: translateX(-50%) translateY(-100%);
+}
+
+.tx-popup__list {
+  box-sizing: content-box;
+  list-style-type: none;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: -12px;
+  margin-left: 0;
+  padding: 2px;
+  white-space: nowrap;
+}
+
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
 .bo-big-logo {
@@ -178,7 +233,6 @@
 .scroll-right {
   position: absolute;
   top: 50%;
-  -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
   right: 0px;
 }
@@ -186,7 +240,6 @@
 .scroll-left {
   position: absolute;
   top: 50%;
-  -webkit-transform: translateY(-50%);
   transform: translateY(-50%);
   left: 0px;
 }
@@ -237,11 +290,8 @@
   border: 1px solid black;
   border-radius: 5px;
   box-shadow: 0px 4px 8px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-  -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
   z-index: 9999;
-  opacity: 1;
 }
 
 /* Bootstrap 5 stand in.

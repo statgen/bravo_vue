@@ -1,30 +1,30 @@
 <template>
 <div class="child-component">
-  <div class="bravo-tooltip">
-    <div v-html="tooltipHtml"></div>
+  <div ref="infoPopup" class="tx-popup">
+    <ul class="tx-popup__list">
+      <li>{{ popupInfo.title }}</li>
+      <li>{{ popupInfo.desc }}</li>
+      <li><pre>{{ popupInfo.loc }}</pre></li>
+    </ul>
   </div>
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
-  <div id="info-popup" class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
-  <div ref="scroller" style="max-height: 200px; display: block; overflow: hidden scroll;">
-    <svg id="TxBarsSvg" style="display: block;" width="100%" preserveAspectRatio="none">
+  <div id="info-banner" class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
+  <div ref="scroller" style="max-height: 100px; display: block; overflow: hidden scroll;">
+    <svg id="TxBarsSvg" style="display: block; overflow-x: visible" width="100%" preserveAspectRatio="none">
       <g id="TxBarsDrawing">
-        <g id="transcriptSect"></g>
-        <g id="exonSect"></g>
-        <g id="cdsSect"></g>
-        <g id="labelSect"></g>
+        <g id="backgroundBoxes" class="tx__background"></g>
+        <g id="transcriptSect" class="tx__bars"></g>
+        <g id="exonSect" class="tx__bars"></g>
+        <g id="cdsSect" class="tx__bars"></g>
+        <g id="labelSect" class="tx__label"></g>
       </g>
       <line id="TxHighlightLine" class="highlight_line" visibility="hidden"
         stroke-width="2" stroke-linecap="round" stroke="#e77f00"
         x1="0" y1="0" x2="0" y2="200"></line>
     </svg>
   </div>
-  <!--
-  <pre> {{geneData.transcripts[0]}} </pre>
-  <pre> {{geneData.cds[0]}} </pre>
-  <pre> {{geneData.exons}} </pre>
-  -->
 </div>
 </template>
 
@@ -41,7 +41,8 @@ export default {
   name: "TranscriptBars",
   setup() {
     const scroller = ref(null)
-    return { scroller }
+    const infoPopup = ref(null)
+    return { scroller, infoPopup }
   },
   components: {
       FontAwesomeIcon,
@@ -53,10 +54,6 @@ export default {
     geneData: {
       type: Object,
       default: function(){return {}}
-    },
-    segmentBounds: {
-      type: Array,
-      default: function(){return [0, 1000]}
     },
     segmentRegions: {
       type: Array,
@@ -70,7 +67,11 @@ export default {
   data: function() {
     return {
       closeIcon: faTimes,
-      tooltipHtml: ""
+      popupInfo: {
+        title: "foo",
+        desc: "bar",
+        loc: "baz"
+      }
     }
   },
   computed: {
@@ -88,10 +89,36 @@ export default {
       const pstrand = d.strand == '+'
       return(`${!pstrand ? "\uD83E\uDC08 " : ""}${d.transcript_id}${pstrand ? " \uD83E\uDC0A": ""}`)
     },
+    handleTxMouseover: function(evt, transcript) {
+      // Set the content of the popup
+      this.popupInfo.title = transcript.transcript_id
+      this.popupInfo.desc = transcript.transcript_type
+      this.popupInfo.loc = `${this.chrom}:${transcript.start.toLocaleString()}-${transcript.stop.toLocaleString()}`
+
+      // Set the position of the popup
+      let bRect = evt.target.getBoundingClientRect()
+      let x_pos = bRect.x + (bRect.width/2)
+      let y_pos = bRect.top - 5
+
+      this.infoPopup.style.display = "block"
+      this.infoPopup.style.left = `${x_pos}px`
+      this.infoPopup.style.top = `${y_pos}px`
+
+      // Set the visibility of the popup
+      evt.target.setAttribute("class", "tx__background--highlight")
+    },
+    handleTxMouseout: function(evt, transcript) {
+      evt.target.setAttribute("class", "tx__background")
+      this.infoPopup.style = null
+
+    },
     draw: function(){
+      let x_scale = d3.scaleLinear();
+      let y_scale = d3.scaleOrdinal();
+
       // Calc viewbox dimensions
-      const row_height = 30
-      const row_mid = Math.floor(row_height/2)
+      const row_height = 28
+      const row_mid = Math.floor(row_height * 0.7)
       const container_width = this.scroller?.scrollWidth || 1000
       const container_height = this.numTranscripts * row_height
       // Discrete range used in mapping transcript id to a specific y value
@@ -104,6 +131,7 @@ export default {
 
       // Relevant containers
       const svg = d3.select("#TxBarsSvg")
+      const bkgds   = svg.select("#backgroundBoxes")
       const trxSect = svg.select("#transcriptSect")
       const cdsSect = svg.select("#cdsSect")
       const exnSect = svg.select("#exonSect")
@@ -111,12 +139,12 @@ export default {
 
       // Set dimensions and scale x axis data to viewbox
       // Translate to align with figures that use left hand axis.
-      svg.attr("viewBox", `0 0 ${container_width} ${container_height}`)
+      svg.attr("viewBox", `-4 0 ${container_width} ${container_height + 4}`)
          .attr("transform", `translate(${axis_label_width}, 0)`)
       
-      this.x_scale.domain(this.segmentRegions)
+      x_scale.domain(this.segmentRegions)
                   .range([0,x_range_limit])
-      this.y_scale.domain(this.uniqTranscripts)
+      y_scale.domain(this.uniqTranscripts)
                   .range(y_discrete_range)
 
       // Remove any existing lines
@@ -125,71 +153,82 @@ export default {
       exnSect.selectAll("line").remove()
       lblSect.selectAll("text").remove()
 
+      // Draw transcript row boxes for handling highlight and mouseover
+      bkgds
+        .selectAll("rect")
+        .data(this.geneData.transcripts)
+        .enter()
+          .append("rect")
+          .attr("x", (d,i) => x_scale(d.start) - 2)
+          .attr("width", (d,i) => x_scale(d.stop) - x_scale(d.start) + 4)
+          .attr("y", 1)
+          .attr("height", row_height-1)
+          .attr("rx", 3)
+          .attr("ry", 3)
+          .attr("transform", (d,i) => `translate(0,${y_scale(d.transcript_id)})`)
+          .on("mouseover", this.handleTxMouseover)
+          .on("mouseout", this.handleTxMouseout)
+
       // Draw transcripts
       trxSect
         .selectAll("line")
         .data(this.geneData.transcripts)
         .enter()
           .append("line")
-          .attr("x1", (d,i) => this.x_scale(d.start))
-          .attr("x2", (d,i) => this.x_scale(d.stop))
+          .attr("x1", (d,i) => x_scale(d.start))
+          .attr("x2", (d,i) => x_scale(d.stop))
           .attr("y1", row_mid)
           .attr("y2", row_mid)
-          .attr("transform", (d,i) => `translate(0,${this.y_scale(d.transcript_id)})`)
-          .attr("stroke", "#008000")
+          .attr("transform", (d,i) => `translate(0,${y_scale(d.transcript_id)})`)
           .attr("stroke-width", 3)
-          .attr("stroke-opacity", "80%")
+          .classed("tx__bars--coding", (d,i) => d.transcript_type == 'protein_coding')
 
       // Draw coding sequences
       cdsSect.selectAll("line")
         .data(this.geneData.cds)
         .enter()
           .append("line")
-          .attr("x1", (d,i) => this.x_scale(d.start))
-          .attr("x2", (d,i) => this.x_scale(d.stop))
+          .attr("x1", (d,i) => x_scale(d.start))
+          .attr("x2", (d,i) => x_scale(d.stop))
           .attr("y1", row_mid)
           .attr("y2", row_mid)
-          .attr("transform", (d,i) => `translate(0,${this.y_scale(d.transcript_id)})`)
-          .attr("stroke", "#008000")
+          .attr("transform", (d,i) => `translate(0,${y_scale(d.transcript_id)})`)
           .attr("stroke-width", 10)
-          .attr("stroke-opacity", "60%")
+          .classed("tx__bars--coding", (d,i) => d.transcript_type == 'protein_coding')
 
       // Draw exons
       exnSect.selectAll("line")
         .data(this.geneData.exons)
         .enter()
           .append("line")
-          .attr("x1", (d,i) => this.x_scale(d.start))
-          .attr("x2", (d,i) => this.x_scale(d.stop))
+          .attr("x1", (d,i) => x_scale(d.start))
+          .attr("x2", (d,i) => x_scale(d.stop))
           .attr("y1", row_mid)
           .attr("y2", row_mid)
-          .attr("transform", (d,i) => `translate(0,${this.y_scale(d.transcript_id)})`)
-          .attr("stroke", "#008000")
-          .attr("stroke-width", 8)
-          .attr("stroke-opacity", "50%")
+          .attr("transform", (d,i) => `translate(0,${y_scale(d.transcript_id)})`)
+          .attr("stroke-width", 6)
+          .classed("tx__bars--coding", (d,i) => d.transcript_type == 'protein_coding')
 
       // Draw labels
       lblSect.selectAll("text")
         .data(this.geneData.transcripts)
         .enter()
           .append("text")
-          .attr("x", (d,i) => this.x_scale((d.start + d.stop) / 2) )
-          .attr("y", 8)
+          .attr("x", (d,i) => x_scale((d.start + d.stop) / 2) )
+          .attr("y", 12)
           .attr("text-anchor", "middle")
           .style("font-family", "sans-serif")
           .style("font-size", "11px")
-          .attr("transform", (d,i) => `translate(0,${this.y_scale(d.transcript_id)})`)
+          .attr("transform", (d,i) => `translate(0,${y_scale(d.transcript_id)})`)
           .text(this.txLabel)
 
     },
-    debouncedDraw: debounce(function(){this.draw()}, 50)
+    debouncedDraw: debounce(function(){this.draw()}, 50),
   },
   beforeCreate: function() {
     // initialize non reactive data
   },
   mounted: function(){
-    this.x_scale = d3.scaleLinear();
-    this.y_scale = d3.scaleOrdinal();
     this.draw()
     window.addEventListener("resize", this.debouncedDraw);
   },
