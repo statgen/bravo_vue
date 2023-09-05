@@ -39,7 +39,7 @@ import axios from "axios"
 axios.defaults.withCredentials=true
 
 export default {
-  name: "TranscriptBars",
+  name: "TxBars",
   setup() {
     const scroller = ref(null)
     const infoPopup = ref(null)
