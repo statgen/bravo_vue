@@ -1,8 +1,5 @@
 <template>
 <div ref="holderDiv" class="child-component">
-  <button class="close-button" v-on:click="$emit('close')">
-    <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
-  </button>
   <div v-if="loading" class="d-flex align-items-center statusMessage">
     <div class="spinner-border spinner-border-sm text-primary ml-auto" role="status" aria-hidden="true"></div>
     <strong>&nbsp;Loading...</strong>
@@ -14,6 +11,9 @@
   <div v-if="this.loaded && (this.variants == 0)" class="bravo-info-message">
     No variants
   </div>
+  <button class="close-button" v-on:click="$emit('close')">
+    <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
+  </button>
   <div>
     <svg id="snvCountFig" width="100%" height=100px style="display: block">
       <g id="drawing" class="hist__bars" transform="translate(40,0)">

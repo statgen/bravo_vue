@@ -9,10 +9,10 @@
       </li>
     </ul>
   </div>
+  <div id="info-banner" class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
-  <div id="info-banner" class="bravo-info-message">Displaying {{ numTranscripts }} transcript(s)</div>
   <div ref="scroller" style="max-height: 200px; display: block; overflow: hidden scroll;">
     <svg id="TxBarsSvg" style="display: block; overflow-x: visible" width="100%" preserveAspectRatio="xMinYMin">
       <g id="TxBarsDrawing">
