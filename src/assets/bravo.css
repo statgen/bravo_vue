@@ -153,6 +153,19 @@
   margin-bottom: 0px;
 }
 
+.hist__bars {
+  fill: #0047AB;
+}
+
+.hist__axis-title {
+  font-size: 11px;
+  text-anchor: middle;
+}
+
+.hist__axis-label {
+  font-size: 9px;
+}
+
 
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */

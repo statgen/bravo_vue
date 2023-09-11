@@ -1,5 +1,5 @@
 <template>
-<div class="child-component">
+<div ref="holderDiv" class="child-component">
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color: transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
@@ -14,30 +14,35 @@
   <div v-if="this.loaded && (this.variants == 0)" class="bravo-info-message">
     No variants
   </div>
-  <svg ref="depthSVG" :width="givenWidth" :height="svgHeight" style="display: block">
-    <clipPath id="snv-clip">
-      <rect x="0" y="0" :width="svgClipWidth" :height="height"></rect>
-    </clipPath>
-    <g ref="drawing" :transform="svgDrawingTransform">
-      <g ref="histogram" clip-path="url(#snv-clip)"></g>
-      <g ref="variantPointers"></g>
-      <g ref="yAxisContainer" style="font-size: 9px"></g>
-      <text ref="yAxisTitle" :transform="svgYAxisTransform" 
-        style="font-size: 11px; text-anchor: middle;">Variants Count</text>
-    </g>
-  </svg>
+  <div>
+    <svg id="snvCountFig" width="100%" height=100px style="display: block">
+      <g id="drawing" class="hist__bars" transform="translate(40,0)">
+        <g id="histogram" transform="translate(0,10)"></g>
+        <g id="variantPointers"></g>
+      </g>
+      <g id="axisGroup" class="hist__axis-label" transform="translate(40,10)"></g>
+      <text id="yAxisTitle" transform="translate(10,50) rotate(-90)" 
+        class="hist__axis-title">Variants Count</text>
+    </svg>
+  </div>
 </div>
 </template>
 
 <script>
+import { ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { debounce } from 'lodash'
 import * as d3 from "d3";
 import axios from "axios";
 axios.defaults.withCredentials=true
 
 export default {
   name: "SnvCount",
+  setup() {
+    const holderDiv = ref(null)
+    return { holderDiv }
+  },
   components: {
     FontAwesomeIcon,
   },
@@ -53,31 +58,10 @@ export default {
     }
   },
   props: {
-    //formerly region.segments.plot
-    segmentBounds: {
-      type: Array,
-      default: function(){return [0, 1000 ]}
-    },
     //formerly region.segments.region
     segmentRegions: {
       type: Array,
       default: function(){return [100000, 101000]}
-    },
-    //formerly dimensions.width
-    givenWidth: {
-      type: Number
-    },
-    //formerly dimensions.margin
-    givenMargins: {
-      type: Object,
-      default: function(){
-        return({
-          left:   40,
-          right:  15,
-          top:    12,
-          bottom: 5
-        })
-      }
     },
     filters: {
       type: Array,
@@ -97,25 +81,12 @@ export default {
     loading() { return this.dataState === "loading" },
     failed()  { return this.dataState === "failed"  },
     loaded()  { return this.dataState === "loaded"  },
-    svgHeight: function() {
-      return(this.height + this.givenMargins.top + this.givenMargins.bottom)
-    },
-    svgClipWidth: function() {
-      return(this.givenWidth - this.givenMargins.left - this.givenMargins.right)
-    },
-    svgDrawingTransform: function() {
-      return(`translate(${this.givenMargins.left}, ${this.givenMargins.top})`)
-    },
-    svgYAxisTransform: function() {
-      return(`translate(${-this.givenMargins.left + 11},${(this.height - 10)/2}) rotate(-90)`)
-    }
-
   },
   methods: {
-    load: function(width) {
-      if(width == null){ return }
-
-      this.clearDrawing();
+    containerWidth: function(){
+      return( this.$refs.holderDiv.getBoundingClientRect().width )
+    },
+    load: function() {
       this.dataState = "loading"
 
       var timestamp = Date.now();
@@ -124,7 +95,8 @@ export default {
         .post(this.url, {
           filters: this.filters,
           introns: this.includeIntrons,
-          windows: width - this.givenMargins.left - this.givenMargins.right
+          //windows: width - this.givenMargins.left - this.givenMargins.right
+          windows: this.containerWidth()
         })
         .then(response => {
           var payload = response.data;
@@ -132,9 +104,7 @@ export default {
             this.histogram_window_size = payload.data["window-size"];
             this.histogram_data = payload.data.windows;
             this.variants = this.histogram_data.reduce((total, entry) => total + entry.count, 0);
-            this.draw();
-            this.drawHistogram();
-            this.drawVariants();
+            this.sketch()
           }
           this.dataState = "loaded";
         })
@@ -146,103 +116,95 @@ export default {
           this.dataState = "loaded";
         });
     },
-    format_y_ticks: function(value) {
-      return d3.format('d')(value) + "x";
-    },
-    initializeSVG: function () {
-      this.drawing            = d3.select(this.$refs.drawing)
-      this.histogram_g        = d3.select(this.$refs.histogram)
-      this.variant_pointers_g = d3.select(this.$refs.variantPointers)
-      this.y_axis_g           = d3.select(this.$refs.yAxisContainer)
+    setSvgScaling: function(){
+      // Use template ref, holder, to access the width of the holding div.
+      const x_range_limit = this.containerWidth() - 50;
+      this.xx_scale.domain(this.segmentRegions).range([0,x_range_limit])
 
-      this.x_scale = d3.scaleLinear();
-      this.y_axis  = d3.axisLeft();
-      this.y_scale = d3.scaleLinear();
+      // Calc viewbox dimensions setting the aspect ratio at draw time.
+      // Match viewbox to containing element width.
+      this.svg.attr("viewBox", `0 0 ${this.containerWidth()} 100`)
     },
-    draw: function () {
-      //Show y-axis title
-      d3.select(this.$refs.yAxisTitle).attr("opacity", 1)
+    sketch: function() {
+      // Scale width and viewbox to match container size.
+      this.setSvgScaling()
 
-      this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
+      // Scale y-axis for drawing counts
+      const max_count = d3.max(this.histogram_data, function(d) { return d.count; })
 
-      var max_count = d3.max(this.histogram_data, function(d) { return d.count; });
-      this.y_scale.range([this.height - 10, 0]).domain([0, max_count]);
-      this.y_axis.scale(this.y_scale).ticks(Math.min(max_count, 4)).tickFormat(d3.format(".0s"));
-      this.y_axis_g.call(this.y_axis);
-    },
-    drawHistogram: function() {
-      this.histogram_g.selectAll("rect").remove();
-      this.histogram_g.selectAll("rect")
+      let y_scale = d3.scaleLinear()
+      y_scale.domain([max_count,0])
+             .range([10,80])
+
+      // Calc the size in pixels of the window_size given in base pairs.
+      // ensure bars are at least 2px wide
+      const hist_window_width = this.xx_scale(this.segmentRegions[0] + this.histogram_window_size)
+      const nice_bar_width = Math.max( Math.round(10 * hist_window_width)/10, 2)
+
+      // Draw y-axis
+      const axis_g = this.svg.select("#axisGroup")
+      let y_axis = d3.axisLeft()
+
+      y_axis.scale(y_scale)
+        .ticks(Math.min(max_count, 4))
+        .tickFormat(d3.format(".0s"))
+      axis_g.call(y_axis)
+
+      // Clear and re-draw histogram
+      const histogram = this.svg.select("#histogram")
+
+      histogram.selectAll("rect").remove()
+      histogram.selectAll("rect")
         .data(this.histogram_data)
         .enter()
         .append("rect")
-        .attr("x", 0)
-        .attr("width", d => this.x_scale(d.start + this.histogram_window_size) - this.x_scale(d.start))
-        .attr("height", d => this.height - 10 - this.y_scale(d.count))
-        .attr("transform", d => `translate(${this.x_scale(d.start)},${this.y_scale(d.count)})`)
-        .attr("stroke-width", 1)
-        .attr("stroke", "lightsteelblue")
-        .attr("fill", "lightsteelblue");
+        .attr("x", (d) => this.xx_scale(d.start))
+        .attr("y", (d) => y_scale(d.count))
+        .attr("width", nice_bar_width)
+        .attr("height", d => 80 - y_scale(d.count))
+        .attr("debug", d => d.count)
     },
-    drawVariants: function() {
-      this.variant_pointers_g.selectAll("path").remove();
+    sketchPointers: function(){
+      const pointers = this.svg.select("#variantPointers")
+      pointers.selectAll("path").remove()
+
       if (this.visibleVariants.data != null) {
-        this.variant_pointers_g.selectAll("path")
+        pointers.selectAll("path")
           .data(this.visibleVariants.data)
           .enter()
           .append("path")
           .attr("d", d3.symbol().size(40).type(d3.symbolTriangle))
-          .attr("transform", d => `translate(${this.x_scale(d.pos)},${this.height - 4})`)
+          .attr("transform", d => `translate(${this.xx_scale(d.pos)},100)`)
           .attr("stroke", "black")
           .attr("fill", "green")
-          .attr("opacity", 0.2);
+          .attr("opacity", 0.3)
       }
     },
-    clearDrawing: function() {
-      this.y_axis_g.selectAll("*").remove();
-      this.histogram_g.selectAll("rect").remove();
-      this.variant_pointers_g.selectAll("path").remove();
-      // Hide axis title
-      d3.select(this.$refs.yAxisTitle).attr("opacity", 0)
-    }
+    debouncedSketch: debounce(function(){this.sketch()}, 50),
+    debouncedPointers: debounce(function(){this.sketchPointers()}, 10),
   },
   beforeCreate: function() {
     // initialize non-reactive data
     this.timestamp = null;
     this.histogram_data = [];
     this.histogram_window_size = 0;
-    this.height = 70;
-    this.color = '#ffa37c';
-    this.drawing = null;
-    this.histogram_g = null;
-    this.variant_pointers_g = null;
-    this.x_scale = null;
-    this.y_axis = null;
-    this.y_scale = null;
-    this.y_axis_g = null;
+    this.xx_scale = d3.scaleLinear();
   },
   mounted: function() {
-    this.initializeSVG();
-    this.load(this.givenWidth);
+    this.svg = d3.select("#snvCountFig")
+    this.load();
+    window.addEventListener("resize", this.debouncedSketch);
+  },
+  unmounted: function(){
+    window.removeEventListener("resize", this.debouncedSketch);
   },
   watch: {
     filters: function() {
       this.load(this.givenWidth)
     },
     visibleVariants: function() {
-      this.drawVariants()
+      this.debouncedPointers()
     },
-    givenWidth: function(newVal, oldVal) {
-      // only load data if resolution will increase (more display pixels)
-      if(newVal > oldVal){
-        this.load(newVal)
-      }
-      if(this.loaded && (this.histogram_data.length > 0)) {
-        this.draw()
-        this.drawHistogram()
-        this.drawVariants()
-      }
-    }
   },
 }
 </script>
