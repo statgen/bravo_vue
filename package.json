@@ -22,7 +22,7 @@
     "axios": "^0.23.0",
     "bootstrap": "^4.6.0",
     "colors": "1.4.0",
-    "core-js": "^3.6.5",
+    "core-js": "^3.31.0",
     "d3": "^7.1.1",
     "devbridge-autocomplete": "^1.4.11",
     "igv": "^2.10.4",
