@@ -1,52 +1,117 @@
 <template>
-  <div id="bravo-plot"> 
-    <RegionInfo/>
-    <div class="row justify-content-center" style="border-bottom: 1px solid #cccccc;margin-bottom: 5px;">
-      <div class="col-12 col-sm-11 col-md-11">
-        <div class="bravo-tab">
-          <div class="bravo-tab-item bravo-tab-item-selected">
-            <a href="#">SNVs and Indels</a>
+<div id="dashboard">
+  <div class="container-fluid">
+    <div class="row justify-content-center px-5">
+      <div class="col-md">
+        <RegionInfo v-if="positionResolved"/>
+      </div>
+    </div>
+
+    <div id="tab-headers" class="row justify-content-center">
+      <div class="col-md px-5">
+        <ul class="nav nav-tabs" style="margin-bottom: 5px">
+          <li class="nav-item">
+            <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
+          </li>
+          <li class="nav-item">
+            <a :class=tabClass(showTab.structvar) href="#structvar" @click="toggleTab('structvar')">Structural Variants</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- strucvar tab -->
+    <div id="structvar-tab" v-if="showTab.structvar">
+      <div class="row justify-content-left px-5" >
+        <div class="col-md-11">
+          <h4>Structural Variants Visual</h4>
+          <pre> Visualization Placeholder </pre>
+        </div>
+        <div class="col-md-11">
+          <h4>Structural Variants Description</h4>
+          <pre> Description Placeholder </pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SNVs tab -->
+    <div id="snv-tab" v-if="showTab.snv">
+      <div class="row justify-content-left px-5">
+        <div class="col-md-5">
+          <div >
+            <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
+              @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
+            <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
+              @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
+
+            <div class="d-none d-sm-inline" style="display: inline-block;">
+              <button type="button" class="parentMenu__button" v-on:click="doDownload++">
+                CSV
+                <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div id="bravoviz">
-      <div class="parentMenu">
-        <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
-          @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
-        <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
-          @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
 
-        <!-- don't show download button on mobile devices i.e. devices with very small screens -->
-        <div class="d-none d-sm-inline" style="display: inline-block;"> 
-          <button type="button" class="parentMenu__button" v-on:click="doDownload++">CSV
-            <font-awesome-icon style="background-color: transparent; display: inline-block; vertical-align: middle" :icon="downloadIcon"></font-awesome-icon>
-          </button>
+      <div class="row justify-content-left px-5">
+        <div class="col-md" v-if="positionResolved">
+          <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
+            @close="showPanels.summaries.val = false"/>
         </div>
       </div>
-      <div style="position: relative; min-height: 20px">
-        <RegionSummaries v-if="showPanels.summaries.val" :filterArray='filterArray'
-          @close="showPanels.summaries.val = false"/>
-        <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false" 
-          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-        <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
-          :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-        <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
-          :segmentBounds="segmentBounds" 
-          :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
-          :filters="filterArray" :visibleVariants="visibleVariants"/>
-        <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
-          :givenWidth="childWidth" :givenMargins="childMargins" />
-        <FilterBar @filterChange='handleFilterChange'/>
-        <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
-          @scroll='handleTableScroll' @hover='handleTableHover'
-          @openModal="handleOpenModal"/>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
+            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :segmentRegions="segmentRegions"/>
+        </div>
       </div>
-    </div>
-    <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
+            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
+            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+        </div>
+
+      </div>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
+            :segmentBounds="segmentBounds" 
+            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
+            :filters="filterArray" :visibleVariants="visibleVariants"/>
+        </div>
+      </div>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
+            :givenWidth="childWidth" :givenMargins="childMargins" />
+        </div>
+      </div>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <FilterBar @filterChange='handleFilterChange'/>
+        </div>
+      </div>
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
+            @scroll='handleTableScroll' @hover='handleTableHover'
+            @openModal="handleOpenModal"/>
+        </div>
+      </div>
+
+    </div><!-- SNVs tab end -->
+
   </div>
+  <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
+</div>
 </template>
 
 <script>
@@ -92,6 +157,11 @@ export default {
       columnsIcon: faColumns,
       downloadIcon: faDownload,
       doDownload: 0,
+
+      showTab: {
+        structvar: false,
+        snv: true
+      },
 
       showPanels: {
         summaries: {title: "Summary", val: true},
@@ -153,6 +223,9 @@ export default {
     filterArray: function() {
       return(Object.values(this.filter).flat(1))
     },
+    positionResolved: function() {
+      return( this.chrom && this.start && this.stop )
+    },
   },
   methods: {
     handleOpenModal: function(rowData){ 
@@ -169,6 +242,14 @@ export default {
     toggleColAttr: function(attrName) {
       this[attrName] = !this[attrName]
       this.showTableMenuDropDown = !this.showTableMenuDropDown
+    },
+    toggleTab: function(tabName) {
+      this.showTab.snv = false
+      this.showTab.structvar = false
+      this.showTab[tabName] = true
+    },
+    tabClass: function(isActive) {
+      return isActive ? 'nav-link active' : 'nav-link'
     },
     onOffStyle: function(boolVar){
       return boolVar ? 'display: inline;' : 'display: inline; visibility: hidden;'

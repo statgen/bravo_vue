@@ -2,14 +2,7 @@
   <NavBar style="margin-left: 5px;">
     <SearchBox :autofocus="false"/>
   </NavBar>
-
-  <div class="container-fluid">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-11 col-md-11">
-        <RegionDashboard/>
-      </div>
-    </div>
-  </div>
+  <RegionDashboard/>
 </template>
 
 <script>

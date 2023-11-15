@@ -1,18 +1,12 @@
 <template>
   <div class="child-component">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <h1 class="display-5">{{regionTitle}}</h1>
-          <ul class="list-unstyled">
-            <li class="list-item">Region length: {{regionLength.toLocaleString()}} bp</li>
-            <li class="list-item">External resources: 
-              <span><a v-bind:href="extUrl">UCSC Browser</a></span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <h1 class="display-5">{{regionTitle}}</h1>
+    <ul class="list-unstyled">
+      <li class="list-item">Region length: {{regionLength.toLocaleString()}} bp</li>
+      <li class="list-item">External resources: 
+        <span><a v-bind:href="extUrl">UCSC Browser</a></span>
+      </li>
+    </ul>
   </div>
 </template>
 
