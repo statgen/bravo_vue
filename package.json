@@ -1,6 +1,6 @@
 {
   "name": "bravue",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -25,7 +25,7 @@
     "core-js": "^3.6.5",
     "d3": "^7.1.1",
     "devbridge-autocomplete": "^1.4.11",
-    "igv": "^2.10.4",
+    "igv": "^2.15.11",
     "just-clone": "^3.2.1",
     "sinon": "^14.0.2",
     "tabulator-tables": "^4.9.3",

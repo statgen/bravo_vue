@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import igv from "igv"
+import igv from "igv/dist/igv.esm.js"
 import axios from "axios"
 import { inject } from "vue"
 axios.defaults.withCredentials=true
@@ -128,7 +128,7 @@ export default {
         }
         this.loading = false;
         this.$nextTick(function () {
-          this.options.locus = `${this.variant.chrom}:${this.variant.pos - 100}-${this.variant.pos + 99}`;
+          this.options.locus = `${this.variant.chrom}:${this.variant.pos}`;
           let self = this;
           igv.createBrowser(this.$refs.igv, this.options).then(function(browser) {
             igv.browser = browser
