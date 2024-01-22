@@ -50,7 +50,7 @@ module.exports = {
     },
     privacy: {
       entry: 'src/pages/privacy/main.js',
-      template: 'src/pages/about/privacy.html',
+      template: 'src/pages/privacy/privacy.html',
       title: 'Bravo:Privacy',
       chunks: ['chunk-vendors', 'chunk-common', 'privacy']
     },

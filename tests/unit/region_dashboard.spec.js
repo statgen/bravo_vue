@@ -5,8 +5,8 @@ import RegionDashboard from '@/components/RegionDashboard.vue'
 describe('RegionDashboard components structure.', () => {
   const wrapper = shallowMount(RegionDashboard)
 
-  it('has the bravovis div', () => {
-    const bravoViz = wrapper.find('#bravoviz')
+  it('has the dashboard div', () => {
+    const bravoViz = wrapper.find('#dashboard')
     expect(bravoViz.exists()).to.be.true
   })
 

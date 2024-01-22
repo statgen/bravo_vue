@@ -5,7 +5,7 @@
       <div class="col-10 col-sm-8 col-md-6">
         <h1 style="margin-bottom: 1em">About BRAVO</h1>
         <p>
-        This version of BRAVO variant browser shows chromosome locations, alleles, functional annotations, and allele frequencies for 705 million variants observed in 132,345 deeply sequenced (&gt;38x) genomes from the <a href="https://www.nhlbiwgs.org">TOPMed</a> data freeze 8.
+        This version of BRAVO variant browser shows chromosome locations, alleles, functional annotations, and allele frequencies for 705 million variants observed in 132,345 deeply sequenced (&gt;38x) genomes from the <a href="https://www.nhlbiwgs.org">TOPMed</a> data freeze 10.
         </p>
         <p>
         The information is shared by TOPMed <a href="https://www.nhlbiwgs.org/group/project-studies">studies</a> from Phases 1, 2, and 3, and is available for users that agree to the <a href="{{ url_for('.terms') }}">terms</a>.
