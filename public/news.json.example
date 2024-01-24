@@ -1,0 +1,19 @@
+[
+  {
+    "title": "Lorem Ipsum",
+    "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed ...",
+    "url": "https://www.example.com",
+    "expiration": "2030-01-21"
+  },
+  {
+    "title": "Expired News",
+    "content": "Foo Bar Baz",
+    "url": "https://www.example.com",
+    "expiration": "2010-02-15"
+  },
+  {
+    "title": "No Link",
+    "content": "Foo",
+    "expiration": "2030-01-21"
+  }
+]

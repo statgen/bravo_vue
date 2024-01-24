@@ -5,6 +5,8 @@ node_modules
 /dist
 *.tgz
 
+# Assets expected to be injected during deployment
+public/news.json
 
 # local env files
 .env.local
