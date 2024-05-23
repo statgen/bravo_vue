@@ -6,7 +6,7 @@
           <QualityFilterButton v-bind="$attrs" givenCategory="quality" title="Quality"/>
           <AnnotationFilterButton v-bind="$attrs" givenCategory="annotation" title="Annotation"/>
           <LofteeFilterButton v-bind="$attrs" givenCategory="loftee" title="LOFTEE"/>
-          <FrequencyFilterButton v-bind="$attrs" givenCategory="frequency" title="Frequencey" fieldVal="allele_freq"/>
+          <FrequencyFilterButton v-bind="$attrs" givenCategory="frequency" title="Frequency" fieldVal="allele_freq"/>
           <BaseMinMaxFilterButton v-bind="$attrs" givenCategory="cadd" title="CADD" fieldVal="cadd_phred"/>
           <!--
           <rsIdFilterButton/>
