@@ -27,7 +27,7 @@
     "devbridge-autocomplete": "^1.4.11",
     "igv": "^2.15.11",
     "just-clone": "^3.2.1",
-    "sinon": "^14.0.2",
+    "sinon": "^19.0.0",
     "tabulator-tables": "^4.9.3",
     "vue": "^3.2.22",
     "vue-gtag": "^2.0.1"
