@@ -72,6 +72,7 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
+            @gene-click="handleGeneBarClick"
             :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         </div>
@@ -235,6 +236,11 @@ export default {
     handleCloseModal: function(){ 
       this.showModal = false }
     ,
+    handleGeneBarClick: function(evt){
+      console.log("geneClick")
+      console.log("gene.html?id="+evt.target.__data__.gene_name)
+      window.location.href="gene.html?id="+evt.target.__data__.gene_name
+    },
     togglePanelAttr: function(attrName) {
       this[attrName] = !this[attrName]
       this.showMenuDropDown = !this.showMenuDropDown

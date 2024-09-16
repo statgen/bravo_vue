@@ -31,6 +31,7 @@ export default {
     start: {default: 200000},
     stop:  {default: 201000}
   },
+  emits: ['geneClick', 'close'],
   props: {
     //formerly region.segments.plot
     segmentBounds: {
@@ -256,7 +257,7 @@ export default {
 
       this.rects_box.on("mouseover", this.handleBarMouseover)
       this.rects_box.on("mouseout", this.handleBarMouseout)
-      this.rects_box.on("click", d => this.$emit("click", d));
+      this.rects_box.on("click", d => this.$emit("geneClick", d));
     },
     draw: function () {
       this.x_scale.range(this.segmentBounds).domain(this.segmentRegions);
