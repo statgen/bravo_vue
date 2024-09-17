@@ -97,10 +97,13 @@
           <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" />
         </div>
 			</div>
-      <div class="row justify-content-left" v-if="showTab.snv">
+
+      <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <FilterBar @filterChange='handleFilterChange'/>
         </div>
+      </div>
+      <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <GeneSNVTable :filters="filterArray" :doDownload="doDownload"
             @scroll='handleTableScroll' @hover='handleTableHover'
