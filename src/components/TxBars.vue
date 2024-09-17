@@ -160,18 +160,11 @@ export default {
       y_scale.domain(this.uniqTranscripts)
                   .range(y_discrete_range)
 
-      // Remove any existing lines
-      trxSect.selectAll("line").remove()
-      cdsSect.selectAll("line").remove()
-      exnSect.selectAll("line").remove()
-      lblSect.selectAll("text").remove()
-
       // Draw transcript row boxes for handling highlight and mouseover
       bkgds
         .selectAll("rect")
         .data(this.geneData.transcripts)
-        .enter()
-          .append("rect")
+        .join("rect")
           .attr("x", (d,i) => this.x_scale(d.start) - 2)
           .attr("width", (d,i) => this.x_scale(d.stop) - this.x_scale(d.start) + 4)
           .attr("y", 1)
@@ -186,8 +179,7 @@ export default {
       trxSect
         .selectAll("line")
         .data(this.geneData.transcripts)
-        .enter()
-          .append("line")
+        .join("line")
           .attr("x1", (d,i) => this.x_scale(d.start))
           .attr("x2", (d,i) => this.x_scale(d.stop))
           .attr("y1", row_mid)
@@ -199,8 +191,7 @@ export default {
       // Draw coding sequences
       cdsSect.selectAll("line")
         .data(this.geneData.cds)
-        .enter()
-          .append("line")
+        .join("line")
           .attr("x1", (d,i) => this.x_scale(d.start))
           .attr("x2", (d,i) => this.x_scale(d.stop))
           .attr("y1", row_mid)
@@ -212,8 +203,7 @@ export default {
       // Draw exons
       exnSect.selectAll("line")
         .data(this.geneData.exons)
-        .enter()
-          .append("line")
+        .join("line")
           .attr("x1", (d,i) => this.x_scale(d.start))
           .attr("x2", (d,i) => this.x_scale(d.stop))
           .attr("y1", row_mid)
@@ -225,8 +215,7 @@ export default {
       // Draw labels
       lblSect.selectAll("text")
         .data(this.geneData.transcripts)
-        .enter()
-          .append("text")
+        .join("text")
           .attr("x", (d,i) => this.x_scale((d.start + d.stop) / 2) )
           .attr("y", 12)
           .attr("text-anchor", "middle")
