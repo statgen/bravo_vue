@@ -21,9 +21,9 @@
         <g id="exonSection" class="tx__bars"></g>
         <g id="cdsSection" class="tx__bars"></g>
         <g id="labelSection" class="tx__label"></g>
+        <line id="TxHighlightLine" class="tx__hi-line" 
+          x1="0" y1="0" x2="0" y2="200" visibility=hidden></line>
       </g>
-      <line id="TxHighlightLine" class="tx__hi-line" 
-        x1="0" y1="0" x2="0" y2="200" visibility=hidden></line>
     </svg>
   </div>
 </div>
@@ -134,6 +134,7 @@ export default {
       const row_mid = Math.floor(row_height * 0.7)
       const container_width = this.scroller?.scrollWidth || 1000
       const container_height = this.numTranscripts * row_height
+
       // Discrete range used in mapping transcript id to a specific y value
       const y_discrete_range = Array.from(Array(this.numTranscripts).keys()).map(v => v * row_height)
 
@@ -144,6 +145,7 @@ export default {
 
       // Relevant containers
       const svg = d3.select("#TxBarsSvg")
+      const drawing = d3.select("#TxBarsDrawing")
       const bkgds   = svg.select("#backgroundBoxes")
       const trxSect = svg.select("#transcriptSection")
       const cdsSect = svg.select("#cdsSection")
@@ -153,7 +155,7 @@ export default {
       // Set dimensions and scale x axis data to viewbox
       // Translate to align with figures that use left hand axis.
       svg.attr("viewBox", `-4 0 ${container_width} ${container_height + 4}`)
-         .attr("transform", `translate(${axis_label_width - 4}, 0)`)
+      drawing.attr("transform", `translate(${axis_label_width - 4}, 0)`)
 
       this.x_scale.domain(this.segmentRegions)
                   .range([0,x_range_limit])
