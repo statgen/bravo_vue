@@ -71,18 +71,26 @@
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false" 
+          <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
             @gene-click="handleGeneBarClick"
-            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds" 
+            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
         </div>
-
       </div>
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false" 
-            :segmentBounds="segmentBounds" 
+          <GeneSegments v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
+            @gene-click="handleGeneBarClick"
+            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+        </div>
+      </div>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
+            :segmentBounds="segmentBounds"
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
             :filters="filterArray" :visibleVariants="visibleVariants"/>
         </div>
@@ -90,7 +98,7 @@
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" 
+          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
             :givenWidth="childWidth" :givenMargins="childMargins" />
         </div>
       </div>
@@ -102,7 +110,7 @@
       </div>
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
+          <RegionSNVTable :filters="filterArray" :doDownload="doDownload"
             @scroll='handleTableScroll' @hover='handleTableHover'
             @openModal="handleOpenModal"/>
         </div>
@@ -118,7 +126,7 @@
 <script>
 
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faWindowRestore, faDownload, faColumns } 
+import { faWindowRestore, faDownload, faColumns }
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
 import RegionInfo      from '@/components/infoblock/RegionInfo.vue'
@@ -127,6 +135,7 @@ import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
 import GeneBars        from '@/components/GeneBars.vue'
+import GeneSegments    from '@/components/GeneSegments.vue'
 import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
@@ -142,6 +151,7 @@ export default {
     ToggleList,
     SeqDepth,
     GeneBars,
+    GeneSegments,
     RegionSnvCount,
     BpCoordBar,
     RegionSNVTable,
@@ -229,11 +239,11 @@ export default {
     },
   },
   methods: {
-    handleOpenModal: function(rowData){ 
+    handleOpenModal: function(rowData){
       this.modalData = rowData
       this.showModal = true
     },
-    handleCloseModal: function(){ 
+    handleCloseModal: function(){
       this.showModal = false }
     ,
     handleGeneBarClick: function(evt){
@@ -279,7 +289,7 @@ export default {
       this[listGroup][varKey].val = !this[listGroup][varKey].val
     },
     handleTableScroll: function(start_idx, end_idx, rows_data){
-      this.visibleVariants = { 
+      this.visibleVariants = {
         start_index: start_idx,
         stop_index: end_idx,
         data: rows_data}
