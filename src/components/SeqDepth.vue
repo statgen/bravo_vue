@@ -1,21 +1,23 @@
 <template>
-<div id="holder" ref="holder" class="child-component">
+<div id="depth" class="child-component">
   <button class="close-button" v-on:click="$emit('close')">
     <font-awesome-icon style="background-color:transparent;" :icon="closeIcon"></font-awesome-icon>
   </button>
-  <svg id="depthSvg" style="display: block;" height="100px" width="100%" preserveAspectRatio="none">
-    <clipPath id="depth-clip">
-      <rect x="0%" y="0%" width="100%" height="100%"></rect>
-    </clipPath>
-    <g id="depths-container">
-      <g id="depths"></g>
-      <g id="y-axis" style="font-size: 9px"></g>
-      <text id="axis-title" transform="translate(-30,50) rotate(-90)"
-        style="font-size: 10px; text-anchor: middle;">Avg. Depth</text>
-      <line id="highlight" class="highlight_line" x1="0" y1="0" x2="0" y2="100%"
-        stroke-width="2" stroke-linecap="round" stroke="#e77f00" visibility="hidden"/>
-    </g>
-  </svg>
+  <div id="holder" ref="holder">
+    <svg id="depthSvg" style="display: block;" height="100px" width="100%" preserveAspectRatio="none">
+      <clipPath id="data-area-clip">
+        <rect id="clip-rect" x="0%" y="0%" width="100%" height="100%"></rect>
+      </clipPath>
+      <g id="depths-container">
+        <g id="depths"></g>
+        <g id="y-axis" style="font-size: 9px" transform="translate(40,0)"></g>
+        <text id="axis-title" transform="translate(10,50) rotate(-90)"
+          style="font-size: 10px; text-anchor: middle;">Avg. Depth</text>
+        <line id="highlight" class="highlight_line" x1="0" y1="0" x2="0" y2="100%"
+          stroke-width="2" stroke-linecap="round" stroke="#e77f00" visibility="hidden"/>
+      </g>
+    </svg>
+  </div>
   <div v-if="loading" class="d-flex align-items-center statusMessage">
     <div class="spinner-border spinner-border-sm text-primary ml-auto" role="status" aria-hidden="true"></div>
     <strong>&nbsp;Loading...</strong>
@@ -114,26 +116,26 @@ export default {
     },
     scaleSvg: function () {
       // Use template ref, holder, to access the width of the holding div.
-      const container_width = this.holder.scrollWidth || 1000
+      const container_width = this.holder?.offsetWidth || 1000
 
       const depth_upper_limit = this.roundUpToTens(this.max_mean_seq_depth)
-      const axis_label_width = 40
+
+      // data area margins
+      const left_margin = 40
       const right_margin = 10
-      const x_range_limit = container_width - axis_label_width -right_margin;
+      const x_range_limit = container_width - right_margin;
+      const x_range_begin = left_margin
 
       // Map data to viewbox scale
+      // Accomodate for left hand y-axis labels in x_scale
       this.x_scale.domain(this.segmentRegions)
-                  .range([0,x_range_limit]);
+                  .range([x_range_begin, x_range_limit]);
       this.y_scale.domain([0, depth_upper_limit])
                   .range([100, 0]);
 
       // Match viewbox to containing element width setting the aspect ratio at draw time.
       this.svg = d3.select("#depthSvg")
           .attr("viewBox", `0 0 ${container_width} 100`)
-
-      // Move drawing over for y-axis labels
-      this.svg.select("#depths-container")
-        .attr("transform", `translate(${axis_label_width}, 0)`);
 
       this.depth_g = this.svg.select("#depths")
     },
@@ -150,6 +152,11 @@ export default {
         .y1( d  => this.y_scale(d.mean) )
         .curve(d3.curveStepAfter);
 
+      // Handle out of bounds data from API by clipping range to genomic range
+      this.svg.select("#clip-rect")
+        .attr("x", this.x_scale(this.segmentRegions[0]))
+        .attr("width", this.x_scale(this.segmentRegions[1]))
+
       // Remove any existing path
       this.svg.select("#depths-path").remove()
 
@@ -161,7 +168,7 @@ export default {
           .style("stroke-width", 0.1)
           .style("stroke", "black")
           .attr("id","depths-path")
-          .attr("clip-path", "url(#depth-clip)")
+          .attr("clip-path", "url(#data-area-clip)")
           .attr("d", area);
 
       let yax = d3.axisLeft(this.y_scale)
