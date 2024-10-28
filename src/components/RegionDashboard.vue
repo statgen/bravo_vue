@@ -83,7 +83,7 @@
           <GeneSegments v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
             @gene-click="handleGeneBarClick"
             :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
-            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
+            :segmentRegions="segmentRegions" :givenWidth="childWidth"/>
         </div>
       </div>
 

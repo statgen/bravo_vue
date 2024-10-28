@@ -67,7 +67,8 @@ export default {
         id: gene.gene_id,
         is_coding: gene.gene_type === "protein_coding",
         title: gene.strand === '+' ? gene.gene_name + " →" : "← " + gene.gene_name,
-        desc: gene.gene_name + '(' + gene.strand + ')'
+        desc: gene.gene_name + '(' + gene.strand + ')',
+        ref: `gene.html?id=${gene.gene_id}`
       }
     },
     feature_to_segment: function(feat, id, is_coding){
@@ -98,7 +99,7 @@ export default {
           let genes = response.data.data;
           if (genes.length > 0) {
             let agg = genes.map(this.gene_to_aggregate)
-            let segs = genes.map(this.gene_to_segments)
+            let segs = genes.map(this.gene_to_segments).flat()
 
             this.geneSegsData.aggregates.push(...agg)
             this.geneSegsData.segments.push(...segs)
