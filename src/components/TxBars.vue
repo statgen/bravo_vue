@@ -21,7 +21,7 @@
         <g id="exonSection" class="tx__bars"></g>
         <g id="cdsSection" class="tx__bars"></g>
         <g id="labelSection" class="tx__label"></g>
-        <line id="TxHighlightLine" class="tx__hi-line" 
+        <line id="TxHighlightLine" class="tx__hi-line"
           x1="0" y1="0" x2="0" y2="200" visibility=hidden></line>
       </g>
     </svg>
@@ -232,7 +232,7 @@ export default {
     // initialize non reactive data
   },
   mounted: function(){
-    this.hi_line   = d3.select("#TxHighlightLine")
+    this.hi_line = d3.select("#TxHighlightLine")
     this.x_scale = d3.scaleLinear();
     this.draw()
     window.addEventListener("resize", this.debouncedDraw);

@@ -199,7 +199,7 @@ export default {
           .style("overflow-y", "scroll")
           .style("overflow-x", "hidden")
         .append("svg")
-          .style("display", "block");
+          .style("display", "block")
       this.drawing_clip = this.svg
         .append("clipPath")
           .attr("id", "genes-clip")
