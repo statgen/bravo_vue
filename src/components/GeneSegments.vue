@@ -65,6 +65,7 @@ export default {
       return {
         start: gene.start, stop: gene.stop,
         id: gene.gene_id,
+        type: gene.gene_type,
         is_coding: gene.gene_type === "protein_coding",
         title: gene.strand === '+' ? gene.gene_name + " →" : "← " + gene.gene_name,
         desc: gene.gene_name + '(' + gene.strand + ')',
