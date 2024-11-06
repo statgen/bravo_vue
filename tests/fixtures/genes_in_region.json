@@ -1,0 +1,494 @@
+{
+  "data": {
+    "data": [
+      {
+        "chrom": "11",
+        "features": [
+          {
+            "feature_type": "exon",
+            "start": 5224448,
+            "stop": 5224639,
+            "strand": "-",
+            "transcript_id": "ENST00000408104",
+            "unconfirmed": false
+          }
+        ],
+        "gene_id": "ENSG00000221031",
+        "gene_name": "CoTC_ribozyme",
+        "gene_type": "ribozyme",
+        "start": 5224448,
+        "stop": 5224639,
+        "strand": "-",
+        "transcripts": [
+          {
+            "start": 5224448,
+            "stop": 5224639,
+            "strand": "-",
+            "transcript_id": "ENST00000408104",
+            "transcript_type": "ribozyme",
+            "unconfirmed": false
+          }
+        ]
+      },
+      {
+        "chrom": "11",
+        "features": [
+          {
+            "feature_type": "exon",
+            "start": 5224309,
+            "stop": 5225461,
+            "strand": "-",
+            "transcript_id": "ENST00000644706",
+            "unconfirmed": false
+          }
+        ],
+        "gene_id": "ENSG00000285498",
+        "gene_name": "CTD-2643I7.6",
+        "gene_type": "TEC",
+        "start": 5224309,
+        "stop": 5225461,
+        "strand": "-",
+        "transcripts": [
+          {
+            "start": 5224309,
+            "stop": 5225461,
+            "strand": "-",
+            "transcript_id": "ENST00000644706",
+            "transcript_type": "TEC",
+            "unconfirmed": false
+          }
+        ]
+      },
+      {
+        "chrom": "11",
+        "features": [
+          {
+            "feature_type": "exon",
+            "start": 5226930,
+            "stop": 5227071,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226930,
+            "stop": 5227021,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226577,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226577,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5225464,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5225601,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5227022,
+            "stop": 5227071,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5225464,
+            "stop": 5225600,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226930,
+            "stop": 5227197,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226930,
+            "stop": 5227021,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226577,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226577,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5225464,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5225601,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5227022,
+            "stop": 5227197,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5225464,
+            "stop": 5225600,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226946,
+            "stop": 5227071,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226946,
+            "stop": 5227021,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226577,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226711,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5225467,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5227022,
+            "stop": 5227071,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5226577,
+            "stop": 5226710,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5225467,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226577,
+            "stop": 5226823,
+            "strand": "-",
+            "transcript_id": "ENST00000475226",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5225655,
+            "stop": 5225726,
+            "strand": "-",
+            "transcript_id": "ENST00000475226",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226930,
+            "stop": 5227072,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226930,
+            "stop": 5227021,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226263,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226559,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5227022,
+            "stop": 5227072,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5226263,
+            "stop": 5226558,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5229252,
+            "stop": 5229395,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5227512,
+            "stop": 5227579,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226930,
+            "stop": 5227039,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226930,
+            "stop": 5227021,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "exon",
+            "start": 5226620,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "CDS",
+            "start": 5226620,
+            "stop": 5226799,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5229252,
+            "stop": 5229395,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5227512,
+            "stop": 5227579,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          },
+          {
+            "feature_type": "UTR",
+            "start": 5227022,
+            "stop": 5227039,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "unconfirmed": false
+          }
+        ],
+        "full_gene_name": "hemoglobin subunit beta",
+        "gene_id": "ENSG00000244734",
+        "gene_name": "HBB",
+        "gene_type": "protein_coding",
+        "omim_accession": "141900",
+        "omim_description": "HEMOGLOBIN--BETA LOCUS; HBB",
+        "other_names": [
+          "CD113t-C, beta-globin"
+        ],
+        "start": 5225464,
+        "stop": 5229395,
+        "strand": "-",
+        "transcripts": [
+          {
+            "start": 5225464,
+            "stop": 5227071,
+            "strand": "-",
+            "transcript_id": "ENST00000335295",
+            "transcript_type": "protein_coding",
+            "unconfirmed": false
+          },
+          {
+            "start": 5225464,
+            "stop": 5227197,
+            "strand": "-",
+            "transcript_id": "ENST00000647020",
+            "transcript_type": "protein_coding",
+            "unconfirmed": false
+          },
+          {
+            "start": 5225467,
+            "stop": 5227071,
+            "strand": "-",
+            "transcript_id": "ENST00000633227",
+            "transcript_type": "nonsense_mediated_decay",
+            "unconfirmed": false
+          },
+          {
+            "start": 5225655,
+            "stop": 5226823,
+            "strand": "-",
+            "transcript_id": "ENST00000475226",
+            "transcript_type": "retained_intron",
+            "unconfirmed": false
+          },
+          {
+            "start": 5226263,
+            "stop": 5227072,
+            "strand": "-",
+            "transcript_id": "ENST00000485743",
+            "transcript_type": "protein_coding",
+            "unconfirmed": false
+          },
+          {
+            "start": 5226620,
+            "stop": 5229395,
+            "strand": "-",
+            "transcript_id": "ENST00000380315",
+            "transcript_type": "protein_coding",
+            "unconfirmed": false
+          }
+        ]
+      }
+    ],
+    "error": null,
+    "limit": null,
+    "next": null,
+    "total": 3
+  },
+  "status": 200,
+  "statusText": "OK",
+  "headers": {
+    "content-length": "11953",
+    "content-type": "application/json"
+  },
+  "config": {
+    "transitional": {
+      "silentJSONParsing": true,
+      "forcedJSONParsing": true,
+      "clarifyTimeoutError": false
+    },
+    "transformRequest": [
+      null
+    ],
+    "transformResponse": [
+      null
+    ],
+    "timeout": 0,
+    "xsrfCookieName": "XSRF-TOKEN",
+    "xsrfHeaderName": "X-XSRF-TOKEN",
+    "maxContentLength": -1,
+    "maxBodyLength": -1,
+    "headers": {
+      "Accept": "application/json, text/plain, */*"
+    },
+    "withCredentials": true,
+    "method": "get",
+    "url": "http://localhost:9090/ui/genes/11-5224000-5228200"
+  },
+  "request": {}
+}

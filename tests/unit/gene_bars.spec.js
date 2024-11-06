@@ -1,12 +1,28 @@
 import { expect } from 'chai'
-import { shallowMount } from '@vue/test-utils'
-import GeneBars from '@/components/GeneBars.vue'
+import { mount, shallowMount } from '@vue/test-utils'
+import GeneSegments from '@/components/GeneSegments.vue'
+import sinon from 'sinon'
+import axios from 'axios';
 
-// Need to mock data loading before implementing tests on GeneBars
-describe.skip('SeqDepth structure.', () => {
-  it('renders a svg node', () => {
-    const wrapper = shallowMount(GeneBars)
-    const svg = wrapper.find('svg')
-    expect(svg.exists()).to.be.true
+import regionGenes from '../fixtures/genes_in_region.json'
+
+describe('GeneSegments Mounted.', () => {
+
+  let wrapper 
+
+  before(() => {
+		const axiosStub = sinon.stub(axios, 'get')
+    axiosStub.resolves(regionGenes)
+    wrapper = mount(GeneSegments, { shallow: true })
+  })
+
+  it('contins a SegBar component', () => {
+    const bars = wrapper.find("#geneSegBars")
+    console.log(bars)
+    expect(bars.exists()).to.be.true
+  })
+
+  after(() => { 
+    axios.get.restore()
   })
 })

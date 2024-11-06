@@ -34,12 +34,14 @@ describe('SearchBox.vue components structure.', () => {
 
 describe('SearchBox.vue doSearch.', () => {
   //Avoid changes to window.location and REST requests
-  sinon.stub(SearchBox.methods, "followResultTicket")
-  const axiosStub = sinon.stub(axios, 'get')
 
   let wrapper 
+  let axios_stub
 
   before(() => {
+    sinon.stub(SearchBox.methods, "followResultTicket")
+    axios_stub = sinon.stub(axios, 'get')
+
     wrapper = mount(SearchBox, { 
       shallow: true,
       props: { autofocus: true } 
@@ -54,12 +56,13 @@ describe('SearchBox.vue doSearch.', () => {
   })
 
   after(() => {
-    sinon.restore()
+    SearchBox.methods.followResultTicket.restore()
+    axios.get.restore()
   })
 
   
   it('Uses autocomplete suggests result', async () => {
-    axiosStub.resolves(hbbSearch)
+    axios_stub.resolves(hbbSearch)
     wrapper.vm.$refs.autocomplete.qtext = 'hbb'
 
     await wrapper.vm.doSearch()
@@ -68,13 +71,14 @@ describe('SearchBox.vue doSearch.', () => {
   })
 
   it('Lacking a suggestion, matches query to pattern', async () => {
-    axiosStub.resolves(emptySearch)
+    axios_stub.resolves(emptySearch)
     wrapper.vm.$refs.autocomplete.qtext = '11-5002000-5003000'
 
     await wrapper.vm.doSearch()
     expect(wrapper.vm.suggestToResultTicket.called).to.be.false
     expect(wrapper.vm.queryToResultTicket.called).to.be.true
   })
+
 })
 
 describe('SearchBox.vue queryToResultTicket parsing.', () => {

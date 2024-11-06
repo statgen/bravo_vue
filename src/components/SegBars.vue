@@ -1,15 +1,15 @@
 <template>
-  <div ref="infoPopup" class="seg__popup">
-    <ul class="seg__popup-list">
-      <li>{{ popupInfo.title }}</li>
-      <li>{{ popupInfo.identifier }}</li>
-      <li>{{ popupInfo.type }}</li>
-      <li>
-        <pre class="seg__popup-loc">{{ popupInfo.loc }}</pre>
-      </li>
-    </ul>
-  </div>
 <div ref="scroller" style="max-height: 200px; display: block; overflow: hidden scroll;">
+	<div ref="infoPopup" class="seg__popup">
+		<ul class="seg__popup-list">
+			<li>{{ popupInfo.title }}</li>
+			<li>{{ popupInfo.identifier }}</li>
+			<li>{{ popupInfo.type }}</li>
+			<li>
+				<pre class="seg__popup-loc">{{ popupInfo.loc }}</pre>
+			</li>
+		</ul>
+	</div>
   <svg id="SegBars" style="display: block; overflow-x: visible;" width="100%" preserveAspectRatio="xMinYMin">
     <clipPath id="dataAreaClip">
       <rect id="clipRect" x="0%" y="0%" width="100%" height="100%"></rect>

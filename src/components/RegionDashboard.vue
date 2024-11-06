@@ -71,15 +71,6 @@
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <GeneBars v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
-            @gene-click="handleGeneBarClick"
-            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
-            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"/>
-        </div>
-      </div>
-
-      <div class="row justify-content-left">
-        <div class="col-md px-5" v-if="positionResolved">
           <GeneSegments v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
             @gene-click="handleGeneBarClick"
             :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
@@ -134,7 +125,6 @@ import RegionSummaries from '@/components/summary/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
 import ToggleList      from '@/components/ToggleList.vue'
 import SeqDepth        from '@/components/SeqDepth.vue'
-import GeneBars        from '@/components/GeneBars.vue'
 import GeneSegments    from '@/components/GeneSegments.vue'
 import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
@@ -150,7 +140,6 @@ export default {
     FilterBar,
     ToggleList,
     SeqDepth,
-    GeneBars,
     GeneSegments,
     RegionSnvCount,
     BpCoordBar,

@@ -15,7 +15,7 @@
     Displaying {{ geneSegsData.aggregates.length }} gene(s)
   </div>
   <div v-if="loaded && (geneSegsData.aggregates.length == 0)" class="statusMessage">No genes in this region</div>
-  <SegBars :highlightGenomePosition="hoveredVarPosition" :segmentRegion="[start, stop]" :inputData="geneSegsData"/>
+  <SegBars id="geneSegBars" :highlightGenomePosition="hoveredVarPosition" :segmentRegion="[start, stop]" :inputData="geneSegsData"/>
 </div>
 </template>
 
@@ -94,9 +94,11 @@ export default {
       this.failed = false;
       this.loaded = false;
       this.loading = true;
+
       axios
         .get(`${this.api}/genes/${this.chrom}-${this.start}-${this.stop}`)
         .then( response => {
+          console.log(response)
           let genes = response.data.data;
           if (genes.length > 0) {
             let agg = genes.map(this.gene_to_aggregate)
