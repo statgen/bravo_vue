@@ -13,7 +13,6 @@
 </template>
 
 <script>
-//import {TabulatorFull as Tabulator} from "tabulator-tables"
 import Tabulator from 'tabulator-tables'
 
 export default {
@@ -35,8 +34,8 @@ export default {
     }
   },
   computed: {
-    ajaxUrl() { 
-      return(`${this.api}/eqtl/cond`) 
+    ajaxUrl() {
+      return(`${this.api}/eqtl/cond`)
     }
   },
   watch: {
