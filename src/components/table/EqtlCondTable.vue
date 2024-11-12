@@ -127,7 +127,7 @@ export default {
         headers: {
           "Content-type": "application/json; charset=utf-8",
         },
-        //credentials: "include"
+        credentials: "include"
       },
       ajaxContentType: "json",
       ajaxRequesting: () => {

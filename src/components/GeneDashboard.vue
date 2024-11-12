@@ -14,7 +14,7 @@
             <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
           </li>
           <li class="nav-item">
-            <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs</a>
+            <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs ({{eqtlTotal}})</a>
           </li>
         </ul>
       </div>
@@ -25,7 +25,7 @@
       <div class="row justify-content-left px-5" >
         <div class="col-md-5">
           <div id="eqtl-collection" >
-            <h4>SuSiE eQTLs</h4>
+            <h4 @click="demo">SuSiE eQTLs</h4>
             <EqtlTable/>
           </div>
         </div>
@@ -248,6 +248,7 @@ export default {
         stop_index: null,
         data: null
       },
+      eqtl_counts: { },
     }
   },
   computed: {
@@ -260,9 +261,16 @@ export default {
     segmentRegions: function() {
       // genomic bounds for child elements in base pairs
       return [this.start, this.stop]
+    },
+    eqtlTotal: function() {
+      let eqtl_sum = Object.values(this.eqtl_counts).reduce((val, acc) => acc + val, 0)
+      return eqtl_sum
     }
   },
   methods:{
+    demo: function(){
+      this.load_eqtl_count(this.ensemblId)
+    },
     handleOpenModal: function(rowData){
       this.modalData = rowData
       this.showModal = true
@@ -347,7 +355,7 @@ export default {
     },
     loadGene: function() {
       axios
-        .get(`${this.api}/genes/api/${this.geneId}`, {withCredentials: true})
+        .get(`${this.api}/genes/api/${this.geneId}`)
         .then( response => {
           let payload = response.data
           if (payload.data.length > 0) {
@@ -365,8 +373,20 @@ export default {
                 this.introns = true
               }
             })
+            this.load_eqtl_count(this.ensemblId)
           }
         })
+    },
+    load_eqtl_count: function(ensembl_id){
+      axios
+      .get(`${this.api}/eqtl/susie_count`, {params: {ensembl: ensembl_id}})
+        .then( resp => { this.eqtl_counts['susie'] = resp.data })
+        .catch(error => { console.log("Error loading SuSiE count:" + error) })
+
+      axios
+      .get(`${this.api}/eqtl/cond_count`, {params: {ensembl: ensembl_id}})
+        .then( resp => { this.eqtl_counts['cond'] = resp.data })
+        .catch(error => { console.log("Error loading Conditional count:" + error) })
     },
   },
   mounted: function() {
