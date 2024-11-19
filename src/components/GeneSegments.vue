@@ -98,7 +98,6 @@ export default {
       axios
         .get(`${this.api}/genes/${this.chrom}-${this.start}-${this.stop}`)
         .then( response => {
-          console.log(response)
           let genes = response.data.data;
           if (genes.length > 0) {
             let agg = genes.map(this.gene_to_aggregate)

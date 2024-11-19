@@ -119,7 +119,7 @@ export default {
     this.tabulator = new Tabulator(this.$refs.eqtltable, {
       height: "150px",
       layout: "fitDataStretch",
-      placeholder: "No eQTL Data",
+      placeholder: "No Conditional eQTL Data",
       ajaxURL: this.ajaxUrl,
       ajaxParams: {gene: this.geneId },
       ajaxConfig: {

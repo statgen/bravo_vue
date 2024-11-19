@@ -23,19 +23,21 @@
     <!-- eQTL tab -->
     <div id="eqtl-tab" v-if="showTab.eqtl">
       <div class="row justify-content-left px-5" >
-        <div class="col-md-5">
+        <div class="col-md-6">
           <div id="eqtl-collection" >
             <h4 @click="demo">SuSiE eQTLs</h4>
             <EqtlTable/>
           </div>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6">
           <div id="eqtl-collection">
             <h4>Conditional eQTLs</h4>
             <EqtlCondTable/>
           </div>
         </div>
-        <div class="col-md-11">
+      </div>
+      <div class="row justify-content-left px-5" >
+        <div class="col-md-12">
           <EqtlTableDescription/>
         </div>
       </div>
