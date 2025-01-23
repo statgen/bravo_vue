@@ -28,6 +28,15 @@
         </div>
 
         <div class="row">
+          <div class="col-12 col-md-6 mt-3">
+            <VariantSusieEqtl :eqtl="this.eqtl_susie"/>
+          </div>
+          <div class="col-12 col-md-6 mt-3">
+            <VariantCondEqtl :eqtl="this.eqtl_cond"/>
+          </div>
+        </div>
+
+        <div class="row">
           <div class="col-12 mt-3">
             <VariantConsequences :variant="this.variant"/>
           </div>
@@ -75,6 +84,8 @@ import VariantFrequency from '@/components/VariantFrequency'
 import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
 import VariantMetrics from '@/components/VariantMetrics'
+import VariantSusieEqtl from '@/components/VariantSusieEqtl'
+import VariantCondEqtl from '@/components/VariantCondEqtl'
 import Reads from '@/components/Reads'
 import axios from 'axios'
 import {inject} from 'vue'
@@ -91,6 +102,8 @@ export default {
     VariantConsequences,
     VariantDepth,
     VariantMetrics,
+    VariantSusieEqtl,
+    VariantCondEqtl,
     Reads
   },
   data: function() {
@@ -100,25 +113,51 @@ export default {
       ready: false,
       has_data: false,
       variant: {},
+      eqtl_cond: {},
+      eqtl_susie: {},
     }
   },
   methods : {
-    load: function() {
+    loadEqtl: function() {
+      console.log(`loading eqtl: ${this.variantId}`)
+      axios({
+        method: 'get',
+        url: `${this.api}/eqtl/cond_by_id`,
+        params: {cpra: this.variantId}
+      }).then( response => {
+        this.eqtl_cond = response.data
+        console.log("cond_eqtl")
+        console.log(response.data)
+      })
+
+      axios({
+        method: 'get',
+        url: `${this.api}/eqtl/susie_by_id`,
+        params: {cpra: this.variantId}
+      }).then( response => {
+        this.eqtl_susie = response.data
+        console.log("susie_eqtl")
+        console.log(response.data)
+      })
+    },
+    loadSnv: function() {
       axios
         .get(`${this.api}/variant/api/snv/${this.variantId}`)
         .then( response => {
-          let payload = response.data;
+          let payload = response.data
 
           if( payload.data[0] ){
-            this.variant = payload.data[0];
-            this.has_data = true;
+            this.variant = payload.data[0]
+            this.has_data = true
           }else{
-            this.variant = {};
+            this.variant = {}
           }
-          this.ready = true;
+          this.ready = true
 
           // provide default pub_freq
-          ('pub_freq' in this.variant) || (this.variant['pub_freq'] = [])
+          if(!('pub_freq' in this.variant)){
+            this.variant['pub_freq'] = []
+          }
 
           // provide default 1000G data set
           if( !this.variant.pub_freq.some((x) => x.ds == '1000G')){
@@ -129,6 +168,9 @@ export default {
           if( !this.variant.pub_freq.some((x) => x.ds == 'gnomAD r2.1')){
             this.variant.pub_freq.push({ds: 'gnomAD r2.1'})
           }
+
+          console.log("variant info")
+          console.log(this.variant)
         })
         .catch( error => {
           this.variant = {}
@@ -150,7 +192,8 @@ export default {
     }
   },
   mounted: function() {
-    this.load();
+    this.loadSnv();
+    this.loadEqtl();
   }
 }
 </script>
