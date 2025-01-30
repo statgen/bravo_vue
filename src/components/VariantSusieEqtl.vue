@@ -8,7 +8,7 @@
     <div v-if="eqtl.length > 0">
       <div class="row">
         <span class="col-sm-4 text-left text-truncate">Tissue</span>
-        <span class="col-sm-4 text-left text-truncate">Phenotype</span>
+        <span class="col-sm-4 text-left text-truncate">Transcript</span>
         <span class="col-sm-4 text-right">PIP</span>
       </div>
       <!-- dummy testing rows -->
