@@ -119,15 +119,12 @@ export default {
   },
   methods : {
     loadEqtl: function() {
-      console.log(`loading eqtl: ${this.variantId}`)
       axios({
         method: 'get',
         url: `${this.api}/eqtl/cond_by_id`,
         params: {cpra: this.variantId}
       }).then( response => {
         this.eqtl_cond = response.data
-        console.log("cond_eqtl")
-        console.log(response.data)
       })
 
       axios({
@@ -136,8 +133,6 @@ export default {
         params: {cpra: this.variantId}
       }).then( response => {
         this.eqtl_susie = response.data
-        console.log("susie_eqtl")
-        console.log(response.data)
       })
     },
     loadSnv: function() {
@@ -169,8 +164,6 @@ export default {
             this.variant.pub_freq.push({ds: 'gnomAD r2.1'})
           }
 
-          console.log("variant info")
-          console.log(this.variant)
         })
         .catch( error => {
           this.variant = {}

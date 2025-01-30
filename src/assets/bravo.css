@@ -208,6 +208,25 @@
   font-size: 9px;
 }
 
+.info-card-medium--scrolling {
+  height: auto;
+  max-height: 225px;
+  min-width: 300px;
+  margin-right: 8px;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  overflow-x: hidden;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 10px;
+  border-radius: 0.25rem;
+}
+
+.infocard__no-data-notice {
+  color: #6c787d;
+  text-align: center;
+  word-wrap: break-word;
+}
+
 
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
