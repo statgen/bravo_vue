@@ -20,7 +20,6 @@ export default {
   inject: {
     api: {default: ''},
     geneId: {default: ''},
-    ensemblId: {default: ''}
   },
   data: function() {
     return {
