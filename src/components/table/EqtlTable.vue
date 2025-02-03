@@ -78,6 +78,14 @@ export default {
           minWidth: 80,
           widthGrow: 1,
           field: "pip",
+        },
+        {
+          title: "CS_Id",
+          titleDownload: "cs_id",
+					headerTooltip: "Credible set id",
+          minWidth: 40,
+          widthGrow: 0.5,
+          field: "cs_id",
         }
       ])
     }
@@ -110,7 +118,8 @@ export default {
         return response;
       },
       columns: this.tblColumnDefs(),
-      initialSort: [ { column: "tissue", dir: "asc" } ],
+      initialSort: [ { column: "tissue", dir: "asc" },
+                     { column: "pip", dir: "desc"}],
 
       // tabulator-table 4.9 options
       ajaxLoaderError: "",

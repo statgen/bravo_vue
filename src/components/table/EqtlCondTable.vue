@@ -72,18 +72,10 @@ export default {
           formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
         },
         {
-          title: "True DF",
-          titleDownload: "True DF",
-					headerTooltip: "Estimated true degrees of freedom",
-          minWidth: 130,
-          widthGrow: 1,
-          field: "true_df",
-        },
-        {
           title: "Distance",
           titleDownload: "Distance",
 					headerTooltip: "Distance from the gene transcription start site",
-          minWidth: 130,
+          minWidth: 65,
           widthGrow: 1,
           field: "tss_distance",
         },
@@ -91,23 +83,23 @@ export default {
           title: "Slope",
           titleDownload: "Slope",
 					headerTooltip: "Linear regression estimated slope for the allele dosage term",
-          minWidth: 130,
+          minWidth: 65,
           widthGrow: 1,
           field: "slope",
         },
         {
-          title: "Emp. p-val",
-          titleDownload: "Emp. p-val",
-					headerTooltip: "Empirical p-value for association between the gene expression and genetic variant",
-          minWidth: 130,
+          title: "pval beta",
+          titleDownload: "pval_beta",
+					headerTooltip: "p-value for association between the gene expression and genetic variant",
+          minWidth: 65,
           widthGrow: 1,
-          field: "pval_perm",
+          field: "pval_beta",
         },
         {
           title: "Tissue",
           titleDownload: "Tissue",
 					headerTooltip: "Source tissue of rnaseq data",
-          minWidth: 130,
+          minWidth: 100,
           widthGrow: 1,
           field: "tissue",
         }
@@ -142,7 +134,8 @@ export default {
         return response;
       },
       columns: this.tblColumnDefs(),
-      initialSort: [ { column: "tissue", dir: "asc" } ],
+      initialSort: [ { column: "tissue", dir: "asc" },
+                     { column: "pval_beta", dir: "asc" } ],
 
       // tabulator-table 4.9 options
       ajaxLoaderError: "",

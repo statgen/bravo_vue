@@ -18,6 +18,7 @@
   <ul>
     <li><strong>variant_id:</strong> genetic variant, in format <code>{chromosome}_{position}_{ref}_{alt}</code></li>
     <li><strong>pip:</strong> SuSiE PIP (essentially, the probability the variant is a causal one for this eQTL signal)</li>
+    <li><strong>cs_id:</strong> Credible set. The cs_id together with phenotype_id (Ensembl id for the gene) together uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
   </ul>
   
   <h5 id="cis-eqtlconditional">Cis-eQTL/Conditional</h5>
@@ -25,7 +26,8 @@
   <h6 id="column-descriptions-1">Column descriptions:</h6>
   <ul>
     <li><strong>variant_id</strong>: Genetic variant, in format <code>{chromosome}_{position}_{ref}_{alt}</code></li>
-    <li><strong>true_df</strong>: Estimated true degrees of freedom (used when computing beta-approximated p-value; see FastQTL publication [1]). When there are multiple independent eQTL signals for a gene, this is computed during the backward step, i.e. controlling for each of the gene’s other independent eQTL signals.</li>
+    <li><strong>pval_beta</strong>: p-value for association between the gene expression and genetic variant, adjusted for multiple testing at the gene level (i.e. testing many variants against this one gene; NOT genome-wide corrected) using the fitted beta distribution (see FastQTL publication [1]). Note that due to underflow, some p-values may be equal to 0.
+    </li>
     <li><strong>tss_distance</strong>: Distance (signed) between the gene transcription start site and the genetic variant.</li>
     <li><strong>slope</strong>: Linear regression estimated slope for the allele dosage term when modeling association between gene expression and genetic variant. The effect allele is always the alt allele, such that in the case of a significant association between gene expression and genetic variant, slope greater than 0 indicates that the alt allele favors higher expression of the gene. When there are multiple independent eQTL signals for a gene, this is computed during the backward step, i.e. controlling for each of the gene’s other independent eQTL signals.</li>
   </ul>

@@ -124,7 +124,7 @@ export default {
         url: `${this.api}/eqtl/cond_by_id`,
         params: {cpra: this.variantId}
       }).then( response => {
-        this.eqtl_cond = response.data
+        this.eqtl_cond = response.data.sort((lhs, rhs) => lhs.pval_beta - rhs.pval_beta)
       })
 
       axios({
@@ -132,7 +132,7 @@ export default {
         url: `${this.api}/eqtl/susie_by_id`,
         params: {cpra: this.variantId}
       }).then( response => {
-        this.eqtl_susie = response.data
+        this.eqtl_susie = response.data.sort((lhs, rhs) => rhs.pip - lhs.pip)
       })
     },
     loadSnv: function() {
