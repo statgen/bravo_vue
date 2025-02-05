@@ -117,8 +117,6 @@ export default {
     scaleSvg: function () {
       // Use template ref, holder, to access the width of the holding div.
       const container_width = this.holder?.offsetWidth || 1000
-      console.log(`Depth holder offsetWidth: ${this.holder.offsetWidth} scrollWidth: ${this.holder.scrollWidth}`)
-
       const depth_upper_limit = this.roundUpToTens(this.max_mean_seq_depth)
 
       // data area margins
@@ -133,7 +131,6 @@ export default {
                   .range([x_range_begin, x_range_limit]);
       this.y_scale.domain([0, depth_upper_limit])
                   .range([100, 0]);
-      console.log(`Depth range: ${x_range_begin} to ${x_range_limit} delta: ${x_range_limit - x_range_begin}`)
 
       // Match viewbox to containing element width setting the aspect ratio at draw time.
       this.svg = d3.select("#depthSvg")
@@ -216,7 +213,6 @@ export default {
           .attr("x1", this.x_scale(newVal))
           .attr("x2", this.x_scale(newVal))
           .attr("visibility", "inherit")
-        console.log(`SeqDepth hi line val: ${newVal} x: ${this.x_scale(newVal)}`)
       }
     },
   }

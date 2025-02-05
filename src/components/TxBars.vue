@@ -94,7 +94,6 @@ export default {
           .attr("x1", this.x_scale(newVal))
           .attr("x2", this.x_scale(newVal))
           .attr("visibility", "inherit")
-        console.log(`TxBars hi line val: ${newVal} x: ${this.x_scale(newVal)}`)
       }
     },
   },
@@ -136,8 +135,6 @@ export default {
       const container_width = this.scroller?.offsetWidth || 1000
       const container_height = this.numTranscripts * row_height
 
-      console.log(`Bars scroller offsetWidth: ${this.scroller.offsetWidth} scrollWidth: ${this.scroller.scrollWidth}`)
-
       // Discrete range used in mapping transcript id to a specific y value
       const y_discrete_range = Array.from(Array(this.numTranscripts).keys()).map(v => v * row_height)
 
@@ -164,7 +161,6 @@ export default {
                   .range([0,x_range_limit])
       y_scale.domain(this.uniqTranscripts)
                   .range(y_discrete_range)
-      console.log(`Bars range: 0 to ${x_range_limit} delta: ${x_range_limit - 0}`)
 
       // Draw transcript row boxes for handling highlight and mouseover
       bkgds
