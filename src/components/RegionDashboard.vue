@@ -64,7 +64,7 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
-            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :hoveredVarPosition="hoveredVarPosition"
             :segmentRegions="segmentRegions"/>
         </div>
       </div>
@@ -73,7 +73,7 @@
         <div class="col-md px-5" v-if="positionResolved">
           <GeneSegments v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
             @gene-click="handleGeneBarClick"
-            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :hoveredVarPosition="hoveredVarPosition"
             :segmentRegions="segmentRegions" :givenWidth="childWidth"/>
         </div>
       </div>
@@ -81,7 +81,6 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
-            :segmentBounds="segmentBounds"
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
             :filters="filterArray" :visibleVariants="visibleVariants"/>
         </div>
@@ -89,7 +88,7 @@
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions"
+          <BpCoordBar :segmentRegions="segmentRegions"
             :givenWidth="childWidth" :givenMargins="childMargins" />
         </div>
       </div>
@@ -211,9 +210,6 @@ export default {
         stop_index: null,
         data: null
       },
-      // bounds for child element displays in pixels
-      //formerly region.segments.plot
-      segmentBounds: [0, 300],
       // genomic bounds for child elements in base pairs
       //formergly region.segments.region
       segmentRegions: [this.start, this.stop],
@@ -271,7 +267,6 @@ export default {
       this.filter[filterCategory] = filtArr
     },
     handleResize: function() {
-      this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
       this.childWidth = this.$el.clientWidth
     },
     handleInfoViewToggle: function(listGroup, varKey){
@@ -288,7 +283,6 @@ export default {
     },
   },
   mounted: function() {
-    this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
     this.childWidth = this.$el.clientWidth
     window.addEventListener('resize', this.handleResize)
   },

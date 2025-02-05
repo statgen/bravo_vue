@@ -19,11 +19,6 @@ export default {
     return { holder }
   },
   props: {
-    //formerly region.segments.plot
-    segmentBounds: {
-      type: Array,
-      default: function(){return [0, 1000 ]}
-    },
     //formerly region.segments.region
     segmentRegions: {
       type: Array,
@@ -84,7 +79,7 @@ export default {
   },
   mounted: function() {
     this.init();
-    if ((this.segmentRegions.every(d => d != null)) && (this.segmentBounds.every(d => d != null))) {
+    if ((this.segmentRegions.every(d => d != null))) {
       this.draw();
     }
     window.addEventListener("resize", this.debouncedDraw);

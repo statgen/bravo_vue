@@ -73,7 +73,7 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <SeqDepth v-if="showPanels.seqDepth.val" @close="showPanels.seqDepth.val = false"
-            :hoveredVarPosition="hoveredVarPosition" :segmentBounds="segmentBounds"
+            :hoveredVarPosition="hoveredVarPosition"
             :segmentRegions="segmentRegions"/>
         </div>
       </div>
@@ -89,14 +89,13 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <GeneSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
-            :segmentBounds="segmentBounds"
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
             :filters="filterArray" :visibleVariants="visibleVariants"/>
         </div>
 			</div>
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <BpCoordBar :segmentBounds="segmentBounds" :segmentRegions="segmentRegions" />
+          <BpCoordBar :segmentRegions="segmentRegions" />
         </div>
 			</div>
 
@@ -231,10 +230,6 @@ export default {
         top:    12,
         bottom: 5
       },
-      // bounds for child element displays in pixels
-      //formerly region.segments.plot
-      segmentBounds: [0, 300],
-
       // genomic position of variant under the mouse in the table.
       hoveredVarPosition: null,
 
@@ -314,7 +309,6 @@ export default {
       this.filter[filterCategory] = filtArr
     },
     handleResize: function() {
-      this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
       this.childWidth = this.$el.clientWidth
     },
     handleTableScroll: function(start_idx, end_idx, rows_data){
@@ -394,7 +388,6 @@ export default {
   mounted: function() {
     this.loadGene()
 
-    this.segmentBounds = [0, this.$el.clientWidth - this.childMargins.left - this.childMargins.right]
     this.childWidth = this.$el.clientWidth
     window.addEventListener('resize', this.handleResize)
 
