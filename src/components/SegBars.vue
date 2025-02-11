@@ -14,7 +14,7 @@
     <clipPath id="dataAreaClip">
       <rect id="clipRect" x="0%" y="0%" width="100%" height="100%"></rect>
     </clipPath>
-    <g id="SegDrawing" clip-path="url(#data-area-clip)">
+    <g id="SegDrawing" clip-path="url(#dataAreaClip)">
       <g id="backgroundBoxes"></g>
       <g id="aggregateSection"  class="tx__bars"></g>
       <g id="segmentsSection"  class="tx__bars"></g>
@@ -68,6 +68,10 @@ export default {
       default: function(){
         return {"segments": [], "aggregates":[]}
       }
+    },
+    eqtlData: {
+      type: Array,
+      default: function(){return []}
     },
     segmentRegion: {
       type: Array,

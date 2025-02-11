@@ -15,7 +15,8 @@
     Displaying {{ geneSegsData.aggregates.length }} gene(s)
   </div>
   <div v-if="loaded && (geneSegsData.aggregates.length == 0)" class="statusMessage">No genes in this region</div>
-  <SegBars id="geneSegBars" :highlightGenomePosition="hoveredVarPosition" :segmentRegion="[start, stop]" :inputData="geneSegsData"/>
+  <SegBars id="geneSegBars" :highlightGenomePosition="hoveredVarPosition" 
+    :segmentRegion="[start, stop]" :inputData="geneSegsData" :eqtlData="eqtlData"/>
 </div>
 </template>
 
@@ -59,6 +60,7 @@ export default {
   beforeCreate: function() {
     // initialize non reactive data
     this.geneSegsData = {"segments": [], "aggregates":[]};
+    this.eqtlData = [];
   },
   methods: {
     gene_to_aggregate: function(gene){
@@ -115,9 +117,19 @@ export default {
           this.loaded = false;
         })
     },
+    load_eqtl: function() {
+      axios({
+        method: 'get',
+        url: `${this.api}/eqtl/region`,
+        params: {chrom: this.chrom, start: this.start, stop: this.stop}
+      }).then( response => {
+          this.eqtlData = response.data
+        })
+    }
   },
   mounted: function() {
     this.load();
+    this.load_eqtl();
   },
 }
 </script>
