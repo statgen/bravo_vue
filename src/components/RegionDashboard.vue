@@ -10,12 +10,17 @@
     <div id="tab-headers" class="row justify-content-center">
       <div class="col-md px-5">
         <ul class="nav nav-tabs" style="margin-bottom: 5px">
+
           <li class="nav-item">
             <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
           </li>
+
+          <!-- Todo: Implement SV visualization
           <li class="nav-item">
             <a :class=tabClass(showTab.structvar) href="#structvar" @click="toggleTab('structvar')">Structural Variants</a>
           </li>
+          -->
+
         </ul>
       </div>
     </div>
@@ -80,6 +85,12 @@
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
+          <EqtlBars v-if="showPanels.genes.val" :hoveredVarPosition="hoveredVarPosition" />
+        </div>
+      </div>
+
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
           <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
             :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
             :filters="filterArray" :visibleVariants="visibleVariants"/>
@@ -128,6 +139,7 @@ import GeneSegments    from '@/components/GeneSegments.vue'
 import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
+import EqtlBars        from '@/components/EqtlBars.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 
 export default {
@@ -143,6 +155,7 @@ export default {
     RegionSnvCount,
     BpCoordBar,
     RegionSNVTable,
+    EqtlBars,
     SNVTableAnnotationModal
   },
   inject: {

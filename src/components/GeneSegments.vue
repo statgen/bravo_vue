@@ -23,7 +23,6 @@
 <script>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import * as d3 from "d3";
 import axios from "axios";
 axios.defaults.withCredentials=true
 
@@ -117,19 +116,9 @@ export default {
           this.loaded = false;
         })
     },
-    load_eqtl: function() {
-      axios({
-        method: 'get',
-        url: `${this.api}/eqtl/region`,
-        params: {chrom: this.chrom, start: this.start, stop: this.stop}
-      }).then( response => {
-          this.eqtlData = response.data
-        })
-    }
   },
   mounted: function() {
     this.load();
-    this.load_eqtl();
   },
 }
 </script>
