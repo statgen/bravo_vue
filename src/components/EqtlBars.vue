@@ -12,16 +12,21 @@
       </ul>
     </div>
 
-    <svg id="EqtlBars" style="display: block;" width="100%" height="40px" preserveAspectRatio="xMinYMin">
-      <g id="EqtlDrawing">
-        <rect x="0%" y="0%" height="100%" width="100%" style="fill:#beebee"></rect>
+    <div v-if="this.eqtlData" class="bravo-info-message">
+      Displaying {{ this.eqtlData.length.toLocaleString() }} eQTLs
+    </div>
+
+    <svg id="eqtlHist" style="display: block;" width="100%" height="65px" preserveAspectRatio="xMinYMin">
+      <g id="eqtlDrawing">
         <g id="eqtlMarks"></g>
         <g id="eqtlAggregated"></g>
         <g id="eqtlLabels"></g>
       </g>
-      <g id="EqtlAxis">
-        <text id="axis-title" x="0%" y="50%" dominant-baseline="mathematical"
-          style="font-size: 10px; text-anchor: start;">eQTLs:</text>
+      <text id="axis-label" x=5 y=5 dominant-baseline="mathematical" writing-mode="sideways-lr"
+        style="font-size: 11px; text-anchor: start;">eQTL Count</text>
+      <line id="eqtlXAxis" v-bind:x1="this.leftMargin" x2="100%" y1="100%" y2="100%" 
+        style="stroke: black; stroke-width: 4px; visibility: hidden"/>
+      <g id="eqtlYAxis" v-bind:transform="'translate('+ this.leftMargin +',0)'">
       </g>
     </svg>
   </div>
@@ -86,6 +91,8 @@ export default {
         params: {chrom: this.chrom, start: this.start, stop: this.stop}
       }).then( response => { 
         this.eqtlData = response.data 
+        this.eqtlDataBinned = this.bin_data(response.data, this.start, this.stop)
+          .filter((ele) => ele.length > 0)
         this.draw()
       })
     },
@@ -95,106 +102,69 @@ export default {
     handleEqtlMouseout: function(evt, transcript) {
       this.infoPopup.style.display = "none"
     },
-    calc_pos_thresholds: function(){
-      let nbins = 50
-      let x_step = Math.floor( (this.stop - this.start) / nbins)
+    calc_pos_thresholds: function(start, stop){
+      let nbins = 200
+      let x_step = Math.floor( (stop - start) / nbins)
       let result = Array(nbins-1)
         .keys()
-        .map((b) => this.start + (b+1) * x_step)
+        .map((b) => start + (b+1) * x_step)
         .toArray()
       return(result)
 
     },
-    bin_data: function(){
-      let pos_thresholds = this.calc_pos_thresholds()
+    bin_data: function(eqtl_data, start, stop){
+      let pos_thresholds = this.calc_pos_thresholds(start, stop)
       let binner = d3.bin()
         .value((d) => d.pos)
-        .domain([this.start, this.stop])
+        .domain([start, stop])
         .thresholds(pos_thresholds)
-      let binned = binner(this.eqtlData)
+      let binned = binner(eqtl_data)
       return binned
     },
     draw: function(){
-      // Relevant containers
-      const svg = d3.select("#EqtlBars")
-      const clip_rect = svg.select("#EqtlClipRect")
+      const svg = d3.select("#eqtlHist")
       const aggs  = svg.select("#eqtlAggregated")
       const marks = svg.select("#eqtlMarks")
       const labs  = svg.select("#eqtlLabels")
+      const y_axis_g = svg.select("#eqtlYAxis")
 
-      // Calc viewbox dimensions
       const row_height = 28
       const row_mid = Math.floor(row_height * 0.7)
       const container_width = this.scroller?.offsetWidth || 1000
       const container_height = 30
 
-      // data area margins
       const x_range_begin = this.leftMargin
       const x_range_limit = container_width - this.rightMargin
 
-      const x_scale = d3.scaleLinear();
+      const x_scale = d3.scaleLinear()
       x_scale.domain([this.start, this.stop])
-                  .range([x_range_begin, x_range_limit])
+             .range([x_range_begin, x_range_limit])
 
-      // Handle out of bounds data by clipping range to genomic range
-      clip_rect.attr("x", x_range_begin).attr("width", x_range_limit)
+      const y_scale = d3.scaleLinear()
+      let max_count = this.eqtlDataBinned.reduce( (prev, curr) => (prev > curr.length) ? prev : curr.length, 1)
+      let count_limit = Math.ceil(max_count / 10) * 10
+      y_scale.domain([0, count_limit]).range([0, 100])
 
-        /*
-      marks.selectAll("rect")
-        .data(this.eqtlData)
-        .join("rect")
-        .attr("x", (d) => x_scale(d.pos))
-        .attr("y", 0)
-        .attr("height", "100%")
-        .attr("width", "1px")
-        .style("stroke", "blue")
-        .style("fill", "green")
-         */
+      const y_axis = d3.axisLeft(d3.scaleLinear([0, count_limit], [65,0]))
+        .tickValues([1, Math.floor(count_limit/2), count_limit-1])
+      y_axis_g.call(y_axis)
 
-      svg.append("line")
-        .attr("x1", x_scale(this.start)).attr("y1", "0%")
-        .attr("x2", x_scale(this.start)).attr("y2", "100%")
-        .style("stroke-width", "3px")
-        .style("stroke", "red")
-
-      /*let bins = [...Array(100).keys()]
-      let bins = [0,10,20,30,40,50,60,70,80,90]
-      marks.selectAll("rect")
-        .data(bins)
-        .join("rect")
-        .attr("x", (d) => `${d}%`)
-        .attr("y", 0)
-        .attr("height", "100%")
-        .attr("width", "1%")
-        .style("stroke", "green")
-        .style("fill", "none")
-        */
-
-      let binned_data = this.bin_data().filter((ele) => ele.length > 0)
-      console.log(binned_data)
+      svg.select("#eqtlXAxis")
+        .attr("x1", x_scale(this.start))
+        .attr("x2", x_scale(this.stop))
+        .attr("y1", "100%")
+        .attr("y2", "100%")
+        .style("visibility", "visible")
 
       aggs.selectAll("rect")
-        .data(binned_data)
+        .data(this.eqtlDataBinned)
         .join("rect")
           .attr("x", (d) => x_scale(d.x0))
-          .attr("y", "20%")
-          .attr("ry", "10%")
           .attr("width", (d) => x_scale(d.x1) - x_scale(d.x0))
-          .attr("height", "60%")
-          .style("stroke", "red")
-          .style("fill", "none")
-
-      labs.selectAll("text")
-        .data(binned_data)
-        .join("text")
-          .attr("x", (d) => Math.floor((x_scale(d.x0) + x_scale(d.x1))/2))
-          .attr("y", "48%")
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "mathematical")
-          .text((d) => d.length)
-          .style("font-size", "10px")
-      
-
+        .attr("y", (d) => `${100 - y_scale(d.length)}%`)
+          .attr("height", (d) => `${y_scale(d.length)}%`)
+          .style("stroke", "blue")
+          .style("fill", "lightblue")
     },
     debouncedDraw: debounce(function(){
       this.draw()
