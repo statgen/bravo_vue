@@ -116,7 +116,29 @@
         </div>
       </div>
 
-    </div><!-- SNVs tab end -->
+    </div>
+    <!-- SNVs tab end -->
+
+    <!-- eQTL tab -->
+    <div id="eqtl-tab" v-if="showTab.eqtl">
+      <div class="row justify-content-left px-5" >
+        <div class="col-md-6">
+          <div id="eqtl-collection" >
+            <h4 @click="demo">SuSiE eQTLs</h4>
+            EQTL TABLE PLACEHOLDER
+            <!--
+            <EqtlTable/>
+            -->
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-left px-5" >
+        <div class="col-md-12">
+          <EqtlTableDescription/>
+        </div>
+      </div>
+    </div>
+    <!-- eQTL tab end -->
 
   </div>
   <SNVTableAnnotationModal :showModal="showModal" :rowData="modalData" @closeModal="handleCloseModal"/>
@@ -141,6 +163,7 @@ import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
 import EqtlBars        from '@/components/EqtlBars.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
+import EqtlTableDescription      from '@/components/table/EqtlTableDescription.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -156,7 +179,8 @@ export default {
     BpCoordBar,
     RegionSNVTable,
     EqtlBars,
-    SNVTableAnnotationModal
+    SNVTableAnnotationModal,
+    EqtlTableDescription,
   },
   inject: {
     chrom: {default: null},
