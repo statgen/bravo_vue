@@ -1,6 +1,6 @@
 <template>
 <div class="child-component">
-  <div ref="scroller" style="max-height: 80px; display: block; overflow: hidden;">
+  <div ref="scroller" style="max-height: 80px; display: block;">
     <div ref="infoPopup" class="seg__popup">
       <ul class="seg__popup-list">
         <li>{{ popupInfo.title }}</li>
@@ -16,7 +16,8 @@
       Displaying {{ this.eqtlData.length.toLocaleString() }} eQTLs
     </div>
 
-    <svg id="eqtlHist" style="display: block;" width="100%" height="65px" preserveAspectRatio="xMinYMin">
+    <svg id="eqtlHist" style="display: block;" width="100%" height="65px" preserveAspectRatio="xMinYMin"
+      styel="overflow-x: hidden; overflow-y: visible">
       <g id="eqtlDrawing">
         <g id="eqtlMarks"></g>
         <g id="eqtlAggregated"></g>
@@ -24,7 +25,7 @@
       </g>
       <text id="axis-label" x=5 y=5 dominant-baseline="mathematical" writing-mode="sideways-lr"
         style="font-size: 11px; text-anchor: start;">eQTL Count</text>
-      <line id="eqtlXAxis" v-bind:x1="this.leftMargin" x2="100%" y1="100%" y2="100%" 
+      <line id="eqtlXAxis" v-bind:x1="this.leftMargin" x2="100%" y1="100%" y2="100%"
         style="stroke: black; stroke-width: 4px; visibility: hidden"/>
       <g id="eqtlYAxis" v-bind:transform="'translate('+ this.leftMargin +',0)'">
       </g>
@@ -89,8 +90,8 @@ export default {
         method: 'get',
         url: `${this.api}/eqtl/region`,
         params: {chrom: this.chrom, start: this.start, stop: this.stop}
-      }).then( response => { 
-        this.eqtlData = response.data 
+      }).then( response => {
+        this.eqtlData = response.data
         this.eqtlDataBinned = this.bin_data(response.data, this.start, this.stop)
           .filter((ele) => ele.length > 0)
         this.draw()
@@ -146,7 +147,9 @@ export default {
       y_scale.domain([0, count_limit]).range([0, 100])
 
       const y_axis = d3.axisLeft(d3.scaleLinear([0, count_limit], [65,0]))
-        .tickValues([1, Math.floor(count_limit/2), count_limit-1])
+        .tickValues([Math.floor(count_limit/10),
+                     Math.floor(count_limit/2),
+                     Math.floor(9*count_limit/10)])
       y_axis_g.call(y_axis)
 
       svg.select("#eqtlXAxis")
@@ -164,6 +167,7 @@ export default {
         .attr("y", (d) => `${100 - y_scale(d.length)}%`)
           .attr("height", (d) => `${y_scale(d.length)}%`)
           .style("stroke", "blue")
+          .style("stroke-width", "1px")
           .style("fill", "lightblue")
     },
     debouncedDraw: debounce(function(){
@@ -174,15 +178,6 @@ export default {
   mounted: function(){
     this.load_eqtl()
     window.addEventListener("resize", this.debouncedDraw);
-  },
-  beforeUpdate: function(){
-    // TODO: only update highlight line
-    //console.log("eqtl updated")
-    //this.draw()
-  },
-  updated: function(){
-    //console.log("updated")
-    //this.draw()
   },
   unmounted: function(){
     window.removeEventListener("resize", this.debouncedDraw);

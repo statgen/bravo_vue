@@ -111,7 +111,7 @@ export default {
     handleSegMouseover: function(evt, aggregate) {
       // Set the content of the popup
       this.popupInfo.title = aggregate.desc
-      this.popupInfo.identifier = aggregate.id 
+      this.popupInfo.identifier = aggregate.id
       this.popupInfo.type = aggregate.type
       this.popupInfo.loc = `${this.chrom}:${aggregate.start.toLocaleString()}-${aggregate.stop.toLocaleString()}`
 
@@ -123,7 +123,7 @@ export default {
       let overhang_left = box_rect.x < svg_rect.x
       let overhang_right = box_rect.right > svg_rect.right
 
-      // Position the popup box accounting for which side(s) of the background box are visible. 
+      // Position the popup box accounting for which side(s) of the background box are visible.
       let y_pos = box_rect.top - 5
       let x_pos
       if(overhang_left && overhang_right){
@@ -242,7 +242,7 @@ export default {
         .data(this.inputData.aggregates)
         .join("text")
           .attr("id", (d) => `lab-${d.id}`)
-          .attr("x", (d,i) => 
+          .attr("x", (d,i) =>
             this.x_scale((Math.max(d.start, this.segmentRegion[0]) + Math.min(d.stop, this.segmentRegion[1])) / 2) )
           .attr("y", 12)
           .attr("text-anchor", "middle")

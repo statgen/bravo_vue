@@ -15,7 +15,7 @@
     Displaying {{ geneSegsData.aggregates.length }} gene(s)
   </div>
   <div v-if="loaded && (geneSegsData.aggregates.length == 0)" class="statusMessage">No genes in this region</div>
-  <SegBars id="geneSegBars" :highlightGenomePosition="hoveredVarPosition" 
+  <SegBars id="geneSegBars" :highlightGenomePosition="hoveredVarPosition"
     :segmentRegion="[start, stop]" :inputData="geneSegsData" :eqtlData="eqtlData"/>
 </div>
 </template>

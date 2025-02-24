@@ -14,7 +14,7 @@
             <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
           </li>
           <li class="nav-item">
-            <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs ({{eqtlTotal}})</a>
+            <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs ({{eqtl_count}})</a>
           </li>
         </ul>
       </div>
@@ -245,7 +245,7 @@ export default {
         stop_index: null,
         data: null
       },
-      eqtl_counts: { },
+      eqtl_count: 0,
     }
   },
   computed: {
@@ -259,10 +259,6 @@ export default {
       // genomic bounds for child elements in base pairs
       return [this.start, this.stop]
     },
-    eqtlTotal: function() {
-      let eqtl_sum = Object.values(this.eqtl_counts).reduce((val, acc) => acc + val, 0)
-      return eqtl_sum
-    }
   },
   methods:{
     demo: function(){
@@ -376,13 +372,8 @@ export default {
     load_eqtl_count: function(ensembl_id){
       axios
       .get(`${this.api}/eqtl/susie_count`, {params: {ensembl: ensembl_id}})
-        .then( resp => { this.eqtl_counts['susie'] = resp.data })
+        .then( resp => { this.eqtl_count = resp.data })
         .catch(error => { console.log("Error loading SuSiE count:" + error) })
-
-      axios
-      .get(`${this.api}/eqtl/cond_count`, {params: {ensembl: ensembl_id}})
-        .then( resp => { this.eqtl_counts['cond'] = resp.data })
-        .catch(error => { console.log("Error loading Conditional count:" + error) })
     },
   },
   mounted: function() {

@@ -14,6 +14,9 @@
           <li class="nav-item">
             <a :class=tabClass(showTab.snv) href="#snv" @click="toggleTab('snv')">SNVs and Indels</a>
           </li>
+          <li class="nav-item">
+            <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs ({{eqtl_count}})</a>
+          </li>
 
           <!-- Todo: Implement SV visualization
           <li class="nav-item">
@@ -77,9 +80,7 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <GeneSegments v-if="showPanels.genes.val" @close="showPanels.genes.val = false"
-            @gene-click="handleGeneBarClick"
-            :hoveredVarPosition="hoveredVarPosition"
-            :segmentRegions="segmentRegions" :givenWidth="childWidth"/>
+            @gene-click="handleGeneBarClick" :hoveredVarPosition="hoveredVarPosition" />
         </div>
       </div>
 
@@ -92,15 +93,13 @@
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
           <RegionSnvCount v-if="showPanels.snvCount.val" @close="showPanels.snvCount.val = false"
-            :segmentRegions="segmentRegions" :givenWidth="childWidth" :givenMargins="childMargins"
-            :filters="filterArray" :visibleVariants="visibleVariants"/>
+            :segmentRegions="segmentRegions" :filters="filterArray" :visibleVariants="visibleVariants"/>
         </div>
       </div>
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <BpCoordBar :segmentRegions="segmentRegions"
-            :givenWidth="childWidth" :givenMargins="childMargins" />
+          <BpCoordBar :segmentRegions="segmentRegions"/>
         </div>
       </div>
 
@@ -130,6 +129,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faWindowRestore, faDownload, faColumns }
   from '@fortawesome/free-solid-svg-icons'
 import clone from 'just-clone'
+import axios from "axios";
 import RegionInfo      from '@/components/infoblock/RegionInfo.vue'
 import RegionSummaries from '@/components/summary/RegionSummaries.vue'
 import FilterBar       from '@/components/FilterBar.vue'
@@ -161,7 +161,8 @@ export default {
   inject: {
     chrom: {default: null},
     start: {default: null},
-    stop: {default: null}
+    stop: {default: null},
+    api: {default: ''}
   },
   data: function(){
     return {
@@ -202,10 +203,6 @@ export default {
       // values are array of mongo-like filters.
       filter: {},
 
-      //formerly dimensions.width
-      //  width provided to child components.
-      childWidth: 300,
-
       //formerly dimensions.margin
       // standard margins for child component calculations
       childMargins: {
@@ -226,6 +223,7 @@ export default {
       // genomic bounds for child elements in base pairs
       //formergly region.segments.region
       segmentRegions: [this.start, this.stop],
+      eqtl_count: 0
     }
   },
   computed: {
@@ -237,6 +235,12 @@ export default {
     },
   },
   methods: {
+    load_eqtl_count: function(ensembl_id){
+      axios
+      .get(`${this.api}/eqtl/region_count`, {params: {chrom: this.chrom, start: this.start, stop: this.stop}})
+        .then( resp => { this.eqtl_count = resp.data })
+        .catch(error => { console.log("Error loading region count:" + error) })
+    },
     handleOpenModal: function(rowData){
       this.modalData = rowData
       this.showModal = true
@@ -279,9 +283,6 @@ export default {
 
       this.filter[filterCategory] = filtArr
     },
-    handleResize: function() {
-      this.childWidth = this.$el.clientWidth
-    },
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
     },
@@ -296,8 +297,7 @@ export default {
     },
   },
   mounted: function() {
-    this.childWidth = this.$el.clientWidth
-    window.addEventListener('resize', this.handleResize)
+    this.load_eqtl_count()
   },
   beforeUnmount: function() {
     window.removeEventListener('resize', this.handleResize)

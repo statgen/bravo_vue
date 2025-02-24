@@ -21,7 +21,7 @@
         <g id="variantPointers"></g>
       </g>
       <g id="axisGroup" class="hist__axis-label" transform="translate(40,10)"></g>
-      <text id="yAxisTitle" transform="translate(10,50) rotate(-90)" 
+      <text id="yAxisTitle" transform="translate(10,50) rotate(-90)"
         class="hist__axis-title">Variants Count</text>
     </svg>
   </div>
