@@ -95,7 +95,7 @@ export default {
   },
   mounted: function() {
     this.tabulator = new Tabulator(this.$refs.eqtltable, {
-      height: "150px",
+      height: "250px",
       layout: "fitDataStretch",
       placeholder: "No SuiSiE eQTL Data",
       ajaxURL: this.ajaxUrl,

@@ -26,7 +26,7 @@
               <thead>
                 <tr>
                   <th scope="col" style="border-top:none;">{{title}}</th>
-                  <th scope="col" class="d-md-table-cell text-right" style="border-top:none;">Number</th>
+                  <th scope="col" class="d-md-table-cell text-right" style="border-top:none;">{{numericLabel}}</th>
                 </tr>
               </thead>
               <tbody>
@@ -53,6 +53,10 @@ export default {
     title: {
       type: String,
       default: "Summary"
+    },
+    numericLabel: {
+      type: String,
+      default: "Number"
     },
     summaryData: {
       type: Object,

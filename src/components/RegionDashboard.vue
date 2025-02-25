@@ -123,10 +123,10 @@
     <div id="eqtl-tab" v-if="showTab.eqtl">
       <div class="row justify-content-left px-5" >
         <div class="col-md-6">
-          <div id="eqtl-collection" >
-            <h4 @click="demo">eQTLs</h4>
-              <RegionEqtlTable/>
-          </div>
+          <RegionEqtlTable/>
+        </div>
+        <div class="col-md-6">
+          <RegionEqtlSummaries/>
         </div>
       </div>
       <div class="row justify-content-left px-5" >
@@ -162,6 +162,7 @@ import EqtlBars        from '@/components/EqtlBars.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 import EqtlTableDescription      from '@/components/table/EqtlTableDescription.vue'
 import RegionEqtlTable from '@/components/table/RegionEqtlTable.vue'
+import RegionEqtlSummaries from '@/components/summary/RegionEqtlSummaries.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -179,7 +180,8 @@ export default {
     EqtlBars,
     SNVTableAnnotationModal,
     EqtlTableDescription,
-    RegionEqtlTable
+    RegionEqtlTable,
+    RegionEqtlSummaries
   },
   inject: {
     chrom: {default: null},
