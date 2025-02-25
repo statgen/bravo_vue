@@ -124,11 +124,8 @@
       <div class="row justify-content-left px-5" >
         <div class="col-md-6">
           <div id="eqtl-collection" >
-            <h4 @click="demo">SuSiE eQTLs</h4>
-            EQTL TABLE PLACEHOLDER
-            <!--
-            <EqtlTable/>
-            -->
+            <h4 @click="demo">eQTLs</h4>
+              <RegionEqtlTable/>
           </div>
         </div>
       </div>
@@ -164,6 +161,7 @@ import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
 import EqtlBars        from '@/components/EqtlBars.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 import EqtlTableDescription      from '@/components/table/EqtlTableDescription.vue'
+import RegionEqtlTable from '@/components/table/RegionEqtlTable.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -181,6 +179,7 @@ export default {
     EqtlBars,
     SNVTableAnnotationModal,
     EqtlTableDescription,
+    RegionEqtlTable
   },
   inject: {
     chrom: {default: null},

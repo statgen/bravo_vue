@@ -26,7 +26,7 @@
         <div class="col-md-6">
           <div id="eqtl-collection" >
             <h4 @click="demo">SuSiE eQTLs</h4>
-            <EqtlTable/>
+            <GeneEqtlTable/>
           </div>
         </div>
         <div class="col-md-6">
@@ -137,7 +137,7 @@ import GeneSnvCount   from '@/components/histogram/GeneSnvCount.vue'
 import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
-import EqtlTable      from '@/components/table/EqtlTable.vue'
+import GeneEqtlTable  from '@/components/table/GeneEqtlTable.vue'
 import EqtlCondTable  from '@/components/table/EqtlCondTable.vue'
 import EqtlTableDescription  from '@/components/table/EqtlTableDescription.vue'
 
@@ -155,7 +155,7 @@ export default {
     BpCoordBar,
     GeneSNVTable,
     SNVTableAnnotationModal,
-    EqtlTable,
+    GeneEqtlTable,
     EqtlCondTable,
     EqtlTableDescription
   },
