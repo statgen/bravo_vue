@@ -10,8 +10,8 @@ export default {
   },
   computed: {
     /* Needs to be overridden by the extending component */
-    ajaxUrl() { return `${this.api}/eqtl/gene_tissue_count` },
-    ajaxParams() {return {ensemblId: this.ensemblId} }
+    ajaxUrl() { return `${this.api}/eqtl/ensembl_tissue_count` },
+    ajaxParams() {return {ensembl: this.ensemblId} }
   },
 }
 </script>

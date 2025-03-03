@@ -24,16 +24,10 @@
     <div id="eqtl-tab" v-if="showTab.eqtl">
       <div class="row justify-content-left px-5" >
         <div class="col-md-6">
-          <div id="eqtl-collection" >
-            <h4 @click="demo">SuSiE eQTLs</h4>
-            <GeneEqtlTable/>
-          </div>
+          <GeneEqtlTable/>
         </div>
         <div class="col-md-6">
-          <div id="eqtl-collection">
-            <h4>Conditional eQTLs</h4>
-            <EqtlCondTable/>
-          </div>
+          <GeneEqtlSummaries/>
         </div>
       </div>
       <div class="row justify-content-left px-5" >
@@ -140,6 +134,7 @@ import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModa
 import GeneEqtlTable  from '@/components/table/GeneEqtlTable.vue'
 import EqtlCondTable  from '@/components/table/EqtlCondTable.vue'
 import EqtlTableDescription  from '@/components/table/EqtlTableDescription.vue'
+import GeneEqtlSummaries from '@/components/summary/GeneEqtlSummaries.vue'
 
 export default {
   name: 'GeneDashboard',
@@ -157,7 +152,8 @@ export default {
     SNVTableAnnotationModal,
     GeneEqtlTable,
     EqtlCondTable,
-    EqtlTableDescription
+    EqtlTableDescription,
+    GeneEqtlSummaries
   },
   inject: {
     geneId: {default: null},
