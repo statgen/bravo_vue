@@ -1,37 +1,27 @@
 <template>
 <div>
   <h5 id="data-set">Data Set</h5>
-  <p>This is freeze 1RNA for the TOPMed RNA-seq data, containing cis-eQTL analysis results for six tissues:</p>
+  <p>This is freeze2 RNA for the TOPMed RNA-seq data, containing cis-eQTL analysis results for six tissues:</p>
   <ul>
-    <li>Whole blood (N = 6,602)</li>
-    <li>Lung (N = 1,360)</li>
+    <li>Whole blood (N = 6,454)</li>
+    <li>Lung (N = 1,291)</li>
     <li>PBMC (N = 1,265)</li>
     <li>T cells (N = 368)</li>
-    <li>Nasal epithelial (N = 359)</li>
+    <li>Nasal epithelial (N = 355)</li>
     <li>Monocytes (N = 352)</li>
   </ul>
 
   <h5 id="cis-eqtlsusie">Cis-eQTL/SuSiE</h5>
   <p>SuSiE fine-mapping results (using SuSiE [3] implementation in tensorQTL [2]). Data was used from the 95% credible sets discovered. Only genes for which the model converged and at least one credible set was discovered are included.</p>
   <p>By default the SNP posterior inclusion probabilities (PIP) values reported by SuSiE represent an aggregation across single effects; we therefore calculated single-effect PIP values using the Bayes factor matrix <code>(PIP_ij = BF_ij / sum(BF_j)</code>, for SNP i and single effect j, where BF represents Bayes factors and the sum is across SNPs. In practice the difference between the single-effect PIP values and the PIP values reported by SuSiE tends to be extremely minor. A small minority of credible sets were duplicates (credible sets containing the same SNPs and PIP values). Such duplicate credible sets were collapsed into single credible sets.</p>
-  <h6 id="column-descriptions">Column descriptions:</h6>
+  <h6 id="column-descriptions">Data descriptions:</h6>
   <ul>
+    <li><strong>phenotype_id:</strong> gene identifier affected by eQTL</li>
     <li><strong>variant_id:</strong> genetic variant, in format <code>{chromosome}_{position}_{ref}_{alt}</code></li>
-    <li><strong>pip:</strong> SuSiE PIP (essentially, the probability the variant is a causal one for this eQTL signal)</li>
-    <li><strong>cs_id:</strong> Credible set. The cs_id together with phenotype_id (Ensembl id for the gene) together uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
+    <li><strong>pip:</strong> SuSiE posterior inclusion probability. Essentially, the probability the variant is a causal one for this eQTL signal</li>
+    <li><strong>cs_id:</strong> Credible set. The cs_id together with the tissue and phenotype_id (Ensembl id for the gene) together uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
   </ul>
   
-  <h5 id="cis-eqtlconditional">Cis-eQTL/Conditional</h5>
-  <p>Significant independent eQTL signals for each gene (generated using forward-backward linear regression)</p>
-  <h6 id="column-descriptions-1">Column descriptions:</h6>
-  <ul>
-    <li><strong>variant_id</strong>: Genetic variant, in format <code>{chromosome}_{position}_{ref}_{alt}</code></li>
-    <li><strong>pval_beta</strong>: p-value for association between the gene expression and genetic variant, adjusted for multiple testing at the gene level (i.e. testing many variants against this one gene; NOT genome-wide corrected) using the fitted beta distribution (see FastQTL publication [1]). Note that due to underflow, some p-values may be equal to 0.
-    </li>
-    <li><strong>tss_distance</strong>: Distance (signed) between the gene transcription start site and the genetic variant.</li>
-    <li><strong>slope</strong>: Linear regression estimated slope for the allele dosage term when modeling association between gene expression and genetic variant. The effect allele is always the alt allele, such that in the case of a significant association between gene expression and genetic variant, slope greater than 0 indicates that the alt allele favors higher expression of the gene. When there are multiple independent eQTL signals for a gene, this is computed during the backward step, i.e. controlling for each of the gene’s other independent eQTL signals.</li>
-  </ul>
-
   <h5 id="references">References</h5>
   <ul>
     <li>[1] Ongen, H., Buil, A., Brown, A.A., Dermitzakis, E.T., Delaneau, O. (2016). Fast and efficient QTL mapper for thousands of molecular phenotypes. Bioinformatics 32, 1479–1485.</li>

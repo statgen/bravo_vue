@@ -323,6 +323,9 @@ export default {
   },
   mounted: function() {
     this.load_eqtl_count()
+
+    // Respect links to specific tab
+    if(window.location.hash === "#eqtl"){ this.toggleTab("eqtl") }
   },
   beforeUnmount: function() {
     window.removeEventListener('resize', this.handleResize)
