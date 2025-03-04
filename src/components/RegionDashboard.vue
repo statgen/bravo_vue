@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <!-- strucvar tab -->
+    <!-- strucvar tab 
     <div id="structvar-tab" v-if="showTab.structvar">
       <div class="row justify-content-left px-5" >
         <div class="col-md-11">
@@ -41,6 +41,7 @@
         </div>
       </div>
     </div>
+    -->
 
     <!-- SNVs tab -->
     <div id="snv-tab" v-if="showTab.snv">
@@ -86,7 +87,7 @@
 
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <EqtlBars v-if="showPanels.genes.val" :hoveredVarPosition="hoveredVarPosition" />
+          <EqtlCount v-if="showPanels.genes.val" :hoveredVarPosition="hoveredVarPosition" />
         </div>
       </div>
 
@@ -158,7 +159,7 @@ import GeneSegments    from '@/components/GeneSegments.vue'
 import RegionSnvCount  from '@/components/histogram/RegionSnvCount.vue'
 import BpCoordBar      from '@/components/BpCoordBar.vue'
 import RegionSNVTable  from '@/components/table/RegionSNVTable.vue'
-import EqtlBars        from '@/components/EqtlBars.vue'
+import EqtlCount       from '@/components/histogram/EqtlCount.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 import EqtlTableDescription      from '@/components/table/EqtlTableDescription.vue'
 import RegionEqtlTable from '@/components/table/RegionEqtlTable.vue'
@@ -177,7 +178,7 @@ export default {
     RegionSnvCount,
     BpCoordBar,
     RegionSNVTable,
-    EqtlBars,
+    EqtlCount,
     SNVTableAnnotationModal,
     EqtlTableDescription,
     RegionEqtlTable,

@@ -43,7 +43,7 @@ import * as d3 from "d3"
 import axios from "axios";
 
 export default {
-  name: "EqtlBars",
+  name: "EqtlCount",
   setup() {
     const scroller = ref(null)
     const infoPopup = ref(null)
