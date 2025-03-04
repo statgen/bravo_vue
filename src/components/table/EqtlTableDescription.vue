@@ -1,7 +1,7 @@
 <template>
 <div>
   <h5 id="data-set">Data Set</h5>
-  <p>This is freeze2 RNA for the TOPMed RNA-seq data, containing cis-eQTL analysis results for six tissues:</p>
+  <p>This is containing cis-eQTL analysis of freeze2 RNA for the TOPMed RNA-seq data. The publication, <a href="https://doi.org/10.1101/2025.02.19.25322561">"Cross-cohort analysis of expression and splicing quantitative trait loci in TOPMed"</a>, describes the research in detail.  Results presented here are for the following six tissues:</p>
   <ul>
     <li>Whole blood (N = 6,454)</li>
     <li>Lung (N = 1,291)</li>
