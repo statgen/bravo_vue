@@ -23,7 +23,7 @@
         <g id="eqtlAggregated"></g>
         <g id="eqtlLabels"></g>
       </g>
-      <text id="axis-label" x=5 y=5 dominant-baseline="mathematical" writing-mode="sideways-lr"
+      <text id="axis-label" x=0 y=0 dominant-baseline="mathematical" transform="translate(5,60) rotate(-90)"
         style="font-size: 11px; text-anchor: start;">eQTL Count</text>
       <line id="eqtlXAxis" v-bind:x1="this.leftMargin" x2="100%" y1="100%" y2="100%"
         style="stroke: black; stroke-width: 4px; visibility: hidden"/>
