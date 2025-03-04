@@ -31,9 +31,6 @@
           <div class="col-12 col-md-6 mt-3">
             <VariantSusieEqtl :eqtl="this.eqtl_susie"/>
           </div>
-          <div class="col-12 col-md-6 mt-3">
-            <VariantCondEqtl :eqtl="this.eqtl_cond"/>
-          </div>
         </div>
 
         <div class="row">
@@ -85,7 +82,6 @@ import VariantConsequences from '@/components/VariantConsequences'
 import VariantDepth from '@/components/VariantDepth'
 import VariantMetrics from '@/components/VariantMetrics'
 import VariantSusieEqtl from '@/components/VariantSusieEqtl'
-import VariantCondEqtl from '@/components/VariantCondEqtl'
 import Reads from '@/components/Reads'
 import axios from 'axios'
 import {inject} from 'vue'
@@ -103,7 +99,6 @@ export default {
     VariantDepth,
     VariantMetrics,
     VariantSusieEqtl,
-    VariantCondEqtl,
     Reads
   },
   data: function() {

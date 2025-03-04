@@ -132,7 +132,6 @@ import BpCoordBar     from '@/components/BpCoordBar.vue'
 import GeneSNVTable   from '@/components/table/GeneSNVTable.vue'
 import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModal.vue'
 import GeneEqtlTable  from '@/components/table/GeneEqtlTable.vue'
-import EqtlCondTable  from '@/components/table/EqtlCondTable.vue'
 import EqtlTableDescription  from '@/components/table/EqtlTableDescription.vue'
 import GeneEqtlSummaries from '@/components/summary/GeneEqtlSummaries.vue'
 
@@ -151,7 +150,6 @@ export default {
     GeneSNVTable,
     SNVTableAnnotationModal,
     GeneEqtlTable,
-    EqtlCondTable,
     EqtlTableDescription,
     GeneEqtlSummaries
   },
