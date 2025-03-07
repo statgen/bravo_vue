@@ -1,7 +1,7 @@
 <template>
 <div>
   <h5 id="data-set">Data Set</h5>
-  <p>This is containing cis-eQTL analysis of freeze2 RNA for the TOPMed RNA-seq data. The publication, <a href="https://doi.org/10.1101/2025.02.19.25322561">"Cross-cohort analysis of expression and splicing quantitative trait loci in TOPMed"</a>, describes the research in detail.  Results presented here are for the following six tissues:</p>
+  <p>This is containing cis-eQTL analysis of freeze2 RNA for the TOPMed RNA-seq data. The preprint, <a href="https://doi.org/10.1101/2025.02.19.25322561">"Cross-cohort analysis of expression and splicing quantitative trait loci in TOPMed"</a>, describes the research in detail.  Results presented here are for the following six tissues:</p>
   <ul>
     <li>Whole blood (N = 6,454)</li>
     <li>Lung (N = 1,291)</li>
@@ -19,7 +19,7 @@
     <li><strong>phenotype_id:</strong> gene identifier affected by eQTL</li>
     <li><strong>variant_id:</strong> genetic variant, in format <code>{chromosome}_{position}_{ref}_{alt}</code></li>
     <li><strong>pip:</strong> SuSiE posterior inclusion probability. Essentially, the probability the variant is a causal one for this eQTL signal</li>
-    <li><strong>cs_id:</strong> Credible set. The cs_id together with the tissue and phenotype_id (Ensembl id for the gene) together uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
+    <li><strong>cs_id:</strong> Credible set identfier within a tissue and phenotype. The cs_id together with the tissue and phenotype_id (Ensembl id) uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
   </ul>
   
   <h5 id="references">References</h5>
