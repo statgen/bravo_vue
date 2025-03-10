@@ -12,8 +12,7 @@
   </ul>
 
   <h5 id="cis-eqtlsusie">Cis-eQTL/SuSiE</h5>
-  <p>SuSiE fine-mapping results (using SuSiE [3] implementation in tensorQTL [2]). Data was used from the 95% credible sets discovered. Only genes for which the model converged and at least one credible set was discovered are included.</p>
-  <p>By default the SNP posterior inclusion probabilities (PIP) values reported by SuSiE represent an aggregation across single effects; we therefore calculated single-effect PIP values using the Bayes factor matrix <code>(PIP_ij = BF_ij / sum(BF_j)</code>, for SNP i and single effect j, where BF represents Bayes factors and the sum is across SNPs. In practice the difference between the single-effect PIP values and the PIP values reported by SuSiE tends to be extremely minor. A small minority of credible sets were duplicates (credible sets containing the same SNPs and PIP values). Such duplicate credible sets were collapsed into single credible sets.</p>
+  <p>The eQTL table shows the variants in the 95% credible sets from fine-mapping eQTL signals using SuSiE [3] (as implemented in tensorQTL [2]). Here, a 95% credible set is the set of variants that is estimated to contain a causal variant for the eQTL signal with 95% probability. For a given tissue and gene, all variants with the same cs_id are in the same credible set, and variants with greater posterior inclusion probabilities (PIP) are more likely to be the causal variant(s); PIP values range between 0 (unlikely to be the causal variant) and 1 (likely to be the causal variant).</p>
   <h6 id="column-descriptions">Data descriptions:</h6>
   <ul>
     <li><strong>phenotype_id:</strong> gene identifier affected by eQTL</li>
@@ -21,7 +20,7 @@
     <li><strong>pip:</strong> SuSiE posterior inclusion probability. Essentially, the probability the variant is a causal one for this eQTL signal</li>
     <li><strong>cs_id:</strong> Credible set identfier within a tissue and phenotype. The cs_id together with the tissue and phenotype_id (Ensembl id) uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
   </ul>
-  
+
   <h5 id="references">References</h5>
   <ul>
     <li>[1] Ongen, H., Buil, A., Brown, A.A., Dermitzakis, E.T., Delaneau, O. (2016). Fast and efficient QTL mapper for thousands of molecular phenotypes. Bioinformatics 32, 1479–1485.</li>
