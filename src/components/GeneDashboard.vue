@@ -207,7 +207,7 @@ export default {
       start: null,
       stop: null,
       chrom: null,
-      ensemblId: "",
+      ensemblId: null,
 
       // introns may not be needed as it's assumed for genes
       introns: false,
@@ -255,9 +255,6 @@ export default {
     },
   },
   methods:{
-    demo: function(){
-      this.load_eqtl_count(this.ensemblId)
-    },
     handleOpenModal: function(rowData){
       this.modalData = rowData
       this.showModal = true

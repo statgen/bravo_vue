@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    <!-- strucvar tab 
+    <!-- strucvar tab
     <div id="structvar-tab" v-if="showTab.structvar">
       <div class="row justify-content-left px-5" >
         <div class="col-md-11">
@@ -290,6 +290,7 @@ export default {
     toggleTab: function(tabName) {
       this.showTab.snv = false
       this.showTab.structvar = false
+      this.showTab.eqtl = false
       this.showTab[tabName] = true
     },
     tabClass: function(isActive) {

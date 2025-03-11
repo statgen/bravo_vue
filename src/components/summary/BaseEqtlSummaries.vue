@@ -1,6 +1,6 @@
 <template>
   <div class="child-component">
-    <NumericSummaryCard title="Tissue" numericLabel="eQTL Count" :state="loadingState" :summaryData="tissueSummary"/>
+    <NumericSummaryCard title="Tissue" numericLabel="Credible Set Count" :state="loadingState" :summaryData="tissueSummary"/>
   </div>
 </template>
 
@@ -15,12 +15,14 @@ export default {
   },
   inject: {
     api: {default: ''},
-    /* May need additional injects by the extending component */
   },
   computed: {
     /* Needs to be overridden by the extending component */
     ajaxUrl() { return `${this.api}/example` },
-    ajaxParams() {return {param1: "foo"} }
+    ajaxParams() {return null},
+    /* Simple locking function that can be overridden by extending component
+         in order to prevent loading when ajax parameters haven't been resolved. */
+    ready_to_load() { return true },
   },
   data: function() {
     return {
@@ -31,16 +33,16 @@ export default {
   },
   methods: {
     load: function() {
-      console.log("loading eqtl tissue summary")
+      if(this.ready_to_load === false){ return }
       axios
-        .get(this.ajaxUrl, 
+        .get(this.ajaxUrl,
           {params: this.ajaxParams})
-        .then( resp => { 
-          this.tissueSummary = resp.data 
+        .then( resp => {
+          this.tissueSummary = resp.data
           this.loadingState = "loaded"
         })
-        .catch(error => { 
-          console.log("Error loading region tissue count:" + error) 
+        .catch(error => {
+          console.log("Error loading region tissue count:" + error)
           this.loadingState = "failed"
         })
     }

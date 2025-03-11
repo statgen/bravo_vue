@@ -5,13 +5,20 @@ export default {
   name: "GeneEqtlSummaries",
   extends: BaseEqtlSummaries,
   inject: {
-    /* The override to inject appropriate provided data */
-    ensemblId: {default: 0},
+    ensemblId: {default: null},
+  },
+  methods: {
   },
   computed: {
-    /* Needs to be overridden by the extending component */
     ajaxUrl() { return `${this.api}/eqtl/ensembl_tissue_count` },
-    ajaxParams() {return {ensembl: this.ensemblId} }
+    ajaxParams() { return {ensembl: this.ensemblId} },
+    ready_to_load() { return this.ensemblId !== null }
   },
+  watch: {
+    ensemblId: function() {
+      // Handles the case where the ensemblId was not available at mount time.
+      this.load()
+    }
+  }
 }
 </script>

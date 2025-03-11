@@ -56,6 +56,9 @@ export default {
       this.empty = data.length == 0
     },
     tblColumnDefs: function(){
+      return this.baseColumnDefs()
+    },
+    baseColumnDefs: function(){
       return([
         {
           title: "Variant Id",

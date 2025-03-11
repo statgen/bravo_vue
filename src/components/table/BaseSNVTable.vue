@@ -112,9 +112,9 @@ export default {
           visibleRowsData.push(this.tabulator.rowManager.displayRows[0][i].data);
         }
       }
-      return { 
-        firstRowIdx: firstVisibleRowIndex, 
-        lastRowIdx:  lastVisibleRowIndex, 
+      return {
+        firstRowIdx: firstVisibleRowIndex,
+        lastRowIdx:  lastVisibleRowIndex,
         rowsData: visibleRowsData }
     },
     hover: function(variant, hovered) {
@@ -141,7 +141,7 @@ export default {
       let visVars = this.getVisibleVariants();
 
       // make sure that row is hovered after re-rendering on mobile touch screen
-      if (this.hoveredRowPosition != null) { 
+      if (this.hoveredRowPosition != null) {
         var row = this.tabulator.getRowFromPosition(this.hoveredRowPosition);
         row.getElement().classList.add('row-hovered');
       }
@@ -150,7 +150,7 @@ export default {
     //formerly enterMouseEnter callback
     tblRowMouseEnter: function(e, row) {
       // row was hovered from before and mouseleave was never called
-      if ((this.hoveredRowPosition != null) && (this.hoveredRowPosition != row.getPosition())) { 
+      if ((this.hoveredRowPosition != null) && (this.hoveredRowPosition != row.getPosition())) {
         var hoveredRow = this.tabulator.getRowFromPosition(this.hoveredRowPosition);
         hoveredRow.getElement().classList.remove('row-hovered');
         this.$emit("hover", hoveredRow.getPosition(), hoveredRow.getData(), false);
@@ -170,11 +170,11 @@ export default {
     formatCaddValue: function(cell) {
       return(cell.getValue() === null ? "" : cell.getValue().toFixed(2))
     },
-    // function to override to customize column defs. 
+    // function to override to customize column defs.
     tblColumnDefs: function(){
       return this.baseColumnDefs()
     },
-    // common column defs. 
+    // common column defs.
     baseColumnDefs: function(){
       return([
         {

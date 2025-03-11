@@ -60,8 +60,8 @@ export default {
     },
     summaryData: {
       type: Object,
-      default: function(){ 
-        return {foo: 1, bar: 100} 
+      default: function(){
+        return {foo: 1, bar: 100}
       }
     },
     state: {

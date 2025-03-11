@@ -19,8 +19,8 @@ export default {
   emits: ['openModal'],
   computed: {
     // define url to get data appropriate for region snv table
-    ajaxUrl() { 
-      return(`${this.api}/variants/gene/snv/${this.ensemblId}`) 
+    ajaxUrl() {
+      return(`${this.api}/variants/gene/snv/${this.ensemblId}`)
     }
   },
   methods: {
@@ -124,7 +124,7 @@ export default {
       let baseCols = this.baseColumnDefs()
       baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol)
 
-      return baseCols 
+      return baseCols
     },
   }
 }
