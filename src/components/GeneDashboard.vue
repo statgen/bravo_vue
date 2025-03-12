@@ -367,16 +367,17 @@ export default {
         .catch(error => { console.log("Error loading SuSiE count:" + error) })
     },
   },
+  beforeMount: function() {
+    // Respect links to specific tab
+    if(window.location.hash === "#eqtl"){
+      this.toggleTab("eqtl")
+    }
+  },
   mounted: function() {
     this.loadGene()
 
     this.childWidth = this.$el.clientWidth
     window.addEventListener('resize', this.handleResize)
-
-    // Respect links to specific tab
-    if(window.location.hash === "#eqtl"){
-      this.toggleTab("eqtl")
-    }
   },
   beforeUnmount: function() {
     window.removeEventListener('resize', this.handleResize)

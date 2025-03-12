@@ -323,11 +323,13 @@ export default {
       this.hoveredVarPosition = data.pos
     },
   },
-  mounted: function() {
-    this.load_eqtl_count()
-
+  beforeMount: function() {
+    console.log("before mount")
     // Respect links to specific tab
     if(window.location.hash === "#eqtl"){ this.toggleTab("eqtl") }
+  },
+  mounted: function() {
+    this.load_eqtl_count()
   },
   beforeUnmount: function() {
     window.removeEventListener('resize', this.handleResize)
