@@ -18,7 +18,7 @@
     <li><strong>phenotype_id:</strong> gene identifier affected by eQTL</li>
     <li><strong>variant_id:</strong> genetic variant, in format <code>{chromosome}_{position}_{ref}_{alt}</code></li>
     <li><strong>pip:</strong> SuSiE posterior inclusion probability. Essentially, the probability the variant is a causal one for this eQTL signal</li>
-    <li><strong>cs_id:</strong> Credible set identfier within a tissue and phenotype. The cs_id together with the tissue and phenotype_id (Ensembl id) uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
+    <li><strong>cs_id:</strong> Credible set identifier within a tissue and phenotype. The cs_id together with the tissue and phenotype_id (Ensembl id) uniquely identify a credible set. A credible set containing more than one genetic variant will have multiple records.</li>
   </ul>
 
   <h5 id="references">References</h5>
