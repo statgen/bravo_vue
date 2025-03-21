@@ -106,12 +106,11 @@ export default {
     calc_pos_thresholds: function(start, stop){
       let nbins = 200
       let x_step = Math.floor( (stop - start) / nbins)
-      let result = Array(nbins-1)
-        .keys()
-        .map((b) => start + (b+1) * x_step)
-        .toArray()
-      return(result)
-
+      let bin_ends = Array(nbins-1)
+      for(let i = 0; i < nbins -1; i++){
+        bin_ends[i] = x_step * (i+1) + start
+      }
+      return(bin_ends)
     },
     bin_data: function(eqtl_data, start, stop){
       let pos_thresholds = this.calc_pos_thresholds(start, stop)
