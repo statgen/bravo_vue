@@ -94,6 +94,10 @@ export default {
         this.eqtlData = response.data
         this.eqtlDataBinned = this.bin_data(response.data, this.start, this.stop)
           .filter((ele) => ele.length > 0)
+        this.eqtlDataBinned.forEach((ele, idx, arr)=> { 
+          arr[idx].href=`region.html?chrom=${ele[0].chrom}&start=${ele.x0}&stop=${ele.x1}` 
+        })
+        
         this.draw()
       })
     },
@@ -120,6 +124,16 @@ export default {
         .thresholds(pos_thresholds)
       let binned = binner(eqtl_data)
       return binned
+    },
+    fill_rect_attrs: function(rect, x_scale, y_scale){
+        rect
+          .attr("x", (d) => x_scale(d.x0))
+          .attr("width", (d) => x_scale(d.x1) - x_scale(d.x0))
+          .attr("y", (d) => `${100 - y_scale(d.length)}%`)
+          .attr("height", (d) => `${y_scale(d.length)}%`)
+          .style("stroke", "blue")
+          .style("stroke-width", "1px")
+          .style("fill", "lightblue")
     },
     draw: function(){
       const svg = d3.select("#eqtlHist")
@@ -160,10 +174,19 @@ export default {
 
       aggs.selectAll("rect")
         .data(this.eqtlDataBinned)
+        .join(
+          enter => {
+            let sel = enter.append("a").attr("href", (d) => d.href)
+            sel.append("rect").call(this.fill_rect_attrs, x_scale, y_scale)
+            return sel
+          },
+          update => update,
+          exit => exit.remove()
+        )
         .join("rect")
           .attr("x", (d) => x_scale(d.x0))
           .attr("width", (d) => x_scale(d.x1) - x_scale(d.x0))
-        .attr("y", (d) => `${100 - y_scale(d.length)}%`)
+          .attr("y", (d) => `${100 - y_scale(d.length)}%`)
           .attr("height", (d) => `${y_scale(d.length)}%`)
           .style("stroke", "blue")
           .style("stroke-width", "1px")
@@ -171,7 +194,6 @@ export default {
     },
     debouncedDraw: debounce(function(){
       this.draw()
-      console.log("debounced eqtl draw")
     }, 50),
   },
   mounted: function(){
