@@ -2,7 +2,7 @@
     <div class="btn-group mr-1 mt-1 position-static" v-click-outside="handleClickAway">
       <div style="display: inline-block;">
         <button class="btn btn-sm dropdown-toggle" :class="activeClass" v-on:click="showDropDown = !showDropDown">
-          {{compositeTitle}} 
+          {{compositeTitle}}
         </button>
         <div v-if="showDropDown" class="dropdown-menu shadow show">
           <form class="p-2">
@@ -11,7 +11,7 @@
                 <template v-for="(group, groupKey) in nonCollapseFiltSet" :key="groupKey">
                   <ul style="list-style-type: none; padding-left: 0;">
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input" type="checkbox" :value="groupKey" 
+                      <input class="custom-control-input" type="checkbox" :value="groupKey"
                         :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
                       <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
                     </div>
@@ -19,7 +19,7 @@
                     <template v-for="(member, memberKey) in group.members" :key="memberKey">
                       <li>
                         <div class="custom-control custom-checkbox">
-                          <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
+                          <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey"
                                  v-model="member.val" @change="handleMemberToggle(member, group)">
                           <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
                           <small class="form-text text-muted">{{member.desc}}</small>
@@ -40,7 +40,7 @@
                   <div v-if="showHidden">
                     <li>
                       <div class="custom-control custom-checkbox">
-                        <input class="custom-control-input" type="checkbox" :value="groupKey" 
+                        <input class="custom-control-input" type="checkbox" :value="groupKey"
                           :id="groupKey" v-model="group.allTrue" @change="handleGroupToggle(group)">
                         <label class="custom-control-label" :for="groupKey">{{group.title}}</label>
                       </div>
@@ -48,7 +48,7 @@
                       <template v-for="(member, memberKey) in group.members" :key="memberKey">
                         <li>
                           <div class="custom-control custom-checkbox">
-                            <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey" 
+                            <input class="custom-control-input" type="checkbox" :value="memberKey" :id="memberKey"
                                    v-model="member.val" @change="handleMemberToggle(member, group)">
                             <label class="custom-control-label" :for="memberKey">{{member.title}}</label>
                             <small class="form-text text-muted">{{member.desc}}</small>
@@ -100,17 +100,17 @@ export default {
   },
   data: function() {
     return {
-      // persisted form values. Loaded on show. Updated on save. 
+      // persisted form values. Loaded on show. Updated on save.
       pFiltSet: {
         gColorFilter: {
           title: "Example Filter Group",
           members: {
-            red: { 
-              title: "Red", 
+            red: {
+              title: "Red",
               desc: "Is red."
             },
-            green: { 
-              title: "Green", 
+            green: {
+              title: "Green",
               desc: "Is green"
             }
           }
@@ -118,16 +118,16 @@ export default {
         gQCFails:{
           title: "Quality Control Failures",
           members: {
-            mainQC: { 
-              title: "Main Quality Control", 
+            mainQC: {
+              title: "Main Quality Control",
               desc: "Failed primary quality control"
             },
-            secondary: { 
-              title: "Secondary", 
+            secondary: {
+              title: "Secondary",
               desc: "Failed Secondary quality control"
             },
-            alice: { 
-              title: "Project alICE", 
+            alice: {
+              title: "Project alICE",
               desc: "Failed QC for the fictional alICE project"
             }
           }
@@ -159,8 +159,8 @@ export default {
     this.eFiltSet = clone(this.pFiltSet)
   },
   computed: {
-    activeClass() { 
-      if(this.appliedFiltersCount > 0){ 
+    activeClass() {
+      if(this.appliedFiltersCount > 0){
         return('btn-primary')
       }
       else {
