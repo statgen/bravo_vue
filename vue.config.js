@@ -48,6 +48,12 @@ module.exports = {
       title: 'Bravo:About',
       chunks: ['chunk-vendors', 'chunk-common', 'about']
     },
+    vcfs: {
+      entry: 'src/pages/vcfs/main.js',
+      template: 'src/pages/vcfs/vcfs.html',
+      title: 'Bravo:VCFs',
+      chunks: ['chunk-vendors', 'chunk-common', 'vcfs']
+    },
     privacy: {
       entry: 'src/pages/privacy/main.js',
       template: 'src/pages/privacy/privacy.html',

@@ -18,6 +18,7 @@
         <div v-if="!this.loginDisabled">
           <li class="nav-item"><a class="nav-link btn-sm" :href="this.logInOutUrl">{{logInOutText}}</a></li>
         </div>
+        <li class="nav-item"><a class="nav-link btn-sm" href="/vcfs.html">VCFs</a></li>
         <li class="nav-item"><a class="nav-link btn-sm" href="/about.html">About</a></li>
         <li class="nav-item"><a class="nav-link btn-sm" href="/terms.html">Terms</a></li>
         <li class="nav-item"><a class="nav-link btn-sm" href="/privacy.html">Privacy</a></li>

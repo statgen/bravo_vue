@@ -37,13 +37,14 @@
 </template>
 
 <script>
-import NavBar from '../../components/NavBar.vue'
+import NavBar from '@/components/NavBar.vue'
+import PubVcfs from '@/components/PubVcfs.vue'
 import axios from 'axios'
 import {inject} from 'vue'
 
 export default {
   name: 'App',
-  components: {NavBar},
+  components: {NavBar, PubVcfs},
   data() {
     return {
       uiVersion: process.env.VUE_APP_VERSION,
