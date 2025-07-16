@@ -35,7 +35,7 @@ export default {
         headerSort: false,
         width: 150,
         minWidth: 100,
-        visible: this.showCols.consequence,
+        visible: this.initColVis?.consequence,
         formatter: (cell, params, onrendered) => {
           let html = ""
           if ((cell.getValue() != undefined) && (cell.getValue().length > 0)) {
@@ -65,7 +65,7 @@ export default {
         hozAlign: "left",
         width: 125,
         minWidth: 120,
-        visible: this.showCols.annotation,
+        visible: this.initColVis?.annotation,
         formatter: (cell, params, onrendered) => {
           let html = ""
           let annotations = cell.getValue()
@@ -99,7 +99,7 @@ export default {
         hozAlign: "left",
         width: 100,
         minWidth: 95,
-        visible: this.showCols.LOFTEE.val,
+        visible: this.initColVis?.LOFTEE.val,
         formatter: (cell, params, onrendered) => {
           let html = ""
           if (cell.getValue() != undefined) {

@@ -32,23 +32,18 @@ export default {
   },
   emits: ["hover", "scroll"],
   props: {
-    showCols: {
+    initColVis: {
       type: Object,
       default: function(){
         return({
           variantID:   {val: true},
           rsID:        {val: true},
-          consequence: {val: true},
-          annotation:  {val: true},
-          LOFTEE:      {val: true},
-          quality:     {val: true},
-          CADD:        {val: true},
-          nAlleles:    {val: false},
-          het:         {val: true},
-          homAlt:      {val: true},
-          frequency:   {val: true}
         })
       }
+    },
+    colVisChange: {
+      type: Object,
+      default: function(){ return {} }
     },
     filters: {
       type: Array,
@@ -84,7 +79,14 @@ export default {
     doDownload: function() {
       if(this.tabulator == null){ return }
       this.tabulator.download('csv', this.downloadFileName)
-    }
+    },
+    colVisChange: function (newVal, oldVal){
+      if(newVal.visible){
+        this.tabulator.showColumn(newVal.column)
+      } else {
+        this.tabulator.hideColumn(newVal.column)
+      }
+    },
   },
   methods:{
     getVisibleVariants: function() {
@@ -183,7 +185,7 @@ export default {
 					headerTooltip: "chrom-position-ref-alt",
           width: 130,
           field: "variant_id",
-          visible: this.showCols.variantID,
+          visible: this.initColVis?.variantID,
           formatter: (cell) => { return `<a href='variant.html?id=${cell.getValue()}'>${cell.getValue()}</a>`; }
         },
         {
@@ -192,7 +194,7 @@ export default {
 					headerTooltip: "Reference SNP (rs) number is a locus accession for a variant type assigned by dbSNP.",
           width: 100,
           field: "rsids",
-          visible: this.showCols.rsID.val,
+          visible: this.initColVis?.rsID.val,
           formatter: (cell) => {
             var html = "";
             cell.getValue().forEach(v => {
@@ -214,7 +216,7 @@ export default {
           field: "filter",
           width: 78,
           hozAlign: "left",
-          visible: this.showCols.quality.val,
+          visible: this.initColVis?.quality.val,
           formatter: (cell, params, onrendered) => {
             var html = "";
             cell.getValue().forEach( v => {
@@ -238,7 +240,7 @@ export default {
           field: "cadd_phred",
           width: 80,
           hozAlign: "left",
-          visible: this.showCols.CADD.val,
+          visible: this.initColVis?.CADD.val,
           formatter: this.formatCaddValue
         },
         {
@@ -247,7 +249,7 @@ export default {
           field: "allele_num",
           width: 88,
           hozAlign: "left",
-          visible: this.showCols.nAlleles.val,
+          visible: this.initColVis?.nAlleles.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -257,7 +259,7 @@ export default {
           field: "het_count",
           width: 80,
           hozAlign: "left",
-          visible: this.showCols.het.val,
+          visible: this.initColVis?.het.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
@@ -267,16 +269,16 @@ export default {
           field: "hom_count",
           width: 90,
           hozAlign: "left",
-          visible: this.showCols.homAlt.val,
+          visible: this.initColVis?.hom.val,
           formatter: (cell, params, onrendered) => cell.getValue().toLocaleString()
         },
         {
           title: "Frequency %",
-          titleDownload: "Frequency %",
+          titleDownload: "Frequency",
           field: "allele_freq",
           width: 125,
           hozAlign: "left",
-          visible: this.showCols.frequency.val,
+          visible: this.initColVis?.frequency.val,
           formatter: (cell, params, onrendered) => `${(cell.getValue() * 100).toPrecision(3)}%`,
         },
       ])

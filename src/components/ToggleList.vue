@@ -47,7 +47,7 @@ export default {
         }
       }
     },
-    icon: { 
+    icon: {
       default: faEllipsisV
     }
   },

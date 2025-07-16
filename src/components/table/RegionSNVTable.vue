@@ -15,8 +15,8 @@ export default {
   emits: ['openModal'],
   computed: {
     // define url to get data appropriate for region snv table
-    ajaxUrl() { 
-      return(`${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}`) 
+    ajaxUrl() {
+      return(`${this.api}/variants/region/snv/${this.chrom}-${this.start}-${this.stop}`)
     }
   },
   methods: {
@@ -31,7 +31,7 @@ export default {
         headerSort: false,
         width: 120,
         minWidth: 100,
-        visible: this.showCols.consequence,
+        visible: this.initColVis?.consequence.val ?? true,
         formatter: (cell, params, onrendered) => {
           let html = ""
           if ((cell.getValue() != undefined) && (cell.getValue().length > 0)) {
@@ -61,12 +61,12 @@ export default {
         hozAlign: "left",
         width: 165,
         minWidth: 120,
-        visible: this.showCols.annotation,
+        visible: this.initColVis?.annotation.val,
         formatter: (cell, params, onrendered) => {
           let html = ""
           let annotations = cell.getValue()
           if (annotations.length > 0) {
-            let title = snvConsequences.lookup([annotations[0]]).title 
+            let title = snvConsequences.lookup([annotations[0]]).title
             let cssClass = `badge--${annotations[0]}`
             html += `<div class="snvtable__cell--clickable" role="button">`
             html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
@@ -94,7 +94,7 @@ export default {
         field: "annotation.region.lof",
         hozAlign: "left",
         minWidth: 95,
-        visible: this.showCols.LOFTEE.val,
+        visible: this.initColVis?.LOFTEE.val,
         formatter: (cell, params, onrendered) => {
           let html = ""
           if (cell.getValue() != undefined) {
@@ -119,7 +119,7 @@ export default {
       let baseCols = this.baseColumnDefs()
       baseCols.splice(2, 0, consequenceCol, annoCol, lofteeCol)
 
-      return baseCols 
+      return baseCols
     },
   }
 }

@@ -51,7 +51,7 @@
             <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
               @varToggled="handleInfoViewToggle" :icon="panelsIcon"/>
             <ToggleList list-title="Columns" list-group="showCols" :list-vars="showCols"
-              @varToggled="handleInfoViewToggle" :icon="columnsIcon"/>
+              @varToggled="handleColumnVisToggle" :icon="columnsIcon"/>
 
             <div class="d-none d-sm-inline" style="display: inline-block;">
               <button type="button" class="parentMenu__button" v-on:click="doDownload++">
@@ -111,9 +111,9 @@
       </div>
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <RegionSNVTable :filters="filterArray" :doDownload="doDownload"
-            @scroll='handleTableScroll' @hover='handleTableHover'
-            @openModal="handleOpenModal"/>
+          <RegionSNVTable :filters="filterArray" :doDownload="doDownload" 
+            :initColVis="showCols" :colVisChange='colVisChange'
+            @scroll='handleTableScroll' @hover='handleTableHover' @openModal="handleOpenModal"/>
         </div>
       </div>
 
@@ -209,18 +209,19 @@ export default {
         snvCount:  {title: "Variants Count", val: true},
       },
       showCols: {
-        variantID:      { title: "Variant ID", val: true},
-        rsID:           { title: "rsID", val: true},
-        consequence:    { title: "Consequence", val: true},
-        annotation:     { title: "Annotation", val: true},
-        LOFTEE:         { title: "LOFTEE", val: true},
-        quality:        { title: "Quality", val: true},
-        CADD:           { title: "CADD", val: true},
-        nAlleles:       { title: "N Alleles", val: false},
-        het:            { title: "Het", val: true},
-        homAlt:         { title: "Hom Alt", val: true},
-        frequency:      { title: "Frequency (%)", val: true}
+        variantID:   { title: "Variant ID",    field: "variant_id",  val: true},
+        rsID:        { title: "rsID",          field: "rsids",       val: true},
+        consequence: { title: "Consequence",   field: "annotation.gene.hgvs",        val: true},
+        annotation:  { title: "Annotation",    field: "annotation.gene.consequence", val: true},
+        LOFTEE:      { title: "LOFTEE",        field: "annotation.gene.lof",         val: true},
+        quality:     { title: "Quality",       field: "filter",      val: true},
+        CADD:        { title: "CADD",          field: "cadd_phred",  val: true},
+        nAlleles:    { title: "N Alleles",     field: "allele_num",  val: false},
+        het:         { title: "Het",           field: "het_count",   val: true},
+        hom:         { title: "Hom",           field: "hom_count",   val: true},
+        frequency:   { title: "Frequency (%)", field: "allele_freq", val: true}
       },
+      colVisChange: {column: null, visible: false},
       showTableMenuDropDown: false,
       showModal: false,
       modalData: {},
@@ -313,6 +314,11 @@ export default {
     handleInfoViewToggle: function(listGroup, varKey){
       this[listGroup][varKey].val = !this[listGroup][varKey].val
     },
+    handleColumnVisToggle: function(listGroup, varKey){
+      this.handleInfoViewToggle(listGroup, varKey)
+      this.colVisChange = {column: this[listGroup][varKey].field,
+                           visible: this[listGroup][varKey].val}
+    },
     handleTableScroll: function(start_idx, end_idx, rows_data){
       this.visibleVariants = {
         start_index: start_idx,
@@ -324,7 +330,6 @@ export default {
     },
   },
   beforeMount: function() {
-    console.log("before mount")
     // Respect links to specific tab
     if(window.location.hash === "#eqtl"){ this.toggleTab("eqtl") }
   },
