@@ -17,18 +17,13 @@
           <li class="nav-item">
             <a :class=tabClass(showTab.eqtl) href="#eqtl" @click="toggleTab('eqtl')">eQTLs ({{eqtl_count}})</a>
           </li>
-
-          <!-- Todo: Implement SV visualization
           <li class="nav-item">
             <a :class=tabClass(showTab.structvar) href="#structvar" @click="toggleTab('structvar')">Structural Variants</a>
           </li>
-          -->
-
         </ul>
       </div>
     </div>
 
-    <!-- strucvar tab
     <div id="structvar-tab" v-if="showTab.structvar">
       <div class="row justify-content-left px-5" >
         <div class="col-md-11">
@@ -41,7 +36,6 @@
         </div>
       </div>
     </div>
-    -->
 
     <!-- SNVs tab -->
     <div id="snv-tab" v-if="showTab.snv">
@@ -164,6 +158,7 @@ import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModa
 import EqtlTableDescription      from '@/components/table/EqtlTableDescription.vue'
 import RegionEqtlTable from '@/components/table/RegionEqtlTable.vue'
 import RegionEqtlSummaries from '@/components/summary/RegionEqtlSummaries.vue'
+import StructVarBars from '@/components/StructVarBars.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -182,7 +177,8 @@ export default {
     SNVTableAnnotationModal,
     EqtlTableDescription,
     RegionEqtlTable,
-    RegionEqtlSummaries
+    RegionEqtlSummaries,
+    StructVarBars
   },
   inject: {
     chrom: {default: null},
