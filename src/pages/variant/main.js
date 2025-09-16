@@ -9,8 +9,8 @@ import { api_url } from '@/ApiUrlResolution'
 import * as Sentry from '@sentry/vue'
 
 const app = createApp(App)
-if("VUE_SENTRY_DSN" in process.env){
-  Sentry.init({ app, dsn: process.env.VUE_SENTRY_DSN, sendDefaultPii: false })
+if(process.env.hasOwnProperty("VUE_APP_SENTRY_DSN") && process.env.VUE_APP_SENTRY_DSN.length > 0){
+  Sentry.init({ app, dsn: process.env.VUE_APP_SENTRY_DSN, sendDefaultPii: false })
 }else{
   console.log("Sentry.io not enabled for non-production build")
 }

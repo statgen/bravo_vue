@@ -1,10 +1,10 @@
 {
   "name": "bravue",
-  "version": "0.23.1",
+  "version": "0.23.4",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --mode production",
     "build_staging": "NODE_ENV=production vue-cli-service build --mode staging",
     "make_tar": "scripts/make_dist_tar.sh $npm_package_version prod",
     "make_tar_staging": "scripts/make_dist_tar.sh $npm_package_version staging",
