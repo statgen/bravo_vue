@@ -33,3 +33,6 @@ pnpm-debug.log*
 
 # Development debug pages
 /src/pages/debug
+
+# Sentry Config File
+.sentryclirc

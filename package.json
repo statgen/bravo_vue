@@ -4,13 +4,14 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --mode production",
+    "build": "vue-cli-service build --mode production && npm run sentry:sourcemaps",
     "build_staging": "NODE_ENV=production vue-cli-service build --mode staging",
     "make_tar": "scripts/make_dist_tar.sh $npm_package_version prod",
     "make_tar_staging": "scripts/make_dist_tar.sh $npm_package_version staging",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "dbg": "webpack -h"
+    "dbg": "webpack -h",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org csg --project bravo-vue ./dist && sentry-cli sourcemaps upload --org csg --project bravo-vue ./dist"
   },
   "dependencies": {
     "@coreui/vue": "^4.4.0",
@@ -18,6 +19,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-4",
+    "@sentry/cli": "^2.53.0",
     "@sentry/vue": "^10.11.0",
     "@vue/cli": "^5.0.0-rc.0",
     "axios": "^1.7.7",
