@@ -76,7 +76,7 @@ export default {
   computed: {
     consequences: function() {
       let consequences = [];
-      this.variant.annotation.genes.forEach( gene => {
+      this.variant.annotation?.genes.forEach( gene => {
         gene.transcripts.forEach( transcript => {
           let effects = []
           transcript.consequence.forEach(e => { effects.push(e) })
