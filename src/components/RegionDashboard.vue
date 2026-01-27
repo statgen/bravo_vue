@@ -24,13 +24,19 @@
       </div>
     </div>
 
+    <!-- Structural Variants tab -->
     <div id="structvar-tab" v-if="showTab.structvar">
       <div class="row justify-content-left px-5" >
-        <div class="col-md-11">
+        <div class="col-md-12">
           <h4>Structural Variants Visual</h4>
-          <pre> Visualization Placeholder </pre>
+          <StructVarBars/>
         </div>
-        <div class="col-md-11">
+        <div class="row justify-content-left">
+          <div class="col-md-12 px-5" v-if="positionResolved">
+            <BpCoordBar :segmentRegions="segmentRegions"/>
+          </div>
+        </div>
+        <div class="col-md-12">
           <h4>Structural Variants Description</h4>
           <pre> Description Placeholder </pre>
         </div>

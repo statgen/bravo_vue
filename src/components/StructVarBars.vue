@@ -32,22 +32,21 @@ export default {
       FontAwesomeIcon,
   },
   inject: {
+    api: {default: ''},
     chrom: {default: '11'},
     start: {default: 200000},
     stop:  {default: 201000}
   },
   props: {
-    structVarData: {
-      type: Array,
-      default: function(){return []}
-    },
     segmentRegions: {
       type: Array,
       default: function(){return [100000, 101000]}
     },
   },
   data: function() {
-    return {}
+    return {
+      structVarData: []
+    }
   },
   computed: {
     numStructVars() {
@@ -56,6 +55,29 @@ export default {
     },
   },
   methods: {
+    make_sv_id: function(svInfo){
+      return `${svInfo.sv_type}_${svInfo.chrom}:${svInfo.pos}-${svInfo.end}`
+    },
+    loadData: function(){
+      return axios
+        .get(`${this.api}/sv/region`,
+          {params: {chrom: this.chrom, start: this.start, stop: this.stop}})
+        .then( resp => {
+          this.structVarData = resp.data
+          this.draw()
+
+          // debug
+          console.log(resp.data)
+
+
+        }).catch(error => {
+          console.log("Error loading structvars:" + error)
+          this.loaded = false;
+          this.loading = false;
+          this.failed = true;
+        })
+
+    },
     draw: function(){
       let y_scale = d3.scaleOrdinal()
       let x_scale = d3.scaleLinear()
@@ -113,14 +135,27 @@ export default {
           .attr("y1", row_mid)
           .attr("y2", row_mid)
           .attr("transform", (d,i) => `translate(0,${y_scale(i)})`)
-          .attr("stroke-width", 12)
+          .attr("stroke-width", 20)
           .attr("class", (d,i) => `sv-bars__variant--${d.sv_type}`)
+
+      // Generate Labels using the gene bounds or region bounds as appropriate.
+      lblSect.selectAll("text")
+        .data(this.structVarData)
+        .join("text")
+          .attr("id", (d) => `lab-${d.pos}`)
+          .attr("x", (d,i) => x_scale( (Math.max(d.pos, this.start) + Math.min(d.end, this.stop))/2 ))
+          .attr("y", row_mid+2)
+          .attr("text-anchor", "middle")
+          .style("font-family", "sans-serif")
+          .style("font-size", "11px")
+          .attr("transform", (d,i) => `translate(0,${y_scale(i)})`)
+          .text((d) => this.make_sv_id(d))
 
     },
     debouncedDraw: debounce(function(){this.draw()}, 50),
   },
   mounted: function(){
-    this.draw()
+    this.loadData()
     window.addEventListener("resize", this.debouncedDraw);
   },
   unmounted: function(){
