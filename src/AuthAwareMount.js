@@ -35,7 +35,13 @@ function authExpectedMount(app, mountPoint){
       }else{
         redirectToLogin()
       }
+    }).catch((err) => {
+      console.log("auth check error occurred")
+      app.provide('user', null)
+      app.provide('loginDisabled', false)
+      app.mount(mountPoint)
     })
+
 }
 
 // Redirect for pages using api endpoints expected to have a terms agreement requirement.
@@ -75,6 +81,11 @@ function authAwareMount(app, mountPoint){
       app.provide('user', resp.data.user)
       app.provide('loginDisabled', resp.data.login_disabled)
       app.provide('agreedToTerms', resp.data.agreed_to_terms)
+      app.mount(mountPoint)
+    }).catch((err) => {
+      app.provide('user', null)
+      app.provide('loginDisabled', false)
+      app.provide('agreedToTerms', false)
       app.mount(mountPoint)
     })
 }
