@@ -44,7 +44,11 @@ export default {
     }).then(resp => {
       if(resp.ok){
         resp.json().then(data => { this.process_news(data) })
+      } else {
+        console.log("News data is unavailable")
       }
+    }).catch(err => {
+      console.log("Problem fetching news data")
     })
   },
 }
