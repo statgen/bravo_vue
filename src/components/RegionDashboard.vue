@@ -26,16 +26,27 @@
 
     <!-- Structural Variants tab -->
     <div id="structvar-tab" v-if="showTab.structvar">
-      <div class="row justify-content-left px-5" >
-        <div class="col-md-12">
-          <h4>Structural Variants Visual</h4>
+
+      <div class="row justify-content-left" >
+        <div class="col-md px-5">
           <StructVarBars/>
         </div>
-        <div class="row justify-content-left">
-          <div class="col-md-12 px-5" v-if="positionResolved">
-            <BpCoordBar :segmentRegions="segmentRegions"/>
-          </div>
+      </div>
+
+      <div class="row" >
+        <div class="col-md px-5" v-if="positionResolved">
+          <BpCoordBar :segmentRegions="segmentRegions"/>
         </div>
+      </div>
+
+      <!-- DEBUG -->
+      <div class="row justify-content-left">
+        <div class="col-md px-5" v-if="positionResolved">
+          <SeqDepth :hoveredVarPosition="hoveredVarPosition" :segmentRegions="segmentRegions"/>
+        </div>
+      </div>
+
+      <div class="row justify-content-left" >
         <div class="col-md-12">
           <h4>Structural Variants Description</h4>
           <pre> Description Placeholder </pre>
@@ -45,7 +56,7 @@
 
     <!-- SNVs tab -->
     <div id="snv-tab" v-if="showTab.snv">
-      <div class="row justify-content-left px-5">
+      <div class="row justify-content-left">
         <div class="col-md-5">
           <div >
             <ToggleList list-title="Panels" list-group="showPanels" :list-vars="showPanels"
@@ -334,6 +345,7 @@ export default {
   beforeMount: function() {
     // Respect links to specific tab
     if(window.location.hash === "#eqtl"){ this.toggleTab("eqtl") }
+    else if(window.location.hash === "#structvar"){ this.toggleTab("structvar") }
   },
   mounted: function() {
     this.load_eqtl_count()

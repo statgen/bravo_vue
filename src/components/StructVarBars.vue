@@ -1,13 +1,20 @@
 <template>
 <div class="child-component">
   <div id="info-banner" class="bravo-info-message">Displaying {{ numStructVars }} structural variant(s)</div>
-  <div ref="scroller" style="max-height: 200px; display: block; overflow: hidden scroll;">
+
+  <div ref="scroller" style="max-height: 200px; overflow-y: scroll;">
     <svg id="SvBarsSvg" style="display: block; overflow-x: visible" width="100%" preserveAspectRatio="xMinYMin">
-      <g id="SvBarsDrawing">
+      <clipPath id="sv-area-clip">
+        <rect id="sv-clip-rect" x="0%" y="0%" width="100%" height="100%"></rect>
+      </clipPath>
+      <g id="SvBarsDrawing" clip-path="url(#sv-area-clip)">
         <g id="backgroundBoxes" class="tx__background"></g>
         <g id="variantsSection" class="tx__bars"></g>
         <g id="labelSection" class="tx__label"></g>
       </g>
+      <rect id="debug-blue" x="0" y="0" width="1%" height="100%" fill="blue"></rect>
+      <rect id="debug-red" x="1144" y="0" width="1%" height="100%" fill="red" ></rect>
+
     </svg>
   </div>
 </div>
@@ -67,8 +74,8 @@ export default {
           this.draw()
 
           // debug
+          console.log("Structvar")
           console.log(resp.data)
-
 
         }).catch(error => {
           console.log("Error loading structvars:" + error)
@@ -93,9 +100,9 @@ export default {
       const y_discrete_range = Array.from(y_indexes, (_,i) => i * row_height)
 
       // Alightment values for figures that use left hand axis.
-      const axis_label_width = 40
+      const left_margin = 40
       const right_margin = 10
-      const x_range_limit = container_width - axis_label_width - right_margin
+      const x_range_limit = container_width - left_margin - right_margin
 
       // Relevant containers
       const svg = d3.select("#SvBarsSvg")
@@ -104,13 +111,21 @@ export default {
       const lblSect = svg.select("#labelSection")
 
       x_scale.domain([this.start, this.stop])
-                  .range([0,x_range_limit])
+                  .range([left_margin, x_range_limit])
 
       y_scale.domain(y_indexes)
                   .range(y_discrete_range)
 
+      // Clip out of bounds data
+      svg.select("#sv-clip-rect")
+        .attr("x", x_scale(this.start))
+        .attr("width", x_scale(this.stop))
+
+      // debug
+      console.log(`sv clip x:${x_scale(this.start)} w:${x_scale(this.stop)}`)
+
       // Set dimensions and scale x axis data to viewbox
-      svg.attr("viewBox", `-4 0 ${container_width} ${container_height + 4}`)
+      svg.attr("viewBox", `0 0 ${container_width} ${container_height}`)
 
       bkgds
         .selectAll("rect")
