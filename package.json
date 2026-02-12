@@ -22,7 +22,7 @@
     "@sentry/cli": "^2.53.0",
     "@sentry/vue": "^10.11.0",
     "@vue/cli": "^5.0.0-rc.0",
-    "axios": "^1.7.7",
+    "axios": "^1.13.5",
     "bootstrap": "^4.6.0",
     "colors": "1.4.0",
     "core-js": "^3.6.5",
