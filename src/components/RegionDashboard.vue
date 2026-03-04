@@ -29,7 +29,7 @@
 
       <div class="row justify-content-left" >
         <div class="col-md px-5">
-          <StructVarBars/>
+          <StructVarBars v-on:svIdChange="handleSvIdChange"/>
         </div>
       </div>
 
@@ -45,9 +45,16 @@
           <SeqDepth :hoveredVarPosition="hoveredVarPosition" :segmentRegions="segmentRegions"/>
         </div>
       </div>
+      <!-- END DEBUG -->
 
       <div class="row justify-content-left" >
-        <div class="col-md-12">
+        <div class="col-md px-5">
+          <StructVarDepth :svId="svIdSelected" />
+        </div>
+      </div>
+
+      <div class="row justify-content-left" >
+        <div class="col-md px-5">
           <h4>Structural Variants Description</h4>
           <pre> Description Placeholder </pre>
         </div>
@@ -175,7 +182,8 @@ import SNVTableAnnotationModal   from '@/components/table/SNVTableAnnotationModa
 import EqtlTableDescription      from '@/components/table/EqtlTableDescription.vue'
 import RegionEqtlTable from '@/components/table/RegionEqtlTable.vue'
 import RegionEqtlSummaries from '@/components/summary/RegionEqtlSummaries.vue'
-import StructVarBars from '@/components/StructVarBars.vue'
+import StructVarBars   from '@/components/StructVarBars.vue'
+import StructVarDepth  from '@/components/StructVarDepth.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -195,7 +203,8 @@ export default {
     EqtlTableDescription,
     RegionEqtlTable,
     RegionEqtlSummaries,
-    StructVarBars
+    StructVarBars,
+    StructVarDepth
   },
   inject: {
     chrom: {default: null},
@@ -263,7 +272,10 @@ export default {
       // genomic bounds for child elements in base pairs
       //formergly region.segments.region
       segmentRegions: [this.start, this.stop],
-      eqtl_count: 0
+      eqtl_count: 0,
+
+      // structural variant selected
+      svIdSelected: null,
     }
   },
   computed: {
@@ -289,9 +301,10 @@ export default {
       this.showModal = false }
     ,
     handleGeneBarClick: function(evt){
-      console.log("geneClick")
-      console.log("gene.html?id="+evt.target.__data__.gene_name)
       window.location.href="gene.html?id="+evt.target.__data__.gene_name
+    },
+    handleSvIdChange: function(sv_id){
+      this.svIdSelected = sv_id
     },
     togglePanelAttr: function(attrName) {
       this[attrName] = !this[attrName]

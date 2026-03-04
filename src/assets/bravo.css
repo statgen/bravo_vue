@@ -1,8 +1,21 @@
+/* Global color declarations */
+:root {
+  --c-outer-space:      #2c3e50;
+  --c-azure-radiance:   #007bff;
+  --c-science-blue:     #0062cc;
+  --c-light-iron:       #ced4da;
+  --c-white-smoke:      #eeeeee;
+  --c-star-dust:        #999999;
+  --c-chartreuse:       #7bff00;
+  --c-purple-heart:     #8400ff;
+  --c-atomic-tangarine: #ffa37c;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: var(--c-outer-space);
 }
 
 .annoModal__badge {
@@ -39,8 +52,8 @@
   padding: 0px 7px 0px 7px;
   margin: 1px 1px 1px 1px;
   color: white;
-  background-color: #007bff;
-  border: 1px solid #007bff;
+  background-color: var(--c-azure-radiance);
+  border: 1px solid var(--c-azure-radiance);
   border-radius: 2px;
   box-shadow: none;
 }
@@ -82,7 +95,7 @@
 .snvtable__cell--clickable {
   cursor: pointer;
   border-radius: 6px;
-  border: 1px solid #2c3e50;
+  border: 1px solid var(--c-outer-space);
   margin: 0px;
   text-align: center;
   box-shadow: 0 0 2px -1px rgba(0,0,0,0.15);
@@ -227,6 +240,64 @@
   word-wrap: break-word;
 }
 
+.sv__background {
+  stroke: none;
+  fill: white;
+}
+
+.sv__bars {
+  stroke-width: 2px;
+  stroke: darkgray;
+  fill: lightgray;
+  cursor: pointer;
+}
+
+.sv__bar--selected {
+  stroke: black;
+  stroke-width: 4px;
+  fill-opacity: 0.7;
+  cursor: pointer;
+}
+
+.sv__dup-box {
+  fill: var(--c-chartreuse);
+}
+
+.sv__del-box {
+  fill: var(--c-purple-heart);
+}
+
+.sv__inv-box {
+  fill: var(--c-azure-radiance);
+}
+
+.sv__icon {
+  display:inline;
+  fill: white;
+  opacity:0.4;
+  stroke:#000;
+  stroke-width:.6;
+  stroke-linecap:round
+}
+
+.sv__text {
+  font-family: sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.depth__path {
+  fill: var(--c-atomic-tangarine);
+  stroke-width: 0.1;
+  stroke: black;
+}
+
+.genome-pos__highlight {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke: #e77f00;
+}
+
 
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */
@@ -289,8 +360,8 @@
   margin-left: 1px;
   color: white;
   outline: none;
-  background-color: #007bff;
-  border: 1px solid #007bff;
+  background-color: var(--c-azure-radiance);
+  border: 1px solid var(--c-azure-radiance);
   border-radius: 2px;
   box-shadow: none;
 }
@@ -299,11 +370,11 @@
   padding: 0px;
   width: 32px;
   height: 32px;
-  color: #007bff;
+  color: var(--c-azure-radiance);
   font-size: 20px;
   outline: none;
-  background-color: #ffffff;
-  border: 2px solid #007bff;
+  background-color: white;
+  border: 2px solid var(--c-azure-radiance);
   border-radius: 50%;
   box-shadow: none;
   z-index: 998;
@@ -342,8 +413,8 @@
   color: white;
   font-size: 12px;
   outline: none;
-  background-color: #007bff;
-  border: 1px solid #007bff;
+  background-color: var(--c-azure-radiance);
+  border: 1px solid var(--c-azure-radiance);
   border-radius: 2px;
   box-shadow: none;
 

@@ -4,17 +4,32 @@
 
   <div ref="scroller" style="max-height: 200px; overflow-y: scroll;">
     <svg id="SvBarsSvg" style="display: block; overflow-x: visible" width="100%" preserveAspectRatio="xMinYMin">
+      <defs>
+        <pattern id="pINV" width="24" height="24" patternUnits="userSpaceOnUse">
+            <rect x=0 y=0 height=24 width=24 class="sv__inv-box"/>
+            <path class="sv__icon" d="M15.646 22.095v-3.601H3v-2.702h12.647V12.19l6.844 4.953zM8.64 12.095V8.494h12.647V5.792H8.64V2.19L1.796 7.143Z"/>
+        </pattern>
+        <pattern id="pDUP" width="24" height="24" patternUnits="userSpaceOnUse">
+          <rect x=0 y=0 height=24 width=24 class="sv__dup-box"/>
+          <path class="sv__icon" d="M13.513 10.571h8.37v2.897h-8.37v8.414h-3.026V13.47h-8.37V10.57h8.37V2.118h3.026z"/>
+        </pattern>
+        <pattern id="pDEL" width="24" height="24" patternUnits="userSpaceOnUse">
+          <rect x=0 y=0 height=24 width=24 class="sv__del-box"/>
+          <path class="sv__icon" d="M22 10v4H2v-4" style="stroke-width:1.0"/>
+        </pattern>
+        <filter id="bkgd-mask" x="0" y="0" width="1" height="1">
+          <feFlood flood-color="white"/>
+          <feComposite in="SourceGraphic"/>
+        </filter>
+      </defs>
       <clipPath id="sv-area-clip">
         <rect id="sv-clip-rect" x="0%" y="0%" width="100%" height="100%"></rect>
       </clipPath>
       <g id="SvBarsDrawing" clip-path="url(#sv-area-clip)">
-        <g id="backgroundBoxes" class="tx__background"></g>
-        <g id="variantsSection" class="tx__bars"></g>
+        <g id="backgroundBoxes" class="sv__background"></g>
+        <g id="variantsSection" class="sv__bars"></g>
         <g id="labelSection" class="tx__label"></g>
       </g>
-      <rect id="debug-blue" x="0" y="0" width="1%" height="100%" fill="blue"></rect>
-      <rect id="debug-red" x="1144" y="0" width="1%" height="100%" fill="red" ></rect>
-
     </svg>
   </div>
 </div>
@@ -50,9 +65,11 @@ export default {
       default: function(){return [100000, 101000]}
     },
   },
+  emits: ['svIdChange'],
   data: function() {
     return {
-      structVarData: []
+      structVarData: [],
+      selectedSvRect: null
     }
   },
   computed: {
@@ -73,17 +90,23 @@ export default {
           this.structVarData = resp.data
           this.draw()
 
-          // debug
-          console.log("Structvar")
-          console.log(resp.data)
-
         }).catch(error => {
           console.log("Error loading structvars:" + error)
           this.loaded = false;
           this.loading = false;
           this.failed = true;
         })
-
+    },
+    handleSvClick: function(evt){
+      // structvar id is encoded as an attribute of the svg element being clicked.
+      this.$emit("svIdChange", evt.target.attributes.sv_id.value)
+      if(this.selectedSvRectId !== null){
+        d3.select('#'+this.selectedSvRectId)
+          .classed("sv__bar--selected", false)
+      }
+      this.selectedSvRectId = evt.target.id
+      d3.select('#'+this.selectedSvRectId)
+        .classed("sv__bar--selected", true)
     },
     draw: function(){
       let y_scale = d3.scaleOrdinal()
@@ -94,8 +117,6 @@ export default {
       const row_mid = Math.floor(row_height * 0.7)
       const container_width = this.scroller?.scrollWidth || 1000
       const container_height = this.numStructVars * row_height
-      // Discrete range used in mapping transcript id to a specific y value
-      //const y_discrete_range = Array.from(Array(this.numTranscripts).keys()).map(v => v * row_height)
       const y_indexes = Array.from({length: this.numStructVars}, (_,i) => i)
       const y_discrete_range = Array.from(y_indexes, (_,i) => i * row_height)
 
@@ -107,7 +128,7 @@ export default {
       // Relevant containers
       const svg = d3.select("#SvBarsSvg")
       const bkgds   = svg.select("#backgroundBoxes")
-      const trxSect = svg.select("#variantsSection")
+      const svSect = svg.select("#variantsSection")
       const lblSect = svg.select("#labelSection")
 
       x_scale.domain([this.start, this.stop])
@@ -116,13 +137,10 @@ export default {
       y_scale.domain(y_indexes)
                   .range(y_discrete_range)
 
-      // Clip out of bounds data
+      // Clip display from out of bounds data
       svg.select("#sv-clip-rect")
         .attr("x", x_scale(this.start))
         .attr("width", x_scale(this.stop))
-
-      // debug
-      console.log(`sv clip x:${x_scale(this.start)} w:${x_scale(this.stop)}`)
 
       // Set dimensions and scale x axis data to viewbox
       svg.attr("viewBox", `0 0 ${container_width} ${container_height}`)
@@ -140,18 +158,19 @@ export default {
           .attr("ry", 3)
           .attr("transform", (d,i) => `translate(0,${y_scale(i)})`)
 
-      trxSect
-        .selectAll("line")
+      svSect
+        .selectAll("rect")
         .data(this.structVarData)
         .enter()
-          .append("line")
-          .attr("x1", (d,i) => x_scale(d.pos))
-          .attr("x2", (d,i) => x_scale(d.end))
-          .attr("y1", row_mid)
-          .attr("y2", row_mid)
+          .append("rect")
+          .attr("fill", (d) => `url(#p${d.sv_type})`)
+          .attr("id", (d,i) => `sv${d.pos}-${i}`)
+          .attr("sv_id", (d,i) => `${d.sv_type}_${d.chrom}:${d.pos}-${d.end}`)
+          .attr("x", (d,i) => x_scale(d.pos))
+          .attr("width", (d,i) => x_scale(d.end) - x_scale(d.pos) + 4)
+          .attr("height", row_height-4)
           .attr("transform", (d,i) => `translate(0,${y_scale(i)})`)
-          .attr("stroke-width", 20)
-          .attr("class", (d,i) => `sv-bars__variant--${d.sv_type}`)
+          .on("click", this.handleSvClick)
 
       // Generate Labels using the gene bounds or region bounds as appropriate.
       lblSect.selectAll("text")
@@ -159,12 +178,12 @@ export default {
         .join("text")
           .attr("id", (d) => `lab-${d.pos}`)
           .attr("x", (d,i) => x_scale( (Math.max(d.pos, this.start) + Math.min(d.end, this.stop))/2 ))
-          .attr("y", row_mid+2)
+          .attr("y", row_mid-2)
           .attr("text-anchor", "middle")
-          .style("font-family", "sans-serif")
-          .style("font-size", "11px")
           .attr("transform", (d,i) => `translate(0,${y_scale(i)})`)
+          .attr("filter", "url(#bkgd-mask)")
           .text((d) => this.make_sv_id(d))
+          .classed("sv__text", true)
 
     },
     debouncedDraw: debounce(function(){this.draw()}, 50),

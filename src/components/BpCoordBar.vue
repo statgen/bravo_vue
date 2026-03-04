@@ -1,5 +1,5 @@
 <template>
-  <div id="holder" ref="holder" class="child-component"
+  <div ref="holder" class="child-component"
     style="max-height: 20px; display: block; overflow-y: hidden; overflow-x: hidden;">
     <svg id="bp-coord-bar" style="display: block;" height="100px" width="100%" viewBox="0 0 1000 100" preserveAspectRatio="none">
       <g id="x-axis-container"></g>
@@ -52,10 +52,10 @@ export default {
       this.x_scale = d3.scaleLinear();
     },
     draw: function () {
-      const container_width = this.holder.scrollWidth || 1000
-      const axis_label_width = 40
+      const container_width = this.holder?.scrollWidth || 1000
+      const left_margin = 40
       const right_margin = 10
-      const x_range_limit = container_width - axis_label_width -right_margin;
+      const x_range_limit = container_width - left_margin -right_margin;
 
       let svg = d3.select("#bp-coord-bar")
         .attr("viewBox",`0 0 ${container_width} 100`)

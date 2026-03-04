@@ -13,8 +13,7 @@
         <g id="y-axis" style="font-size: 9px" transform="translate(40,0)"></g>
         <text id="axis-title" transform="translate(10,50) rotate(-90)"
           style="font-size: 10px; text-anchor: middle;">Avg. Depth</text>
-        <line id="highlight" class="highlight_line" x1="0" y1="0" x2="0" y2="100%"
-          stroke-width="2" stroke-linecap="round" stroke="#e77f00" visibility="hidden"/>
+        <line id="depth-highlight" class="genome-pos__highlight" x1="0" y1="0" x2="0" y2="100%" visibility="hidden"/>
       </g>
     </svg>
   </div>
@@ -163,9 +162,7 @@ export default {
          .data([this.cov_data])
          .enter()
         .append("path")
-          .style("fill", "#ffa37c")
-          .style("stroke-width", 0.1)
-          .style("stroke", "black")
+          .classed("depth__path", true)
           .attr("id","depths-path")
           .attr("clip-path", "url(#data-area-clip)")
           .attr("d", area);
@@ -184,7 +181,7 @@ export default {
     this.cov_data = [];
   },
   mounted: function() {
-    this.highlight_line = d3.select("#highlight")
+    this.highlight_line = d3.select("#depth-highlight")
     if ((this.chrom != null) && (this.start != null) && (this.stop != null)) {
       this.load();
     }
