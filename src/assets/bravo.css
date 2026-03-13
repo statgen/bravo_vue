@@ -298,6 +298,16 @@
   stroke: #e77f00;
 }
 
+.sv__pair-align--5prime {
+  fill: #af8dc3;
+  opacity: 0.1;
+}
+
+.sv__pair-align--3prime {
+  fill: #7fbf7b;
+  opacity: 0.1;
+}
+
 
 /* Classes to BEM-ify
  * https://github.com/statgen/bravo_vue/issues/10 */

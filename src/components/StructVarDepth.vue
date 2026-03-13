@@ -18,15 +18,15 @@
         <line id="sv-start" y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
         <line id="sv-end"   y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
       </g>
-      <g id="alignments" style="visibility: hidden">
+      <g id="alignments" style="visibility: visible">
         <g id="split-reads"  class="sv__splits"></g>
         <g id="paired-reads" class="sv__pairs"></g>
       </g>
       <g id="aggregates"></g>
     </svg>
   </div>
-  <button @click="toggle_visibility(svg.select('#alignments'))">Show/Hide Alignments</button>
-  <button @click="toggle_visibility(svg.select('#aggregates'))">Show/Hide Aggregates</button>
+  <button @click="toggle_alignments_visibility()">Show/Hide Alignments</button>
+  <button @click="toggle_aggregates_visibility()">Show/Hide Aggregates</button>
   <div id="dbg-info">
   </div>
 </template>
@@ -102,6 +102,7 @@ let y_depth_scale = d3.scaleLinear()
  */
 const split_palette = ['#08519c', '#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#eff3ff']
 const pair_palette = ['#af8dc3','#7fbf7b']
+const pair_classes = ['sv__pair-align--5prime','sv__pair-align--3prime']
 
 /* Formatting dimension vars */
 const axis_label_width = 40
@@ -133,12 +134,12 @@ function init_svg() {
     .style("display", "block")
 
   splits = svg.selectAll("#split-reads").selectAll()
-  pairs = svg.select("#paired-reads").selectAll()
-  aggregates = svg.select("#aggregates").selectAll()
+  pairs = svg.select("#paired-reads")
+  aggregates = svg.select("#aggregates")
 }
 
-function init_plot_scales(start, end){
-  x_scale.domain([start, end])
+function calibrate_plot_scales(){
+  x_scale.domain([region_start, region_end])
     .range([0, x_range_limit])
 
   y_scale.domain([0, 1.1*max_dist])
@@ -169,11 +170,11 @@ function update_plot_data(){
   sv_end = aligns_data.end
 
   max_dist = compute_max_distance(plot_data)
+  calibrate_plot_scales()
 
   // initialize array of bins for aggregating alignments
   position_binwidth = calc_position_bin_width()
   distance_binwidth = calc_distance_bin_width()
-
 
   generate_data_bins()
   
@@ -183,13 +184,12 @@ function update_plot_data(){
 
 function update_plot(){
   plot_sv_bounds()
-  //plot_alignments(pairs, plot_data.all_pairs, pair_palette)
-  //plot_alignments(splits, plot_data.all_splits, split_palette)
+  plot_alignments(pairs, plot_data.all_pairs, pair_classes)
 
   //debug
   //update_background_coverage()
   //update_carrier_coverage()
-  //plot_bins_v2(aggregates, bin_grid)
+  plot_aggregates(bin_grid)
 }
 
 function update_carrier_coverage() {
@@ -251,8 +251,8 @@ i.e. the last element of the 1st row is followed by first element of the 2nd row
 each bin tracks indexes of the alignments it aggregates for each category of alingment.
 { pos_start: int, dist_start: int, pair_idxs: [], split_idxs: [] }
 
-position is mapped to the x-axis
-distance is mapped to the y-axis
+position is mapped to the x-axis: start position of reads
+distance is mapped to the y-axis: distance between reads
 
 requires position_binwidth and distance_binwidth to already be computed.
 */
@@ -367,20 +367,21 @@ function update_bins(pdata) {
 
 
 /*
-  sel: d3 selection under which to append pairs
+  sel: d3 selection under which to manage pairs
   alignments: array of alignment paired reads or split reads
   palette: array of hex codes
 */
 function plot_alignments(sel, alignments, palette){
-  sel.data(alignments).enter()
-    .append("rect")
-    .attr("x", d => x_scale(d.start))
+  pairs
+    .selectAll("rect")
+    .data(alignments)
+    .join("rect")
+    .attr("x", d => x_scale(d.s))
     .attr("y", d => y_scale(d.dist))
     .attr("height", "1%")
-    .attr("width", d => d.end - d.start)
+    .attr("width", d => d.end - d.s)
     .attr("shape-rendering", "crispEdges")
-    .style("fill", d => palette[d.idx])
-    .style("opacity", 0.1)
+    .attr("class", d => palette[d.idx])
 }
 
 /* Generate svg rect y value bin in terms of total height that accomodates the
@@ -401,21 +402,29 @@ function bin_jitter(bin){
   return(bin.dist_start + offset)
 }
 
-function plot_bins_v2(sel, bins){
+function plot_aggregates(bins){
   let max_bin_alns = d3.max(bin_grid, d => d.n_alignments)
   let opacity_scale = d3.scaleSqrt().domain([0, max_bin_alns]).range([0, 1]).clamp(true)
 
   let draw_width = x_scale(region_start + distance_binwidth)
 
-  sel.data(bins).enter()
-    .append("rect")
+  aggregates.selectAll("rect")
+    .data(bins)
+    .join("rect")
     .attr("opacity", d => opacity_scale(d.n_alignments))
-  //.attr("fill", "url(#agg-gradient)")
     .attr("fill", "red")
     .attr("x", d => x_scale(d.pos_start))
     .attr("width", draw_width)
     .attr("y", d => y_scale(bin_jitter(d)))
     .attr("height", "0.75%")
+}
+
+function toggle_alignments_visibility(){
+  toggle_visibility(svg.select('#alignments'))
+}
+
+function toggle_aggregates_visibility(){
+  toggle_visibility(svg.select('#aggregates'))
 }
 
 function toggle_visibility(sel){
@@ -448,7 +457,7 @@ watch( () => props.svId, get_alignments, {immediate: false})
 
 onMounted(() => {
   init_svg()
-  init_plot_scales(region_start, region_end)
+  calibrate_plot_scales(region_start, region_end)
 })
 
 /*
