@@ -140,7 +140,7 @@ export default {
       // Clip display from out of bounds data
       svg.select("#sv-clip-rect")
         .attr("x", x_scale(this.start))
-        .attr("width", x_scale(this.stop))
+        .attr("width", x_scale(this.stop) - x_scale(this.start))
 
       // Set dimensions and scale x axis data to viewbox
       svg.attr("viewBox", `0 0 ${container_width} ${container_height}`)
