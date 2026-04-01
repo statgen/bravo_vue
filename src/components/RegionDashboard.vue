@@ -42,12 +42,11 @@
       <!-- DEBUG -->
       <div class="row justify-content-left">
         <div class="col-md px-5" v-if="positionResolved">
-          <SeqDepth :hoveredVarPosition="hoveredVarPosition" :segmentRegions="segmentRegions"/>
         </div>
       </div>
       <!-- END DEBUG -->
 
-      <div class="row justify-content-left" >
+      <div class="row" >
         <div class="col-md px-5">
           <StructVarDepth :svId="svIdSelected" />
         </div>

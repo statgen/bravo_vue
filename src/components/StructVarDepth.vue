@@ -1,38 +1,32 @@
 <template>
   <div id="svholder" ref="svholder" class="child-component">
-    <svg id="structVarReads" style="display: block;" height="500px" width="100%" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="agg-gradient">
-          <stop offset="0%" stop-color="green" />
-          <stop offset="100%" stop-color="white" />
-        </linearGradient>
-      </defs>
-      <clipPath id="depth-clip">
-        <rect x="0%" y="0%" width="100%" height="100%"></rect>
+    <svg id="structVarReads" style="display: block;" height="300px" width="100%" preserveAspectRatio="none">
+      <clipPath id="sv-aligns-clip">
+        <rect id="aligns-clip-rect" x="0%" y="0%" width="100%" height="100%"></rect>
       </clipPath>
-      <g id="background">
-        <rect height="100%" width="100%" opacity=0.1 fill="#AAAABB"></rect>
+      <g id="sv-clipped" clip-path="url(#sv-aligns-clip)">
+        <rect id="sv-bkgd" height="100%" width="100%" opacity=0.1 fill="#AAAABB"></rect>
+        <g id="depths" :transform="`scale(1,${y_depth_ratio}) translate(0,${y_depth_offset})`" style="opacity: .7"></g>
+        <g id="alignments" style="visibility: visible;">
+          <g id="split-reads"  class="sv__splits"></g>
+          <g id="paired-reads" class="sv__pairs"></g>
+        </g>
+        <g id="aggregates"></g>
+        <g id="sv-bounds">
+          <line id="sv-start" y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
+          <line id="sv-end"   y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
+        </g>
       </g>
-      <g id="depths"></g>
-      <g id="sv-bounds">
-        <line id="sv-start" y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
-        <line id="sv-end"   y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
-      </g>
-      <g id="alignments" style="visibility: visible">
-        <g id="split-reads"  class="sv__splits"></g>
-        <g id="paired-reads" class="sv__pairs"></g>
-      </g>
-      <g id="aggregates"></g>
+      <g id="sv-y-axis" style="font-size: 9px" :transform="`scale(1,${y_depth_ratio}) translate(40,${y_depth_offset})`"></g>
     </svg>
   </div>
   <button @click="toggle_alignments_visibility()">Show/Hide Alignments</button>
   <button @click="toggle_aggregates_visibility()">Show/Hide Aggregates</button>
-  <div id="dbg-info">
-  </div>
 </template>
 
 
 <script setup>
+//clip-path="url(#sv-area-clip)"
 import {inject, onMounted, onBeforeUpdate, ref, watch} from 'vue'
 import * as d3 from "d3"
 import axios from "axios"
@@ -42,6 +36,7 @@ axios.defaults.withCredentials=true
 const api = inject('api')
 const region_start = inject('start')
 const region_end   = inject('stop')
+const chrom = inject('chrom')
 
 /* Props */
 const props = defineProps({svId: String})
@@ -49,7 +44,6 @@ const props = defineProps({svId: String})
 /* Placeholder Variables for data that will be provided or calculated */
 const genome_position_limits = [50186300, 50186900]
 const max_insert_size = 300
-const max_depth = 50
 let sv_start = 50186563
 let sv_end = 50186750
 
@@ -85,7 +79,14 @@ let pairs         = null
 let aggregates    = null
 let x_scale       = d3.scaleLinear()
 let y_scale       = d3.scaleLinear()
-let y_depth_scale = d3.scaleLinear()
+
+let background_max_depth = 5
+let svg_half_height = 10
+const ASSUMED_MAX_DEPTH = 100
+const VIEW_BOX_Y_MAX = 150
+const y_depth_scale = d3.scaleLinear().domain([0, ASSUMED_MAX_DEPTH]).range([VIEW_BOX_Y_MAX, 0])
+const y_depth_ratio = ref(1)
+const y_depth_offset = ref(0)
 
 /* Color scheme for reads
   https://colorbrewer2.org/?type=diverging&scheme=PRGn&n=3
@@ -101,11 +102,10 @@ let y_depth_scale = d3.scaleLinear()
   .Blues .q5-6{fill:rgb(8,81,156)}
  */
 const split_palette = ['#08519c', '#3182bd', '#6baed6', '#9ecae1', '#c6dbef', '#eff3ff']
-const pair_palette = ['#af8dc3','#7fbf7b']
 const pair_classes = ['sv__pair-align--5prime','sv__pair-align--3prime']
 
 /* Formatting dimension vars */
-const axis_label_width = 40
+const left_margin = 40
 const right_margin = 10
 let container_width = null
 let x_range_limit = null
@@ -114,39 +114,34 @@ let x_range_limit = null
 * Functions *
 ************/
 
-// Generator for converting array of coverage objects into d attribute of a path.
-let cov_area = d3.area()
-  .x(  d  => x_scale(d.start) )
-  .y0( () => 0)
-  .y1( () => 0)
-  .y0( () => 100 )
-  .y1( d  => y_depth_scale(d.mean) )
-  .curve(d3.curveStepAfter)
-
 // Initialize SVG structure and named elements
 function init_svg() {
   // Use template ref, holder, to access the width of the holding div.
-  container_width = holder.scrollWidth || 1000
-  x_range_limit = container_width - axis_label_width -right_margin;
+  container_width = svholder.scrollWidth || 1000
+  x_range_limit = container_width - right_margin;
+
+  x_scale.domain([region_start, region_end])
+    .range([left_margin, x_range_limit])
 
   svg = d3.select("#structVarReads")
-    .attr("viewBox", `0 0 ${container_width} 100`)
+    .attr("viewBox", `0 0 ${container_width} ${VIEW_BOX_Y_MAX}`)
     .style("display", "block")
+
+  // Depth path transformation to scale to half the display
+  svg_half_height = svg.node().getBBox().height /2
+
+  // Clip display from out of bounds data
+  svg.select("#aligns-clip-rect")
+    .attr("x", x_scale(region_start))
+    .attr("width", x_scale(region_end) - x_scale(region_start))
 
   splits = svg.selectAll("#split-reads").selectAll()
   pairs = svg.select("#paired-reads")
   aggregates = svg.select("#aggregates")
 }
 
-function calibrate_plot_scales(){
-  x_scale.domain([region_start, region_end])
-    .range([0, x_range_limit])
-
-  y_scale.domain([0, 1.1*max_dist])
-    .range([100, 0])
-
-  y_depth_scale.domain([0, max_depth])
-    .range([100, 0])
+function calibrate_y_scales(){
+  y_scale.domain([0, 1.1*max_dist]).range([VIEW_BOX_Y_MAX, 0])
 }
 
 function plot_sv_bounds(){
@@ -163,14 +158,14 @@ function plot_sv_bounds(){
 
 
 // run when data arrives to populate svg
-function update_plot_data(){
+function update_alignment_data(){
   plot_data = update_alignments(aligns_data)
 
   sv_start = aligns_data.pos
   sv_end = aligns_data.end
 
   max_dist = compute_max_distance(plot_data)
-  calibrate_plot_scales()
+  calibrate_y_scales()
 
   // initialize array of bins for aggregating alignments
   position_binwidth = calc_position_bin_width()
@@ -204,7 +199,6 @@ function update_carrier_coverage() {
       .style("stroke-width", 0.1)
       .style("stroke", "black")
       .attr("id","depths-path")
-      .attr("clip-path", "url(#depth-clip)")
       .attr("d", cov_area);
 }
 
@@ -220,7 +214,6 @@ function update_background_coverage() {
       .style("stroke-width", 0.1)
       .style("stroke", "black")
       .attr("id","bkg-depths-path")
-      .attr("clip-path", "url(#depth-clip)")
       .attr("d", cov_area);
 }
 
@@ -384,15 +377,6 @@ function plot_alignments(sel, alignments, palette){
     .attr("class", d => palette[d.idx])
 }
 
-/* Generate svg rect y value bin in terms of total height that accomodates the
-  inverted nature of the SVG scale and the height of the bin (d_increment)
-  E.g. if distance index is 0, and increment is 10,
-       then upper left corner (y) should be at "90%"
-  */
-function index_to_axis_percent(idx, increment){
-  return `${100 - increment * (idx + 1)}%`
-}
-
 /* Calculate the aggregate bin position with offset to avoid overplotting */
 function bin_jitter(bin){
   let offset_seq = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9]
@@ -441,7 +425,7 @@ function get_alignments() {
     .then( resp => {
       aligns_data = resp.data
       if(aligns_data) {
-        update_plot_data()
+        update_alignment_data()
         update_plot()
       } else {
         console.log(`No alignment data for sv: ${props.svId}`)
@@ -452,36 +436,105 @@ function get_alignments() {
     })
 }
 
-watch( () => props.svId, get_alignments, {immediate: false})
+function get_carrier_depth() {
+
+}
+
+function sv_id_changed() {
+  get_alignments()
+  get_carrier_depth()
+
+}
+
+function round_up_to_tens(val) { 
+  return(Math.ceil(val/10)*10) 
+}
+
+function format_y_ticks(value) { 
+  return d3.format('d')(value) + "x" 
+}
+
+function depth_tick_values(max_depth) {
+  const upper_limit = round_up_to_tens(max_depth)
+  const step = upper_limit / 4
+  return [1,2,3].map(val=>Math.ceil(val*step))
+}
+
+function update_depth_y_axis() {
+  const yax = d3.axisLeft(y_depth_scale)
+    .tickValues(depth_tick_values(background_max_depth))
+    .tickFormat(format_y_ticks);
+  svg.select("#sv-y-axis").call(yax)
+}
+
+function update_background_max_depth(obs_depth=20){
+  if(obs_depth <= background_max_depth){ return }
+
+  background_max_depth = obs_depth
+
+  // The group scaling ratio is: assumed_max / observed_max
+  //   Dividing the assumed depth by two
+  y_depth_ratio.value = (ASSUMED_MAX_DEPTH/2)/round_up_to_tens(background_max_depth)  
+  y_depth_offset.value = 2 *(y_depth_scale(background_max_depth*y_depth_ratio.value) - y_depth_scale(background_max_depth))
+
+  console.log(`offeset calc: ${y_depth_scale(background_max_depth*y_depth_ratio.value)} ${y_depth_scale(background_max_depth)}`)
+  console.log(`depth ratio offset: ${background_max_depth} | ${y_depth_ratio.value} | ${y_depth_offset.value}`)
+}
+
+
+function plot_background_depth_chunk(cov){
+  // TODO: Figure out inversion in combination with <g> transform
+  // TODO: Also, the bp coordinate bar is too long. Scale that to margins
+
+  // Generator for converting array of coverage objects into d attribute of a path.
+  // y-scaling will be taken care of by a transform on the #depths <g> element.
+  let cov_area = d3.area()
+    .x(  d  => x_scale(d.start) )
+    .y0( () => VIEW_BOX_Y_MAX )
+    .y1( d => y_depth_scale(d.mean))
+    .curve(d3.curveStepAfter)
+
+  let depths_path = svg.select("#depths").selectAll()
+     .data([cov])
+     .enter()
+    .append("path")
+      .classed("depth__path", true)
+      .attr("id","depths-path")
+      .attr("d", cov_area);
+}
+
+function plot_background_coverage(continue_from=0){
+  let cov_data = []
+  axios
+    .post(`${api}/chunked-coverage`,
+      {chrom: chrom, start: region_start, stop: region_end, continue_from: continue_from})
+    .then( resp => {
+      cov_data = resp.data.coverage
+      const mean_arr = resp.data.coverage.map(val => val.mean)
+      const mean_max = Math.max(...mean_arr)
+
+      update_background_max_depth(mean_max)
+      update_depth_y_axis()
+      plot_background_depth_chunk(cov_data)
+      
+      if( resp.data.continue_from < region_end){
+        get_background_coverage(resp.data.continue_from)
+      } else {
+        console.log("Background coverage done loading")
+      }
+    }).catch(error => {
+      console.log("Error loading depth:" + error)
+      console.log("Background coverage loading failed.")
+    })
+}
+
+watch( () => props.svId, sv_id_changed, {immediate: false})
 
 
 onMounted(() => {
   init_svg()
-  calibrate_plot_scales(region_start, region_end)
+  calibrate_y_scales()
+  plot_background_coverage()
 })
-
-/*
-onBeforeUpdate(() => {
-  updatePlot()
-})
-
-onMounted(() => {
-
-  // Add distance attribute for each alignment
-  plot_data = update_alignments(plot_ext_data)
-  max_dist = compute_max_distance(plot_data)
-
-  // initialize array of bins for aggregating alignments
-  position_binwidth = calc_position_bin_width()
-  distance_binwidth = calc_distance_bin_width()
-  generate_data_bins()
-
-  // process and rearrange data for plotting
-  update_bins(plot_data)
-  initSvg()
-  initPlotScales()
-  updatePlot()
-})
-*/
 
 </script>

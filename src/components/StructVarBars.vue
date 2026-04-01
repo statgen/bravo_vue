@@ -123,7 +123,7 @@ export default {
       // Alightment values for figures that use left hand axis.
       const left_margin = 40
       const right_margin = 10
-      const x_range_limit = container_width - left_margin - right_margin
+      const x_range_limit = container_width - right_margin
 
       // Relevant containers
       const svg = d3.select("#SvBarsSvg")
