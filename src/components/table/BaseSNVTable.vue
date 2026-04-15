@@ -221,7 +221,7 @@ export default {
             var html = "";
             cell.getValue().forEach( v => {
               var badge_type = v == "PASS" ? "success" : "danger";
-              html += `<span class="badge badge-${badge_type}" style="margin-right:1px">${v}</span>`;
+              html += `<span class="badge badge-${badge_type}" style="margin-right:1px">${v} role="button"</span>`;
             });
             return html;
           },

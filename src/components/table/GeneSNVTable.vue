@@ -73,7 +73,7 @@ export default {
             let title = snvConsequences.lookup(annotations[0]).title
             let cssClass = `badge--${annotations[0]}`
             html += `<div class="snvtable__cell--clickable" role="button">`
-            html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} </span>`
+            html += `<span class="badge badge-light clickable ${cssClass}" style="">${title} role="button"</span>`
             html += `<span>(${annotations.length})</span>`
             html += `</div>`
           }
