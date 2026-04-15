@@ -1,6 +1,6 @@
 <template>
 <div class="child-component">
-  <div ref="infoPopup" class="tx-popup">
+  <div id="tx-info-tooltip" ref="infoPopup" class="tx-popup" role="tooltip">
     <ul class="tx-popup__list">
       <li>{{ popupInfo.title }}</li>
       <li>{{ popupInfo.desc }}</li>
@@ -174,6 +174,7 @@ export default {
           .attr("rx", 3)
           .attr("ry", 3)
           .attr("transform", (d,i) => `translate(0,${y_scale(d.transcript_id)})`)
+          .attr("aria-describedby", "tx-info-tooltip")
           .on("mouseover", this.handleTxMouseover)
           .on("mouseout", this.handleTxMouseout)
 
