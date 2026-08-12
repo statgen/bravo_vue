@@ -40,8 +40,9 @@
       </div>
 
       <!-- DEBUG -->
-      <div class="row justify-content-left">
-        <div class="col-md px-5" v-if="positionResolved">
+      <div class="row">
+        <div class="col-md px-5">
+          <StructVarIgv :svId="svIdSelected"/>
         </div>
       </div>
       <!-- END DEBUG -->
@@ -183,6 +184,7 @@ import RegionEqtlTable from '@/components/table/RegionEqtlTable.vue'
 import RegionEqtlSummaries from '@/components/summary/RegionEqtlSummaries.vue'
 import StructVarBars   from '@/components/StructVarBars.vue'
 import StructVarDepth  from '@/components/StructVarDepth.vue'
+import StructVarIgv  from '@/components/StructVarIgv.vue'
 
 export default {
   name: 'RegionDashboard',
@@ -203,7 +205,8 @@ export default {
     RegionEqtlTable,
     RegionEqtlSummaries,
     StructVarBars,
-    StructVarDepth
+    StructVarDepth,
+    StructVarIgv
   },
   inject: {
     chrom: {default: null},
@@ -286,6 +289,13 @@ export default {
     },
   },
   methods: {
+    load_sv_bam: function(){
+      axios
+      .post(`${this.api}/sv/debug`)
+        .then( resp => { console.log(resp.data) })
+        .catch(error => { console.log("Error loading sv debug data:" + error) })
+
+    },
     load_eqtl_count: function(ensembl_id){
       axios
       .get(`${this.api}/eqtl/region_count`, {params: {chrom: this.chrom, start: this.start, stop: this.stop}})

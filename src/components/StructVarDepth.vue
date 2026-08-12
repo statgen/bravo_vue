@@ -441,7 +441,7 @@ function get_carrier_depth() {
 }
 
 function sv_id_changed() {
-  get_alignments()
+  //get_alignments()
   get_carrier_depth()
 
 }
