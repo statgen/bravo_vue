@@ -1,8 +1,8 @@
 <template>
   <div ref="holder" class="child-component"
     style="max-height: 20px; display: block; overflow-y: hidden; overflow-x: hidden;">
-    <svg id="bp-coord-bar" style="display: block;" height="100px" width="100%" viewBox="0 0 1000 100" preserveAspectRatio="none">
-      <g id="x-axis-container"></g>
+    <svg ref="coordBar"  style="display: block;" height="100px" width="100%" viewBox="0 0 1000 100" preserveAspectRatio="none">
+      <g ref="axisContainer" id="x-axis-container"></g>
     </svg>
 </div>
 </template>
@@ -16,7 +16,9 @@ export default {
   name: "BpCoordBar",
   setup() {
     const holder = ref(null)
-    return { holder }
+    const coordBar = ref(null)
+    const axisContainer = ref(null)
+    return { holder, coordBar, axisContainer }
   },
   props: {
     //formerly region.segments.region
@@ -46,7 +48,7 @@ export default {
       return [...Array(qty).keys()].map(val => min+(val*step_size))
     },
     init: function () {
-      this.x_axis_g = d3.select("#x-axis-container")
+      this.x_axis_g = d3.select(this.axisContainer)
 
       this.x_axis = d3.axisBottom();
       this.x_scale = d3.scaleLinear();
@@ -57,7 +59,8 @@ export default {
       const right_margin = 10
       const x_range_limit = container_width - left_margin -right_margin;
 
-      let svg = d3.select("#bp-coord-bar")
+      //let svg = d3.select("#bp-coord-bar")
+      let svg = d3.select(this.coordBar)
         .attr("viewBox",`0 0 ${container_width} 100`)
       this.x_axis_g.attr("transform", "translate(40, 0)");
       this.x_scale.domain(this.segmentRegions)
