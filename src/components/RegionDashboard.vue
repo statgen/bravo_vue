@@ -39,17 +39,20 @@
         </div>
       </div>
 
-      <!-- DEBUG -->
-      <div class="row">
-        <div class="col-md px-5">
-          <StructVarIgv :svId="svIdSelected"/>
-        </div>
-      </div>
-      <!-- END DEBUG -->
-
       <div class="row" >
         <div class="col-md px-5">
           <StructVarDepth :svId="svIdSelected" />
+        </div>
+      </div>
+      <div class="row" >
+        <div class="col-md px-5" v-if="positionResolved">
+          <BpCoordBar :segmentRegions="segmentRegions"/>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md px-5">
+          <StructVarIgv :svId="svIdSelected"/>
         </div>
       </div>
 

@@ -6,7 +6,7 @@
 <script setup>
 import {inject, onMounted, onUnmounted, ref, watch} from 'vue'
 import axios from "axios"
-import igv from "igv/dist/igv.esm.js" 
+import igv from "igv/dist/igv.esm.min.js" 
 axios.defaults.withCredentials=true
 
 /* Injects */
@@ -27,7 +27,10 @@ let currTrackName = ""
 watch( () => props.svId, handle_sv_id_change, {immediate: false})
 
 function handle_sv_id_change() {
+  if(currTrackName === props.svId){ return }
+  // Remove existing track
   igvBrowser.removeTrackByName(currTrackName)
+  // Record selected structural variant Id as the current track.
   currTrackName = props.svId
 
   let crai_url = `${api}/sv/crai?svid=${props.svId}`
@@ -35,6 +38,8 @@ function handle_sv_id_change() {
   //debug
   let cramfile = "file:///mnt/bravo/data/runtime/structvar/crams/chr11_selected_p023.cram"
   let craifile = "file:///mnt/bravo/data/runtime/structvar/crams/chr11_selected_p023.cram.crai"
+  let cram_local = "http://localhost/crams/chr11_selected_p023.cram"
+  let crai_local = "http://localhost/crams/chr11_selected_p023.cram.crai"
   console.log(crai_url)
   console.log(cram_url)
 
@@ -43,27 +48,12 @@ function handle_sv_id_change() {
     format: "cram",
     name: props.svId,
     colorBy: "strand",
-    url: cramfile,
-    indexUrl: craifile,
+    url: cram_url,
+    indexURL: crai_url,
     indexed: true,
-    withCredentials: true
+    withCredentials: true,
+    showCoverage: false
   });
-
-  /*
-  axios
-    .get(`${api}/sv/debug`) 
-    .then( resp => {
-      if(resp.data) {
-        console.log("bam data received")
-      } else {
-        console.log(`No bam data for sv: ${props.svId}`)
-      }
-
-    }).catch(error => {
-      console.log("Error loading bam dat:" + error)
-    })
-  */
-
 }
 
 /* Lifecycle hooks */
@@ -77,6 +67,7 @@ onMounted(() => {
         cytobandURL: "https://s3.amazonaws.com/igv.org.genomes/hg38/annotations/cytoBandIdeo.txt.gz",
         samplingDepth: 2
       },
+    flanking: 100,
     locus: `${chrom}:${region_start}-${region_end}`,
     loadDefaultGenomes: false,
     showAllChromosomes: false,
@@ -87,6 +78,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  igv.removeBrowser(igvBrowser)
 })
 
 </script>

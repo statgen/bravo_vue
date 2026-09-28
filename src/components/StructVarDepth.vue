@@ -7,6 +7,9 @@
       <g id="sv-clipped" clip-path="url(#sv-aligns-clip)">
         <rect id="sv-bkgd" height="100%" width="100%" opacity=0.1 fill="#AAAABB"></rect>
         <g id="depths" :transform="`scale(1,${y_depth_ratio}) translate(0,${y_depth_offset})`" style="opacity: .7"></g>
+        <g id="dbg" :transform="`scale(1,${y_depth_ratio}) translate(0,${y_depth_offset})`" style="opacity: .7">
+          <line id="dbg20" x1="0%" x2="100%" stroke="red" :y1="`${y_depth_scale(20)}`" :y2="`${y_depth_scale(20)}`"/>
+        </g>
         <g id="alignments" style="visibility: visible;">
           <g id="split-reads"  class="sv__splits"></g>
           <g id="paired-reads" class="sv__pairs"></g>
@@ -17,11 +20,13 @@
           <line id="sv-end"   y0="0%" y1="100%" stroke="black" stroke-dasharray="2 1"/>
         </g>
       </g>
+<!-- 
       <g id="sv-y-axis" style="font-size: 9px" :transform="`scale(1,${y_depth_ratio}) translate(40,${y_depth_offset})`"></g>
+      <g id="sv-y-axis" style="font-size: 9px" :transform="`translate(40, ${y_depth_offset *1.25})`"></g>
+-->
+      <g id="sv-y-axis" style="font-size: 9px" :transform="`translate(40, 0)`"></g>
     </svg>
   </div>
-  <button @click="toggle_alignments_visibility()">Show/Hide Alignments</button>
-  <button @click="toggle_aggregates_visibility()">Show/Hide Aggregates</button>
 </template>
 
 
@@ -461,7 +466,23 @@ function depth_tick_values(max_depth) {
 }
 
 function update_depth_y_axis() {
-  const yax = d3.axisLeft(y_depth_scale)
+
+const y_depth_scale = d3.scaleLinear().domain([0, ASSUMED_MAX_DEPTH]).range([VIEW_BOX_Y_MAX, 0])
+
+  // Scale the y-axis here instead of transform on the <g> to avoid stretching the tick labels.
+  const yax_depth_scale = y_depth_scale.copy()
+  //yax_depth_scale.domain([0,ASSUMED_MAX_DEPTH * y_depth_ratio.value])
+
+  yax_depth_scale.range([(VIEW_BOX_Y_MAX) * y_depth_ratio.value , 0 ])
+
+  console.log('debug y-axis')
+  console.log(`background_max_depth: ${background_max_depth}`)
+  console.log(`y_depth_ratio: ${y_depth_ratio.value}`)
+  console.log(`y_depth_offset: ${y_depth_offset.value}`)
+  console.log(`y_scaled: ${y_depth_scale(background_max_depth)} yax_scale: ${yax_depth_scale(background_max_depth)}`)
+
+  const yax = d3.axisLeft(yax_depth_scale)
+  //const yax = d3.axisLeft(y_depth_scale)
     .tickValues(depth_tick_values(background_max_depth))
     .tickFormat(format_y_ticks);
   svg.select("#sv-y-axis").call(yax)
@@ -472,8 +493,10 @@ function update_background_max_depth(obs_depth=20){
 
   background_max_depth = obs_depth
 
-  // The group scaling ratio is: assumed_max / observed_max
-  //   Dividing the assumed depth by two
+  /* The group scaling ratio is: assumed_max / observed_max
+      Make the max depth of the background half the height of the figure
+      by dividing the assumed depth by two.
+      Offsetting the resulting depth to shift depth 0 to the bottom of the figure. */
   y_depth_ratio.value = (ASSUMED_MAX_DEPTH/2)/round_up_to_tens(background_max_depth)  
   y_depth_offset.value = 2 *(y_depth_scale(background_max_depth*y_depth_ratio.value) - y_depth_scale(background_max_depth))
 
@@ -484,7 +507,6 @@ function update_background_max_depth(obs_depth=20){
 
 function plot_background_depth_chunk(cov){
   // TODO: Figure out inversion in combination with <g> transform
-  // TODO: Also, the bp coordinate bar is too long. Scale that to margins
 
   // Generator for converting array of coverage objects into d attribute of a path.
   // y-scaling will be taken care of by a transform on the #depths <g> element.
